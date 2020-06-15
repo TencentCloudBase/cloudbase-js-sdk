@@ -1,0 +1,23 @@
+{
+    "extends": [
+        "eslint-config-alloy/typescript"
+    ],
+    "rules": {
+        "indent": ["error", 2, {
+            "SwitchCase": 1,
+            "flatTernaryExpressions": true
+        }],
+        "guard-for-in": 0,
+        "no-param-reassign": 0,
+        "no-undefined": 0,
+        "@typescript-eslint/explicit-member-accessibility": 0,
+        "@typescript-eslint/no-invalid-this": 0
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        }
+    }
+}

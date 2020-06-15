@@ -1,0 +1,20 @@
+{
+  "allowSyntheticDefaultImports": true,
+  "declaration": true,
+  "esModuleInterop": true,
+  "experimentalDecorators": true,
+  "emitDecoratorMetadata": true,
+  "noFallthroughCasesInSwitch": true,
+  "noUnusedLocals": true,
+  "noUnusedParameters": true,
+  "pretty": true,
+  "resolveJsonModule": true,
+  "removeComments": true,
+  "skipLibCheck": true,
+  "declarationMap": true,
+  "sourceMap": true,
+  "strictBindCallApply": true,
+  "target": "es5",
+  "moduleResolution": "node",
+  "lib": ["es2015", "dom"]
+}

@@ -1,0 +1,9 @@
+node_modules
+.vscode
+.DS_Store
+package-lock.json
+*.log
+cdnjs_e2e
+demo
+test.config.js
+yarn.lock

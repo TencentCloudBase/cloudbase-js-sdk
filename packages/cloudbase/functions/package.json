@@ -1,0 +1,6 @@
+{
+  "name": "@cloudbase/js-sdk/functions",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "../index.d.ts"
+}

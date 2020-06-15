@@ -1,0 +1,49 @@
+{
+  "name": "@cloudbase/utilities",
+  "version": "0.1.0-beta.3",
+  "description": "cloudbase javascript sdk utilities",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "tsc": "rm -rf dist/ && tsc -p tsconfig.json",
+    "lint": "eslint \"./src/**/*.ts\"",
+    "lint:fix": "eslint --fix \"./src/**/*.ts\"",
+    "build": "npm run lint:fix&& npm run tsc",
+    "prepublish": "npm run tsc"
+  },
+  "keywords": [
+    "tcb",
+    "cloudbase",
+    "serverless"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.13.2",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "eslint-config-alloy": "^3.7.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.7",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@cloudbase/adapter-interface": "^0.4.0",
+    "@cloudbase/types": "^0.1.0-beta.6",
+    "crypto-js": "^4.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ]
+  }
+}

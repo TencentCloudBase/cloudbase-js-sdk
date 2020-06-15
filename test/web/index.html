@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta content="telephone=no" name="format-detection" />
+    <title>TCB JSSDK 自动化测试页面</title>
+  </head>
+
+  <body>
+    <div>
+      <h4>TCB JSSDK 自动化测试页面</h4>
+      <p>
+        本页面支持在微信环境中运行，支持自动化测试 初始化、存储、云函数、数据库
+        功能。
+      </p>
+      <h5>选择登录类型</h5>
+      <div>
+        <input type="radio" id="login_wx_web" name='loginType' value="wx_web"/>
+        <label for="login_wx_web">微信登录（公众号）</label>
+      </div>
+      <div>
+        <input type="radio" id="login_custom" name='loginType' value="custom"/>
+        <label for="login_wx_web">自定义登录</label>
+      </div>
+      <div>
+        <input type="radio" id="login_anonymous" name='loginType' value="anonymous"/>
+        <label for="login_anonymous">匿名登录</label>
+      </div>
+
+      <h5>测试用例</h5>
+      <select id="testCaseSelect"></select>
+      <br>
+      <br>
+
+      <button id="runSelectedTestCase">执行选中用例</button>
+
+      <!-- <button id="mockAddDoc">增加</button> -->
+
+      <!--<select id="testCaseTypeSelect">
+      <option value="auth">初始化</option>
+      <option value="storage">存储</option>
+      <option value="function">云函数</option>
+      <option value="database">数据库</option>
+    </select>
+
+    <button id="runSelectedTestCaseType">执行选中类别的全部用例</button>-->
+
+    <button id="runAllTestCases">执行全部用例</button>
+
+    <h5>手动选择上传文件</h5>
+    <!-- 手动上传文件 -->
+    <input type="file" id="selectFile" name="avatar" accept="*">
+
+
+    <!-- <div id="output" class="container">
+
+      <p>操作结果请见console</p>
+      <div id="output" class="container"></div>
+    </div> -->
+
+    <script src="test.js"></script>
+    <!-- <script>
+      window["initIndex"]();
+    </script> -->
+  </body>
+</html>
