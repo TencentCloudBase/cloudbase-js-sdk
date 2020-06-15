@@ -11,6 +11,12 @@ clone项目到本地后首先执行以下命令：
 lerna bootstrap
 ```
 
+### 构建
+在根目录下运行：
+```bash
+npm run build
+```
+
 ### 测试
 #### E2E测试
 ```bash

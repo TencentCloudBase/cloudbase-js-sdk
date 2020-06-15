@@ -11,6 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerDatabase = void 0;
 var database_1 = require("@cloudbase/database");
 var utilities_1 = require("@cloudbase/utilities");
 var SDK_NAME = utilities_1.constants.SDK_NAME, ERRORS = utilities_1.constants.ERRORS;

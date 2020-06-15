@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerAuth = void 0;
 var auth_1 = require("@cloudbase/auth");
-exports.registerAuth = auth_1.registerAuth;
-var provider_mp_1 = require("@cloudbase/provider-mp");
-auth_1.registerAuthProvider('weixinAuthProvider', provider_mp_1.WeixinAuthProvider);
+Object.defineProperty(exports, "registerAuth", { enumerable: true, get: function () { return auth_1.registerAuth; } });

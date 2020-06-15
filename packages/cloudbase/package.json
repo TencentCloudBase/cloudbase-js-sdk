@@ -27,6 +27,13 @@
     "/index.d.ts",
     "**/package.json"
   ],
+  "components": [
+    "app",
+    "auth",
+    "database",
+    "functions",
+    "storage"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
