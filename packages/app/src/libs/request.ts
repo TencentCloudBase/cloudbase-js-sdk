@@ -95,7 +95,8 @@ export class CloudbaseRequest implements ICloudbaseRequest{
   _shouldRefreshAccessTokenHook: Function
   _refreshAccessTokenPromise: Promise<IGetAccessTokenResult> | null
   _reqClass: SDKRequestInterface;
-
+  // 请求失败是否抛出Error
+  private _throwWhenRequestFail = false;
   private _cache: ICloudbaseCache;
   // 持久化本地存储
   private _localCache: ICloudbaseCache;
@@ -103,7 +104,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
    * 初始化
    * @param config
    */
-  constructor(config: ICloudbaseRequestConfig) {
+  constructor(config: ICloudbaseRequestConfig&{throw?:boolean}) {
     this.config = config;
     // eslint-disable-next-line
     this._reqClass = new Platform.adapter.reqClass(<IRequestConfig>{
@@ -111,6 +112,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
       timeoutMsg: `[tcb-js-sdk] 请求在${this.config.timeout / 1000}s内未完成，已中断`,
       restrictedMethods: ['post']
     });
+    this._throwWhenRequestFail = config.throw||false;
     this._cache = getCacheByEnvId(this.config.env);
     this._localCache = getLocalCache(this.config.env);
     bindHooks(this._reqClass, 'post', [beforeEach]);
@@ -298,14 +300,14 @@ export class CloudbaseRequest implements ICloudbaseRequest{
       // access_token过期，重新获取
       await this.refreshAccessToken();
       const response = await this.request(action, data, { onUploadProgress: data.onUploadProgress });
-      if (response.data.code) {
-        throw new Error(`[${response.data.code}] ${response.data.message}`);
+      if (response.data.code&&this._throwWhenRequestFail) {
+        throwError(ERRORS.OPERATION_FAIL,`[${response.data.code}] ${response.data.message}`);
       }
       return response.data;
     }
 
-    if (response.data.code) {
-      throw new Error(`[${response.data.code}] ${response.data.message}`);
+    if (response.data.code&&this._throwWhenRequestFail) {
+      throwError(ERRORS.OPERATION_FAIL,`[${response.data.code}] ${response.data.message}`);
     }
 
     return response.data;
@@ -380,7 +382,10 @@ export class CloudbaseRequest implements ICloudbaseRequest{
 const requestMap: KV<CloudbaseRequest> = {};
 
 export function initRequest(config: ICloudbaseRequestConfig) {
-  requestMap[config.env] = new CloudbaseRequest(config);
+  requestMap[config.env] = new CloudbaseRequest({
+    ...config,
+    throw: true
+  });
 }
 
 export function getRequestByEnvId(env: string): CloudbaseRequest {

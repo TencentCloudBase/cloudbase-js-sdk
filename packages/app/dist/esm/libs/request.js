@@ -101,12 +101,14 @@ function beforeEach() {
 }
 var CloudbaseRequest = (function () {
     function CloudbaseRequest(config) {
+        this._throwWhenRequestFail = false;
         this.config = config;
         this._reqClass = new Platform.adapter.reqClass({
             timeout: this.config.timeout,
             timeoutMsg: "[tcb-js-sdk] \u8BF7\u6C42\u5728" + this.config.timeout / 1000 + "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD",
             restrictedMethods: ['post']
         });
+        this._throwWhenRequestFail = config.throw || false;
         this._cache = getCacheByEnvId(this.config.env);
         this._localCache = getLocalCache(this.config.env);
         bindHooks(this._reqClass, 'post', [beforeEach]);
@@ -329,13 +331,13 @@ var CloudbaseRequest = (function () {
                         return [4, this.request(action, data, { onUploadProgress: data.onUploadProgress })];
                     case 3:
                         response_1 = _a.sent();
-                        if (response_1.data.code) {
-                            throw new Error("[" + response_1.data.code + "] " + response_1.data.message);
+                        if (response_1.data.code && this._throwWhenRequestFail) {
+                            throwError(ERRORS.OPERATION_FAIL, "[" + response_1.data.code + "] " + response_1.data.message);
                         }
                         return [2, response_1.data];
                     case 4:
-                        if (response.data.code) {
-                            throw new Error("[" + response.data.code + "] " + response.data.message);
+                        if (response.data.code && this._throwWhenRequestFail) {
+                            throwError(ERRORS.OPERATION_FAIL, "[" + response.data.code + "] " + response.data.message);
                         }
                         return [2, response.data];
                 }
@@ -451,7 +453,7 @@ var CloudbaseRequest = (function () {
 export { CloudbaseRequest };
 var requestMap = {};
 export function initRequest(config) {
-    requestMap[config.env] = new CloudbaseRequest(config);
+    requestMap[config.env] = new CloudbaseRequest(__assign(__assign({}, config), { throw: true }));
 }
 export function getRequestByEnvId(env) {
     return requestMap[env];

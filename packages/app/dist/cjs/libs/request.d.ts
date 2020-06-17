@@ -15,9 +15,12 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     _shouldRefreshAccessTokenHook: Function;
     _refreshAccessTokenPromise: Promise<IGetAccessTokenResult> | null;
     _reqClass: SDKRequestInterface;
+    private _throwWhenRequestFail;
     private _cache;
     private _localCache;
-    constructor(config: ICloudbaseRequestConfig);
+    constructor(config: ICloudbaseRequestConfig & {
+        throw?: boolean;
+    });
     post(options: IRequestOptions): Promise<ResponseObject>;
     upload(options: IUploadRequestOptions): Promise<ResponseObject>;
     download(options: IRequestOptions): Promise<ResponseObject>;
