@@ -1,15 +1,13 @@
 import axios from 'axios';
 import { env, appid } from '../../test.config.js';
-import { signInWithWeixin } from '../cases/auth';
-import { registerFunctionCases } from '../cases/function';
-import { registerStorageCases } from '../cases/storage';
-// import { test_database } from './database';
+import { signInWeixin, signInCustom, signInAnonymous, registerAuthCases } from './cases/auth';
+import { registerFunctionCases } from './cases/function';
+import { registerStorageCases } from './cases/storage';
+import { registerDatabaseCases } from './cases/database';
 import { runAllTestCases, runSelectedTestCase, printInfo } from './util';
 
-import tcb from '../../packages/js-sdk';
+import cloudbase from '../../packages/cloudbase';
 // import { test_ext_ci } from './ext_ci';
-// 默认情况下不测试登录
-import { signInCustom } from '../cases/auth';
 
 // import * as extCi from '@cloudbase/extension-ci';
 
@@ -20,7 +18,7 @@ let loginState;
 async function init () {
   printInfo('web test starting init');
   // 初始化
-  app = tcb.init({
+  app = cloudbase.init({
     env,
     timeout: 150000
   });
@@ -28,88 +26,50 @@ async function init () {
   auth = app.auth({
     persistence: 'local'
   });
-  
-  // app.registerExtension(extCi);
 
-  // await test_auth(app, appid);
-
-  
   // 公众号微信登录
-  // await signInWithWeixin(auth);
-  // await auth.weixinAuthProvider({
-  //   appid,
-  //   scope: 'snsapi_base'
-  // }).signIn();
-  
-  // 自定义登录
-  // await signInCustom(auth)
+  // await signInWeixin(auth,appid);
 
   // 匿名登录
-  // await auth.anonymousAuthProvider().signIn()
+  await signInAnonymous(auth);
 
-  // await test_ext_ci(app);
+  // 自定义登录
+  // await signInCustom(auth);
 
-  // storage 有需要手动上传文件的测试用例，无法自动跑完
-  // await test_storage(app);
-
-  // await test_function(app);
-
-  // await test_database(app);
-  // registerFunctionCases(app);
+  registerFunctionCases(app);
   registerStorageCases(app);
+  registerDatabaseCases(app);
 
   initTestCasesIndex();
 };
 
-async function getLoginState(){
-  loginState = await auth.getLoginState();
-}
 /**
  * 初始化用例菜单
  */
-function initTestCasesIndex() {
+export function initTestCasesIndex() {
   const $el_select = document.getElementById('testCaseSelect');
   const $el_run_selected = document.getElementById('runSelectedTestCase');
   const $el_run_all = document.getElementById('runAllTestCases');
+  const $el_include_auth = document.getElementById('include_auth');
 
   $el_run_selected.onclick = async function() {
-    if(await checkLoginType()){
-      const selectIndex = $el_select.options[$el_select.selectedIndex].value;
-      runSelectedTestCase(selectIndex);
-    }
+    const mod = $el_select.options[$el_select.selectedIndex].value;
+    runSelectedTestCase(mod);
   };
   
   $el_run_all.onclick = async function() {
-    if(await checkLoginType()){
-      runAllTestCases();
+    if($el_include_auth.checked){
+      !window.testCaseList.auth&& (await registerAuthCases(auth));
+    }else{
+      delete window.testCaseList.auth;
     }
+    runAllTestCases();
   };
 
   let htmlStr = '';
-  window['testCaseList'].forEach(({ msg }, index) => {
-    htmlStr += `<option value="${index}">${msg}</option>`;
-  });
+  for(const mod in window.testCaseList){
+    htmlStr += `<option value="${mod}">${mod}</option>`;
+  }
   $el_select.innerHTML = htmlStr;
 };
-/**
- * 检查登录类型
- */
-async function checkLoginType(){
-  const $el_selected = document.querySelectorAll('input[name=loginType]:checked')[0];
-  if(!$el_selected){
-    alert('请选择登录类型');
-    return false;
-  }
-  const loginType = $el_selected.value;
-  switch(loginType){
-    case 'wx_web':
-      break;
-    case 'custom':
-      break;
-    case 'anonymous':
-      break;
-  }
-  return true;
-}
-
 init();

@@ -1,32 +1,36 @@
 // test util
 import * as assert from 'power-assert';
 
-window['testCaseList'] = [];
+window.testCaseList = {};
 let totalTestNum = 0;
 let errorNum = 0;
 
-export function register(msg, fn) {
-  window['testCaseList'].push({
+export function register(mod,msg, fn) {
+  !window.testCaseList[mod]&&(window.testCaseList[mod]=[]);
+  window.testCaseList[mod].push({
     msg,
     fn
   });
 }
 
-export async function runSelectedTestCase(i) {
-  let { msg, fn } = window['testCaseList'][i];
-  printPengding(`Testing: ${msg}`);
+export async function runSelectedTestCase(mod) {
+  const list = window.testCaseList[mod];
+  for(const item of list){
+    const { msg, fn } = item;
+    printPengding(`Testing: ${msg}`);
 
-  await fn();
+    await fn();
 
-  printInfo(`Test case finish: ${msg}`);
+    printInfo(`Test case finish: ${msg}`);
+  }
 }
 
 export async function runAllTestCases() {
-  totalTestNum = window['testCaseList'].length;
   errorNum = 0;
-
-  for (let i = 0; i < window['testCaseList'].length; i++) {
-    await runSelectedTestCase(i);
+  totalTestNum = 0;
+  for(const mod in window.testCaseList){
+    totalTestNum++;
+    await runSelectedTestCase(mod);
   }
   printSuccess(`All test cases end, ${errorNum} errors in total ${totalTestNum} test cases.`);
 }
@@ -60,17 +64,17 @@ export function callbackWithTryCatch(callback, finallyCallback) {
 
 
 export function printWarn(msg){
-  console.log(`${String.fromCodePoint(0x26a0)} ${msg}`);
+  console.log(`${String.fromCodePoint(0x26a0)}`,msg);
 }
 export function printError(msg,stack){
-  console.error(`${String.fromCodePoint(0x1f6ab)} ${msg} ${stack||''}`);
+  console.error(`${String.fromCodePoint(0x1f6ab)}`,msg,stack);
 }
 export function printPengding(msg){
-  console.log(`${String.fromCodePoint(0x1f50e)} ${msg}`);
+  console.log(`${String.fromCodePoint(0x1f50e)}`,msg);
 }
 export function printSuccess(msg){
-  console.log(`${String.fromCodePoint(0x2705)} ${msg}`);
+  console.log(`${String.fromCodePoint(0x2705)}`,msg);
 }
 export function printInfo(msg){
-  console.log(`${String.fromCodePoint(0x1f9f7)} ${msg}`);
+  console.log(`${String.fromCodePoint(0x1f9f7)}`, msg);
 }

@@ -9,36 +9,23 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <meta content="telephone=no" name="format-detection" />
-    <title>TCB JSSDK 自动化测试页面</title>
+    <title>Cloudbase 自动化测试页面</title>
   </head>
 
   <body>
     <div>
-      <h4>TCB JSSDK 自动化测试页面</h4>
+      <h4>Cloudbase 自动化测试页面</h4>
       <p>
         本页面支持在微信环境中运行，支持自动化测试 初始化、存储、云函数、数据库
         功能。
       </p>
-      <h5>选择登录类型</h5>
-      <div>
-        <input type="radio" id="login_wx_web" name='loginType' value="wx_web"/>
-        <label for="login_wx_web">微信登录（公众号）</label>
-      </div>
-      <div>
-        <input type="radio" id="login_custom" name='loginType' value="custom"/>
-        <label for="login_wx_web">自定义登录</label>
-      </div>
-      <div>
-        <input type="radio" id="login_anonymous" name='loginType' value="anonymous"/>
-        <label for="login_anonymous">匿名登录</label>
-      </div>
 
       <h5>测试用例</h5>
-      <select id="testCaseSelect"></select>
+      <select id="testCaseSelect" style="max-width: 100%;"></select>
+      <button id="runSelectedTestCase">执行选中用例</button>
       <br>
       <br>
 
-      <button id="runSelectedTestCase">执行选中用例</button>
 
       <!-- <button id="mockAddDoc">增加</button> -->
 
@@ -52,8 +39,12 @@
     <button id="runSelectedTestCaseType">执行选中类别的全部用例</button>-->
 
     <button id="runAllTestCases">执行全部用例</button>
+    <input type="checkbox" id="include_auth"/>
+    <label for="include_auth">测试Auth</label>
 
-    <h5>手动选择上传文件</h5>
+    <button id="mockAddDoc" style="visibility: hidden;">增加</button>
+
+    <h5>手动选择上传文件(storage测试必填)</h5>
     <!-- 手动上传文件 -->
     <input type="file" id="selectFile" name="avatar" accept="*">
 
