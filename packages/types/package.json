@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/types",
-  "version": "0.1.0-beta.6",
+  "version": "1.0.0-beta",
   "description": "cloudbase javascript sdk types",
   "files": [
     "index.d.ts",
@@ -12,7 +12,6 @@
     "functions.d.ts",
     "storage.d.ts"
   ],
-  
   "keywords": [
     "cloudbase",
     "Cloudbase",
