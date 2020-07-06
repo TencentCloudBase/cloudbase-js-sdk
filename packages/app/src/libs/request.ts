@@ -27,13 +27,18 @@ const { ERRORS } = constants;
 const { genSeqId, isFormData, formatUrl, createSign }  = utils;
 const { RUNTIME } = adapters;
 
+// 下面几种 action 不需要 access token
 const ACTIONS_WITHOUT_ACCESSTOKEN = [
   'auth.getJwt',
   'auth.logout',
   'auth.signInWithTicket',
   'auth.signInAnonymously',
   'auth.signIn',
-  'auth.fetchAccessTokenWithRefreshToken'
+  'auth.fetchAccessTokenWithRefreshToken',
+  'auth.signUpWithEmailAndPassword',
+  'auth.activateEndUserMail',
+  'auth.sendPasswordResetEmail',
+  'auth.resetPasswordWithToken'
 ];
 
 function bindHooks(instance: SDKRequestInterface, name: string, hooks: IRequestBeforeHook[]) {
@@ -197,9 +202,15 @@ export class CloudbaseRequest implements ICloudbaseRequest{
       ...params
     };
 
-    // 下面几种 action 不需要 access token
+    
     if (ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1) {
-      tmpObj.access_token = (await this.getAccessToken()).accessToken;
+      const { refreshTokenKey } = this._cache.keys;
+
+      // 若有 refreshToken 则任务有登录态 刷 accessToken
+      const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
+      if (refreshToken) {
+        tmpObj.access_token = (await this.getAccessToken()).accessToken;
+      }
     }
 
     // 拼body和content-type

@@ -47,6 +47,11 @@ export abstract class AuthProvider {
     await this._cache.removeStoreAsync(accessTokenExpireKey);
     await this._cache.setStoreAsync(refreshTokenKey, refreshToken);
   }
+  protected async setAccessToken(accessToken:string, accessTokenExpire:string) {
+    const { accessTokenKey, accessTokenExpireKey } = this._cache.keys;
+    await this._cache.setStoreAsync(accessTokenKey, accessToken);
+    await this._cache.setStoreAsync(accessTokenExpireKey, accessTokenExpire);
+  }
   protected async refreshUserInfo() {
     const action = 'auth.getUserInfo';
     const { data: userInfo } = await this._request.send(action, {});
