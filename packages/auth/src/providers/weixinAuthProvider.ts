@@ -1,15 +1,14 @@
-import { AuthProvider } from "./base";
-import { ICloudbaseAuthConfig } from "@cloudbase/types/auth";
-import { ICloudbaseCache } from "@cloudbase/types/cache";
-import { ICloudbaseRequest } from "@cloudbase/types/request";
-import { constants, adapters,utils } from "@cloudbase/utilities/";
+import { AuthProvider } from './base';
+import { ICloudbaseAuthConfig } from '@cloudbase/types/auth';
+import { ICloudbaseCache } from '@cloudbase/types/cache';
+import { ICloudbaseRequest } from '@cloudbase/types/request';
+import { constants, adapters,utils } from '@cloudbase/utilities/';
 import { eventBus, EVENTS, LoginState } from '..';
-import { LOGINTYPE } from "../constants";
-import { printWarn } from "@cloudbase/utilities/dist/libs/util";
+import { LOGINTYPE } from '../constants';
 
 const { SDK_NAME, ERRORS } = constants;
 const { RUNTIME } = adapters;
-const { getQuery, getHash, removeParam } = utils;
+const { getQuery, getHash, removeParam, printWarn } = utils;
 
 export class WeixinAuthProvider extends AuthProvider {
   private readonly _scope: string;
@@ -56,7 +55,15 @@ export class WeixinAuthProvider extends AuthProvider {
       }
     })(this._scope);
     const hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
-    return this._request.send('auth.linkWithWeixinCode', { payload: { appid, loginType, code, hybridMiniapp, withUnionId }});
+    return this._request.send('auth.linkWithWeixinCode', { 
+      payload: { 
+        appid, 
+        loginType, 
+        code, 
+        hybridMiniapp, 
+        withUnionId
+      }
+    });
   }
 
   private _redirect(): any {

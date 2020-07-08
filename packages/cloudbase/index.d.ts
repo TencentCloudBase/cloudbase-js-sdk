@@ -98,8 +98,49 @@ declare namespace cloudbase.auth{
     signIn():Promise<ILoginStateInfo>;
     linkAndRetrieveDataWithTicket(ticket: string):Promise<ILoginStateInfo>;
   }
+  /**
+   * User Info
+   */
+  interface IUserInfo {
+    uid?: string;
+    loginType?: string;
+    openid?: string;
+    wxOpenId?: string;
+    wxPublicId?: string;
+    unionId?: string;
+    qqMiniOpenId?: string;
+    customUserId?: string;
+    nickName?: string;
+    gender?: string;
+    avatarUrl?: string;
+    email?: string;
+    hasPassword?: boolean;
+    location?: {
+      country?: string;
+      province?: string;
+      city?: string;
+    };
+    country?: string;
+    province?: string;
+    city?: string;
+  }
+
+  interface IUser extends IUserInfo{
+    checkLocalInfo(): void;
+    checkLocalInfoAsync(): Promise<void>;
+    linkWithTicket(ticket:string): Promise<void>;
+    linkWithRedirect(provider:IAuthProvider):void;
+    getLinkedUidList(): Promise<{ hasPrimaryUid: boolean, users: IUserInfo[] }>;
+    setPrimaryUid(uid:string):Promise<void>;
+    unlink(loginType: 'CUSTOM'| 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION'):Promise<void>;
+    update(userinfo:IUserInfo):Promise<void>;
+    refresh():Promise<IUserInfo>;
+    updatePassword(newPassword: string, oldPassword?: string): Promise<void>;
+    updateEmail(newEmail: string): Promise<void>;
+  }
 
   interface App{
+    currentUser: IUser;
     /**
      * getters 
      */
@@ -129,6 +170,10 @@ declare namespace cloudbase.auth{
      * actions 
      */
     signOut():Promise<void>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginStateInfo>;
+    signUpWithEmailAndPassword(email:string, password:string): Promise<void>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginStateInfo>;
+    sendPasswordResetEmail(email: string): Promise<void>;
   }
 }
 /**

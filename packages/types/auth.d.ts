@@ -15,17 +15,19 @@ export interface IAuthProvider {
   signInWithRedirect():any;
 }
 export interface IUserInfo {
-  uid: string;
-  loginType: string;
-  openid: string;
-  wxOpenId: string;
-  wxPublicId: string;
-  unionId: string;
-  qqMiniOpenId: string;
-  customUserId: string;
-  nickName: string;
-  gender: string;
-  avatarUrl: string;
+  uid?: string;
+  loginType?: string;
+  openid?: string;
+  wxOpenId?: string;
+  wxPublicId?: string;
+  unionId?: string;
+  qqMiniOpenId?: string;
+  customUserId?: string;
+  nickName?: string;
+  gender?: string;
+  avatarUrl?: string;
+  email?: string;
+  hasPassword?: boolean;
   location?: {
     country?: string;
     province?: string;

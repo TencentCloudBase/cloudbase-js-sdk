@@ -9,6 +9,7 @@ import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
 import { CustomAuthProvider } from './providers/customAuthProvider';
 import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
+import { EmailAuthProvider } from './providers/emailAuthProvider';
 
 declare const cloudbase: ICloudbase;
 
@@ -50,6 +51,8 @@ class User implements IUser{
   public nickName: string;
   public gender: string;
   public avatarUrl: string;
+  public email: string;
+  public hasPassword: boolean;
   public location?: {
     country?: string;
     province?: string;
@@ -79,6 +82,8 @@ class User implements IUser{
     this.nickName = this._getLocalUserInfo('nickName');
     this.gender = this._getLocalUserInfo('gender');
     this.avatarUrl = this._getLocalUserInfo('avatarUrl');
+    this.email = this._getLocalUserInfo('email');
+    this.hasPassword = Boolean(this._getLocalUserInfo('hasPassword'));
     this.location = {
       country: this._getLocalUserInfo('country'),
       province: this._getLocalUserInfo('province'),
@@ -100,6 +105,8 @@ class User implements IUser{
     this.nickName = await this._getLocalUserInfoAsync('nickName');
     this.gender = await this._getLocalUserInfoAsync('gender');
     this.avatarUrl = await this._getLocalUserInfoAsync('avatarUrl');
+    this.email = await this._getLocalUserInfoAsync('email');
+    this.hasPassword = Boolean(await this._getLocalUserInfoAsync('hasPassword'));
     this.location = {
       country: await this._getLocalUserInfoAsync('country'),
       province: await this._getLocalUserInfoAsync('province'),
@@ -164,6 +171,26 @@ class User implements IUser{
     const { nickName, gender, avatarUrl, province, country, city } = userInfo;
     const { data: newUserInfo } = await this._request.send('auth.updateUserInfo', { nickName, gender, avatarUrl, province, country, city });
     await this._setLocalUserInfo(newUserInfo);
+  }
+  /**
+   * 更新邮箱密码
+   * @param newPassword 
+   * @param oldPassword 
+   */
+  public updatePassword(newPassword:string, oldPassword:string) {
+    return this._request.send('auth.updatePassword', {
+      oldPassword,
+      newPassword
+    });
+  }
+  /**
+   * 更新邮箱
+   * @param newEmail 
+   */
+  public updateEmail(newEmail:string) {
+    return this._request.send('auth.updateEmail', {
+      newEmail
+    });
   }
   /**
    * 刷新本地用户信息。当用户在其他客户端更新用户信息之后，可以调用此接口同步更新之后的信息。
@@ -273,6 +300,7 @@ class Auth{
   private _anonymousAuthProvider: AnonymousAuthProvider;
   private _customAuthProvider: CustomAuthProvider;
   private _weixinAuthProvider: WeixinAuthProvider;
+  private _emailAuthProvider: EmailAuthProvider;
 
   constructor(config: ICloudbaseAuthConfig&{cache:ICloudbaseCache,request:ICloudbaseRequest,runtime?:string}) {
     this._config = config;
@@ -328,10 +356,8 @@ class Auth{
       env: this._config.env
     };
   }
-
   public weixinAuthProvider({ appid, scope, state }):WeixinAuthProvider {
     if(!this._weixinAuthProvider){
-      // @ts-ignore
       this._weixinAuthProvider = new WeixinAuthProvider({
         ...this._config,
         cache: this._cache,
@@ -341,7 +367,6 @@ class Auth{
     }
     return this._weixinAuthProvider;
   }
-
   public anonymousAuthProvider():AnonymousAuthProvider {
     if (!this._anonymousAuthProvider) {
       this._anonymousAuthProvider = new AnonymousAuthProvider({
@@ -352,7 +377,6 @@ class Auth{
     }
     return this._anonymousAuthProvider;
   }
-
   public customAuthProvider():CustomAuthProvider {
     if(!this._customAuthProvider){
       this._customAuthProvider = new CustomAuthProvider({
@@ -363,7 +387,42 @@ class Auth{
     }
     return this._customAuthProvider;
   }
-
+  public emailAuthProvider():EmailAuthProvider {
+    if(!this._emailAuthProvider){
+      this._emailAuthProvider = new EmailAuthProvider({
+        ...this._config,
+        cache: this._cache,
+        request: this._request
+      });
+    }
+    return this._emailAuthProvider;
+  }
+  /**
+   * 邮箱密码登录
+   * @param email 
+   * @param password 
+   */
+  public async signInWithEmailAndPassword(email: string, password: string) {
+    return this.emailAuthProvider().signIn(email, password);
+  }
+  /**
+   * 邮箱密码注册
+   * @param email 
+   * @param password 
+   */
+  public async signUpWithEmailAndPassword(email:string, password:string) {
+    return this.emailAuthProvider().signUp(email,password);
+  }
+  /**
+   * 重置邮箱密码
+   * @param email 
+   */
+  public async sendPasswordResetEmail(email:string) {
+    return this.emailAuthProvider().resetPassword(email);
+  }
+  /**
+   * 登出
+   */
   public async signOut() {
     const loginType = await this.getLoginType();
     if (loginType === LOGINTYPE.ANONYMOUS) {
@@ -391,7 +450,6 @@ class Auth{
 
     return res;
   }
-
   public async onLoginStateChanged(callback: Function) {
     eventBus.on(EVENTS.LOGIN_STATE_CHANGED, async () => {
       const loginState = await this.getLoginState();
