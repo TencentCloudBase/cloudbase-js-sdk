@@ -61,7 +61,12 @@ var ACTIONS_WITHOUT_ACCESSTOKEN = [
     'auth.signInWithTicket',
     'auth.signInAnonymously',
     'auth.signIn',
-    'auth.fetchAccessTokenWithRefreshToken'
+    'auth.fetchAccessTokenWithRefreshToken',
+    'auth.signUpWithEmailAndPassword',
+    'auth.activateEndUserMail',
+    'auth.sendPasswordResetEmail',
+    'auth.resetPasswordWithToken',
+    'auth.isUsernameRegistered'
 ];
 function bindHooks(instance, name, hooks) {
     var originMethod = instance[name];
@@ -229,20 +234,25 @@ var CloudbaseRequest = (function () {
     };
     CloudbaseRequest.prototype.request = function (action, params, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var tcbTraceKey, contentType, tmpObj, _a, payload, key, key, _b, appSign, appSecret, timestamp, appAccessKey, appAccessKeyId, sign, opts, traceHeader, parse, inQuery, search, formatQuery, newUrl, res, resTraceHeader;
+            var tcbTraceKey, contentType, tmpObj, refreshTokenKey, refreshToken, _a, payload, key, key, _b, appSign, appSecret, timestamp, appAccessKey, appAccessKeyId, sign, opts, traceHeader, parse, inQuery, search, formatQuery, newUrl, res, resTraceHeader;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         tcbTraceKey = "x-tcb-trace_" + this.config.env;
                         contentType = 'application/x-www-form-urlencoded';
                         tmpObj = __assign({ action: action, dataVersion: DATA_VERSION, env: this.config.env }, params);
-                        if (!(ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1)) return [3, 2];
+                        if (!(ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1)) return [3, 3];
+                        refreshTokenKey = this._cache.keys.refreshTokenKey;
+                        return [4, this._cache.getStoreAsync(refreshTokenKey)];
+                    case 1:
+                        refreshToken = _c.sent();
+                        if (!refreshToken) return [3, 3];
                         _a = tmpObj;
                         return [4, this.getAccessToken()];
-                    case 1:
-                        _a.access_token = (_c.sent()).accessToken;
-                        _c.label = 2;
                     case 2:
+                        _a.access_token = (_c.sent()).accessToken;
+                        _c.label = 3;
+                    case 3:
                         if (action === 'storage.uploadFile') {
                             payload = new FormData();
                             for (key in payload) {
@@ -285,7 +295,7 @@ var CloudbaseRequest = (function () {
                             opts.onUploadProgress = options['onUploadProgress'];
                         }
                         return [4, this._localCache.getStore(tcbTraceKey)];
-                    case 3:
+                    case 4:
                         traceHeader = _c.sent();
                         if (traceHeader) {
                             opts.headers['X-TCB-Trace'] = traceHeader;
@@ -301,7 +311,7 @@ var CloudbaseRequest = (function () {
                             newUrl += search;
                         }
                         return [4, this.post(__assign({ url: newUrl, data: payload }, opts))];
-                    case 4:
+                    case 5:
                         res = _c.sent();
                         resTraceHeader = res.header && res.header['x-tcb-trace'];
                         if (resTraceHeader) {

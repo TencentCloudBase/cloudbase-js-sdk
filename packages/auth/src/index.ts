@@ -10,6 +10,7 @@ import { CustomAuthProvider } from './providers/customAuthProvider';
 import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
+import { UsernameAuthProvider } from './providers/usernameAuthProvider';
 
 declare const cloudbase: ICloudbase;
 
@@ -193,6 +194,19 @@ class User implements IUser{
     });
   }
   /**
+   * 更新用户名
+   * @param username 
+   */
+  public updateUsername(username: string) {
+    if (typeof username !== 'string') {
+      throwError(ERRORS.INVALID_PARAMS,'username must be a string');
+    }
+
+    return this._request.send('auth.updateUsername', {
+      username
+    });
+  }
+  /**
    * 刷新本地用户信息。当用户在其他客户端更新用户信息之后，可以调用此接口同步更新之后的信息。
    */
   public async refresh():Promise<IUserInfo> {
@@ -287,6 +301,10 @@ export class LoginState implements ILoginState{
     return this.loginType === LOGINTYPE.WECHAT || this.loginType === LOGINTYPE.WECHAT_OPEN || this.loginType === LOGINTYPE.WECHAT_PUBLIC;
   }
 
+  get isUsernameAuth(){
+    return this.loginType === LOGINTYPE.USERNAME;
+  }
+
   get loginType() {
     return this._loginType
   }
@@ -301,6 +319,7 @@ class Auth{
   private _customAuthProvider: CustomAuthProvider;
   private _weixinAuthProvider: WeixinAuthProvider;
   private _emailAuthProvider: EmailAuthProvider;
+  private _usernameAuthProvider: UsernameAuthProvider;
 
   constructor(config: ICloudbaseAuthConfig&{cache:ICloudbaseCache,request:ICloudbaseRequest,runtime?:string}) {
     this._config = config;
@@ -396,6 +415,38 @@ class Auth{
       });
     }
     return this._emailAuthProvider;
+  }
+  public usernameAuthProvider():UsernameAuthProvider {
+    if(!this._usernameAuthProvider){
+      this._usernameAuthProvider = new UsernameAuthProvider({
+        ...this._config,
+        cache: this._cache,
+        request: this._request
+      });
+    }
+    return this._usernameAuthProvider;
+  }
+  /**
+   * 用户名密码登录
+   * @param username 
+   * @param password 
+   */
+  public async signInWithUsernameAndPassword(username: string, password: string) {
+    return this._usernameAuthProvider.signIn(username, password);
+  }
+  /**
+   * 检测用户名是否已经占用
+   * @param username 
+   */
+  public async isUsernameRegistered(username: string): Promise<boolean> {
+    if (typeof username !== 'string') {
+      throwError(ERRORS.INVALID_PARAMS,'username must be a string');
+    }
+
+    const { data } = await this._request.send('auth.isUsernameRegistered', {
+      username
+    });
+    return data?.isRegistered;
   }
   /**
    * 邮箱密码登录

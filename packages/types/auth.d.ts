@@ -54,6 +54,7 @@ export interface ILoginState {
   isAnonymousAuth: boolean;
   isCustomAuth: boolean;
   isWeixinAuth: boolean;
+  isUsernameAuth: boolean;
   loginType: string;
 }
 export interface ICloudbaseAuth {

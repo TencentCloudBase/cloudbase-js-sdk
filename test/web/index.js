@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { env, appid } from '../../test.config.js';
-import { signInWeixin, signInCustom, signInAnonymous, registerAuthCases } from './cases/auth';
+import { env, appid,authUsername,authPassword } from '../../test.config.js';
+import { signInWeixin, signInCustom, signInAnonymous, signInWithUsername,registerAuthCases } from './cases/auth';
 import { registerFunctionCases } from './cases/function';
 import { registerStorageCases } from './cases/storage';
 import { registerDatabaseCases } from './cases/database';
@@ -31,10 +31,16 @@ async function init () {
   // await signInWeixin(auth,appid);
 
   // 匿名登录
-  await signInAnonymous(auth);
+  // await signInAnonymous(auth);
 
   // 自定义登录
   // await signInCustom(auth);
+
+  // 用户名登录
+  // await signInWithUsername(auth,{
+  //   username: authUsername,
+  //   password: authPassword
+  // });
 
   registerFunctionCases(app);
   registerStorageCases(app);

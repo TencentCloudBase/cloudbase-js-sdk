@@ -5,7 +5,8 @@ export enum LOGINTYPE {
   WECHAT_OPEN   = 'WECHAT-OPEN',
   CUSTOM        = 'CUSTOM',
   EMAIL         = 'EMAIL',
-  NULL          = 'NULL' // 保留字，代表未登录
+  USERNAME      = 'USERNAME',
+  NULL          = 'NULL'
 }
 
 export const SDK_NAME = '@cloudbase/js-sdk';

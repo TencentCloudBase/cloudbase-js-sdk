@@ -54,10 +54,9 @@ var base_1 = require("./base");
 var utilities_1 = require("@cloudbase/utilities/");
 var __1 = require("..");
 var constants_1 = require("../constants");
-var util_1 = require("@cloudbase/utilities/dist/libs/util");
 var SDK_NAME = utilities_1.constants.SDK_NAME, ERRORS = utilities_1.constants.ERRORS;
 var RUNTIME = utilities_1.adapters.RUNTIME;
-var getQuery = utilities_1.utils.getQuery, getHash = utilities_1.utils.getHash, removeParam = utilities_1.utils.removeParam;
+var getQuery = utilities_1.utils.getQuery, getHash = utilities_1.utils.getHash, removeParam = utilities_1.utils.removeParam, printWarn = utilities_1.utils.printWarn;
 var WeixinAuthProvider = (function (_super) {
     __extends(WeixinAuthProvider, _super);
     function WeixinAuthProvider(config, appid, scope, state) {
@@ -71,7 +70,7 @@ var WeixinAuthProvider = (function (_super) {
     WeixinAuthProvider.prototype.signIn = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2, util_1.printWarn(ERRORS.OPERATION_FAIL, 'API signIn has been deprecated, please use signInWithRedirect insteed')];
+                return [2, printWarn(ERRORS.OPERATION_FAIL, 'API signIn has been deprecated, please use signInWithRedirect insteed')];
             });
         });
     };
@@ -114,7 +113,15 @@ var WeixinAuthProvider = (function (_super) {
                     }
                 })(this._scope);
                 hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
-                return [2, this._request.send('auth.linkWithWeixinCode', { payload: { appid: appid, loginType: loginType, code: code, hybridMiniapp: hybridMiniapp, withUnionId: withUnionId } })];
+                return [2, this._request.send('auth.linkWithWeixinCode', {
+                        payload: {
+                            appid: appid,
+                            loginType: loginType,
+                            code: code,
+                            hybridMiniapp: hybridMiniapp,
+                            withUnionId: withUnionId
+                        }
+                    })];
             });
         });
     };

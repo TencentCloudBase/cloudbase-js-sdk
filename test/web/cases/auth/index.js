@@ -26,15 +26,17 @@ function registerAuthTest(app, appid, scope) {
   });
 }
 
-export async function registerAuthCases(auth){
+export async function registerAuthCases(auth,...args){
   const loginState = await auth.getLoginState();
   switch(true){
     case loginState.isAnonymousAuth:
-      return registerAuthCasesOfAnonymous(auth);
+      return registerAuthCasesOfAnonymous(auth,...args);
     case loginState.isCustomAuth:
-      return registerAuthCasesOfCustom(auth);
+      return registerAuthCasesOfCustom(auth,...args);
     case loginState.isWeixinAuth:
-      return registerAuthCasesOfWxWeb(auth);
+      return registerAuthCasesOfWxWeb(auth,...args);
+    case loginState.isUsernameAuth:
+      return registerAuthCasesOfUsername(auth,...args);
   }
 }
 function registerCase(msg,fn){
@@ -87,6 +89,13 @@ function registerAuthCasesOfAnonymous(auth){
     assert.strictEqual(JSON.parse(res.message).code, 'INVALID_OPERATION', { res });
   });
 }
+function registerAuthCasesOfUsername(auth,username){
+  registerCase('auth: username basic info', async () => {
+    const userinfo = await auth.getUserInfo();
+    assert(userinfo.loginType==='USERNAME', { userinfo });
+    assert(userinfo.username===username, { userinfo });
+  });
+}
 
 async function getTicket(){
   return (await axios.get(authFnUrl)).data;
@@ -122,6 +131,18 @@ export async function signInWeixin(auth,appid){
   }else{
     provider.signInWithRedirect();
   }
+}
+
+export async function signInWithUsername(auth,username,password){
+  if(!username||!password){
+    throw new Error('请配置用户名&密码');
+  }
+  const loginState = await auth.getLoginState();
+  if(loginState&&!loginState.isAnonymousAuth){
+    alert('当前已有其他登录类型的登录态，请清空localstorage后重新发起测试');
+    return;
+  }
+  await auth.signInWithUsernameAndPassword(username,password);
 }
 
 export async function clearLoginState(){

@@ -4,6 +4,8 @@ export declare enum LOGINTYPE {
     WECHAT_PUBLIC = "WECHAT-PUBLIC",
     WECHAT_OPEN = "WECHAT-OPEN",
     CUSTOM = "CUSTOM",
+    EMAIL = "EMAIL",
+    USERNAME = "USERNAME",
     NULL = "NULL"
 }
 export declare const SDK_NAME = "@cloudbase/js-sdk";
