@@ -98,6 +98,24 @@ var AuthProvider = (function () {
             });
         });
     };
+    AuthProvider.prototype.setAccessToken = function (accessToken, accessTokenExpire) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, accessTokenKey, accessTokenExpireKey;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this._cache.keys, accessTokenKey = _a.accessTokenKey, accessTokenExpireKey = _a.accessTokenExpireKey;
+                        return [4, this._cache.setStoreAsync(accessTokenKey, accessToken)];
+                    case 1:
+                        _b.sent();
+                        return [4, this._cache.setStoreAsync(accessTokenExpireKey, accessTokenExpire)];
+                    case 2:
+                        _b.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     AuthProvider.prototype.refreshUserInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
             var action, userInfo;

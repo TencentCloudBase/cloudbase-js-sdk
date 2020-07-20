@@ -13,6 +13,7 @@ export declare abstract class AuthProvider {
     });
     protected checkLocalLoginState(): Promise<LoginState>;
     protected setRefreshToken(refreshToken: string): Promise<void>;
+    protected setAccessToken(accessToken: string, accessTokenExpire: string): Promise<void>;
     protected refreshUserInfo(): Promise<any>;
     protected setLocalUserInfo(userInfo: any): Promise<void>;
     abstract signIn(...args: any[]): Promise<any>;

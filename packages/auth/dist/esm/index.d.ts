@@ -8,6 +8,8 @@ import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
 import { CustomAuthProvider } from './providers/customAuthProvider';
 import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
+import { EmailAuthProvider } from './providers/emailAuthProvider';
+import { UsernameAuthProvider } from './providers/usernameAuthProvider';
 interface UserInfo {
     openid: string;
     nickname?: string;
@@ -38,6 +40,7 @@ export declare class LoginState implements ILoginState {
     get isAnonymousAuth(): boolean;
     get isCustomAuth(): boolean;
     get isWeixinAuth(): boolean;
+    get isUsernameAuth(): boolean;
     get loginType(): string;
 }
 declare class Auth {
@@ -48,6 +51,8 @@ declare class Auth {
     private _anonymousAuthProvider;
     private _customAuthProvider;
     private _weixinAuthProvider;
+    private _emailAuthProvider;
+    private _usernameAuthProvider;
     constructor(config: ICloudbaseAuthConfig & {
         cache: ICloudbaseCache;
         request: ICloudbaseRequest;
@@ -68,6 +73,13 @@ declare class Auth {
     }): WeixinAuthProvider;
     anonymousAuthProvider(): AnonymousAuthProvider;
     customAuthProvider(): CustomAuthProvider;
+    emailAuthProvider(): EmailAuthProvider;
+    usernameAuthProvider(): UsernameAuthProvider;
+    signInWithUsernameAndPassword(username: string, password: string): Promise<ILoginState>;
+    isUsernameRegistered(username: string): Promise<boolean>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
+    signUpWithEmailAndPassword(email: string, password: string): Promise<any>;
+    sendPasswordResetEmail(email: string): Promise<any>;
     signOut(): Promise<any>;
     onLoginStateChanged(callback: Function): Promise<void>;
     onLoginStateExpired(callback: Function): void;

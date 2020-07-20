@@ -51,6 +51,8 @@ import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
 import { CustomAuthProvider } from './providers/customAuthProvider';
 import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
+import { EmailAuthProvider } from './providers/emailAuthProvider';
+import { UsernameAuthProvider } from './providers/usernameAuthProvider';
 var CloudbaseEventEmitter = events.CloudbaseEventEmitter;
 var RUNTIME = adapters.RUNTIME;
 var printWarn = utils.printWarn, throwError = utils.throwError;
@@ -77,6 +79,8 @@ var User = (function () {
                 this.nickName = this._getLocalUserInfo('nickName');
                 this.gender = this._getLocalUserInfo('gender');
                 this.avatarUrl = this._getLocalUserInfo('avatarUrl');
+                this.email = this._getLocalUserInfo('email');
+                this.hasPassword = Boolean(this._getLocalUserInfo('hasPassword'));
                 this.location = {
                     country: this._getLocalUserInfo('country'),
                     province: this._getLocalUserInfo('province'),
@@ -88,66 +92,75 @@ var User = (function () {
     };
     User.prototype.checkLocalInfoAsync = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
-            return __generator(this, function (_p) {
-                switch (_p.label) {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+            return __generator(this, function (_s) {
+                switch (_s.label) {
                     case 0:
                         _a = this;
                         return [4, this._getLocalUserInfoAsync('uid')];
                     case 1:
-                        _a.uid = _p.sent();
+                        _a.uid = _s.sent();
                         _b = this;
                         return [4, this._getLocalUserInfoAsync('loginType')];
                     case 2:
-                        _b.loginType = _p.sent();
+                        _b.loginType = _s.sent();
                         _c = this;
                         return [4, this._getLocalUserInfoAsync('wxOpenId')];
                     case 3:
-                        _c.openid = _p.sent();
+                        _c.openid = _s.sent();
                         _d = this;
                         return [4, this._getLocalUserInfoAsync('wxOpenId')];
                     case 4:
-                        _d.wxOpenId = _p.sent();
+                        _d.wxOpenId = _s.sent();
                         _e = this;
                         return [4, this._getLocalUserInfoAsync('wxPublicId')];
                     case 5:
-                        _e.wxPublicId = _p.sent();
+                        _e.wxPublicId = _s.sent();
                         _f = this;
                         return [4, this._getLocalUserInfoAsync('wxUnionId')];
                     case 6:
-                        _f.unionId = _p.sent();
+                        _f.unionId = _s.sent();
                         _g = this;
                         return [4, this._getLocalUserInfoAsync('qqMiniOpenId')];
                     case 7:
-                        _g.qqMiniOpenId = _p.sent();
+                        _g.qqMiniOpenId = _s.sent();
                         _h = this;
                         return [4, this._getLocalUserInfoAsync('customUserId')];
                     case 8:
-                        _h.customUserId = _p.sent();
+                        _h.customUserId = _s.sent();
                         _j = this;
                         return [4, this._getLocalUserInfoAsync('nickName')];
                     case 9:
-                        _j.nickName = _p.sent();
+                        _j.nickName = _s.sent();
                         _k = this;
                         return [4, this._getLocalUserInfoAsync('gender')];
                     case 10:
-                        _k.gender = _p.sent();
+                        _k.gender = _s.sent();
                         _l = this;
                         return [4, this._getLocalUserInfoAsync('avatarUrl')];
                     case 11:
-                        _l.avatarUrl = _p.sent();
+                        _l.avatarUrl = _s.sent();
                         _m = this;
-                        _o = {};
-                        return [4, this._getLocalUserInfoAsync('country')];
+                        return [4, this._getLocalUserInfoAsync('email')];
                     case 12:
-                        _o.country = _p.sent();
-                        return [4, this._getLocalUserInfoAsync('province')];
+                        _m.email = _s.sent();
+                        _o = this;
+                        _p = Boolean;
+                        return [4, this._getLocalUserInfoAsync('hasPassword')];
                     case 13:
-                        _o.province = _p.sent();
-                        return [4, this._getLocalUserInfoAsync('city')];
+                        _o.hasPassword = _p.apply(void 0, [_s.sent()]);
+                        _q = this;
+                        _r = {};
+                        return [4, this._getLocalUserInfoAsync('country')];
                     case 14:
-                        _m.location = (_o.city = _p.sent(),
-                            _o);
+                        _r.country = _s.sent();
+                        return [4, this._getLocalUserInfoAsync('province')];
+                    case 15:
+                        _r.province = _s.sent();
+                        return [4, this._getLocalUserInfoAsync('city')];
+                    case 16:
+                        _q.location = (_r.city = _s.sent(),
+                            _r);
                         return [2];
                 }
             });
@@ -209,6 +222,25 @@ var User = (function () {
                         return [2];
                 }
             });
+        });
+    };
+    User.prototype.updatePassword = function (newPassword, oldPassword) {
+        return this._request.send('auth.updatePassword', {
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        });
+    };
+    User.prototype.updateEmail = function (newEmail) {
+        return this._request.send('auth.updateEmail', {
+            newEmail: newEmail
+        });
+    };
+    User.prototype.updateUsername = function (username) {
+        if (typeof username !== 'string') {
+            throwError(ERRORS.INVALID_PARAMS, 'username must be a string');
+        }
+        return this._request.send('auth.updateUsername', {
+            username: username
         });
     };
     User.prototype.refresh = function () {
@@ -351,6 +383,13 @@ var LoginState = (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(LoginState.prototype, "isUsernameAuth", {
+        get: function () {
+            return this.loginType === LOGINTYPE.USERNAME;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(LoginState.prototype, "loginType", {
         get: function () {
             return this._loginType;
@@ -454,6 +493,65 @@ var Auth = (function () {
             this._customAuthProvider = new CustomAuthProvider(__assign(__assign({}, this._config), { cache: this._cache, request: this._request }));
         }
         return this._customAuthProvider;
+    };
+    Auth.prototype.emailAuthProvider = function () {
+        if (!this._emailAuthProvider) {
+            this._emailAuthProvider = new EmailAuthProvider(__assign(__assign({}, this._config), { cache: this._cache, request: this._request }));
+        }
+        return this._emailAuthProvider;
+    };
+    Auth.prototype.usernameAuthProvider = function () {
+        if (!this._usernameAuthProvider) {
+            this._usernameAuthProvider = new UsernameAuthProvider(__assign(__assign({}, this._config), { cache: this._cache, request: this._request }));
+        }
+        return this._usernameAuthProvider;
+    };
+    Auth.prototype.signInWithUsernameAndPassword = function (username, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this._usernameAuthProvider.signIn(username, password)];
+            });
+        });
+    };
+    Auth.prototype.isUsernameRegistered = function (username) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (typeof username !== 'string') {
+                            throwError(ERRORS.INVALID_PARAMS, 'username must be a string');
+                        }
+                        return [4, this._request.send('auth.isUsernameRegistered', {
+                                username: username
+                            })];
+                    case 1:
+                        data = (_a.sent()).data;
+                        return [2, data === null || data === void 0 ? void 0 : data.isRegistered];
+                }
+            });
+        });
+    };
+    Auth.prototype.signInWithEmailAndPassword = function (email, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.emailAuthProvider().signIn(email, password)];
+            });
+        });
+    };
+    Auth.prototype.signUpWithEmailAndPassword = function (email, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.emailAuthProvider().signUp(email, password)];
+            });
+        });
+    };
+    Auth.prototype.sendPasswordResetEmail = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.emailAuthProvider().resetPassword(email)];
+            });
+        });
     };
     Auth.prototype.signOut = function () {
         return __awaiter(this, void 0, void 0, function () {

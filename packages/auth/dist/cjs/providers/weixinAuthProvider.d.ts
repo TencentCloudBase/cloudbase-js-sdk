@@ -1,7 +1,7 @@
-import { AuthProvider } from "./base";
-import { ICloudbaseAuthConfig } from "@cloudbase/types/auth";
-import { ICloudbaseCache } from "@cloudbase/types/cache";
-import { ICloudbaseRequest } from "@cloudbase/types/request";
+import { AuthProvider } from './base';
+import { ICloudbaseAuthConfig } from '@cloudbase/types/auth';
+import { ICloudbaseCache } from '@cloudbase/types/cache';
+import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { LoginState } from '..';
 export declare class WeixinAuthProvider extends AuthProvider {
     private readonly _scope;

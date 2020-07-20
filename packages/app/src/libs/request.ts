@@ -38,7 +38,8 @@ const ACTIONS_WITHOUT_ACCESSTOKEN = [
   'auth.signUpWithEmailAndPassword',
   'auth.activateEndUserMail',
   'auth.sendPasswordResetEmail',
-  'auth.resetPasswordWithToken'
+  'auth.resetPasswordWithToken',
+  'auth.isUsernameRegistered'
 ];
 
 function bindHooks(instance: SDKRequestInterface, name: string, hooks: IRequestBeforeHook[]) {

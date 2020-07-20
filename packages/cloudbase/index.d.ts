@@ -76,27 +76,29 @@ declare namespace cloudbase.auth{
     env: string;
   }
 
-  interface ILoginStateInfo {
-    isAnonymous?: boolean;
-    credential: {
-      refreshToken: string;
-      accessToken?: string;
-    };
+  interface ILoginState {
+    credential: ICredential;
+    user: IUser;
+    isAnonymousAuth: boolean;
+    isCustomAuth: boolean;
+    isWeixinAuth: boolean;
+    isUsernameAuth: boolean;
+    loginType: string;
   }
 
   interface IWeixinAuthProvider {
-    signIn():Promise<ILoginStateInfo>;
+    signIn():Promise<ILoginState>;
     signInWithRedirect():void;
-    getRedirectResult():Promise<ILoginStateInfo>;
+    getRedirectResult():Promise<ILoginState>;
   }
 
   interface ICustomAuthProvider {
-    signIn(ticket:string):Promise<ILoginStateInfo>;
+    signIn(ticket:string):Promise<ILoginState>;
   }
 
   interface IAnonymousAuthProvider {
-    signIn():Promise<ILoginStateInfo>;
-    linkAndRetrieveDataWithTicket(ticket: string):Promise<ILoginStateInfo>;
+    signIn():Promise<ILoginState>;
+    linkAndRetrieveDataWithTicket(ticket: string):Promise<ILoginState>;
   }
   /**
    * User Info
@@ -144,8 +146,8 @@ declare namespace cloudbase.auth{
     /**
      * getters 
      */
-    getLoginState(): Promise<ILoginStateInfo|null>;
-    hasLoginState(): Promise<ILoginStateInfo|null>;
+    getLoginState(): Promise<ILoginState|null>;
+    hasLoginState(): Promise<ILoginState|null>;
     getUserInfo(): Promise<any>;
     getAuthHeader(): Promise<KV<string>>;
     /**
@@ -170,10 +172,12 @@ declare namespace cloudbase.auth{
      * actions 
      */
     signOut():Promise<void>;
-    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginStateInfo>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
     signUpWithEmailAndPassword(email:string, password:string): Promise<void>;
-    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginStateInfo>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
     sendPasswordResetEmail(email: string): Promise<void>;
+    signInWithUsernameAndPassword(username: string, password: string): Promise<ILoginState>;
+    isUsernameRegistered(username: string): Promise<boolean>;
   }
 }
 /**

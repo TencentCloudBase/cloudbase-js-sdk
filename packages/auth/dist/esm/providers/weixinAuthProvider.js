@@ -47,14 +47,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { AuthProvider } from "./base";
-import { constants, adapters, utils } from "@cloudbase/utilities/";
+import { AuthProvider } from './base';
+import { constants, adapters, utils } from '@cloudbase/utilities/';
 import { eventBus, EVENTS, LoginState } from '..';
-import { LOGINTYPE } from "../constants";
-import { printWarn } from "@cloudbase/utilities/dist/libs/util";
+import { LOGINTYPE } from '../constants';
 var SDK_NAME = constants.SDK_NAME, ERRORS = constants.ERRORS;
 var RUNTIME = adapters.RUNTIME;
-var getQuery = utils.getQuery, getHash = utils.getHash, removeParam = utils.removeParam;
+var getQuery = utils.getQuery, getHash = utils.getHash, removeParam = utils.removeParam, printWarn = utils.printWarn;
 var WeixinAuthProvider = (function (_super) {
     __extends(WeixinAuthProvider, _super);
     function WeixinAuthProvider(config, appid, scope, state) {
@@ -111,7 +110,15 @@ var WeixinAuthProvider = (function (_super) {
                     }
                 })(this._scope);
                 hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
-                return [2, this._request.send('auth.linkWithWeixinCode', { payload: { appid: appid, loginType: loginType, code: code, hybridMiniapp: hybridMiniapp, withUnionId: withUnionId } })];
+                return [2, this._request.send('auth.linkWithWeixinCode', {
+                        payload: {
+                            appid: appid,
+                            loginType: loginType,
+                            code: code,
+                            hybridMiniapp: hybridMiniapp,
+                            withUnionId: withUnionId
+                        }
+                    })];
             });
         });
     };
