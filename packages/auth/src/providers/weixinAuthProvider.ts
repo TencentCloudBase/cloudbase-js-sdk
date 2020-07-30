@@ -32,12 +32,12 @@ export class WeixinAuthProvider extends AuthProvider {
     return this._redirect();
   }
 
-  public async getRedirectResult() {
+  public async getRedirectResult(options:{ withUnionId?: boolean; syncUserInfo?: boolean }) {
     const code = getWeixinCode();
     if (!code) {
       return null;
     }
-    return this._signInWithCode(code);
+    return this._signInWithCode(code,options);
   }
   async getLinkRedirectResult(options: { withUnionId?: boolean } = {}) {
     const { withUnionId = false } = options;
@@ -82,7 +82,7 @@ export class WeixinAuthProvider extends AuthProvider {
     }
   }
 
-  private async _signInWithCode(code) {
+  private async _signInWithCode(code:string,options) {
     const { accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
     // 有code，用code换refresh token
     const loginType = (scope => {
@@ -94,7 +94,7 @@ export class WeixinAuthProvider extends AuthProvider {
       }
     })(this._scope);
 
-    const refreshTokenRes = await this._getRefreshTokenByWXCode(this._appid, loginType, code);
+    const refreshTokenRes = await this._getRefreshTokenByWXCode(this._appid, loginType, code,options);
     const { refreshToken } = refreshTokenRes;
 
     // 本地存下
@@ -107,7 +107,11 @@ export class WeixinAuthProvider extends AuthProvider {
     }
     eventBus.fire(EVENTS.LOGIN_STATE_CHANGED);
     // 抛出登录类型更改事件
-    eventBus.fire(EVENTS.LOGIN_TYPE_CHANGED, { loginType: LOGINTYPE.WECHAT, persistence: this._config.persistence });
+    eventBus.fire(EVENTS.LOGIN_TYPE_CHANGED, { 
+      env: this._config.env,
+      loginType: LOGINTYPE.WECHAT, 
+      persistence: this._config.persistence 
+    });
     await this.refreshUserInfo();
     const loginState = new LoginState({
       envId: this._config.env,
@@ -119,10 +123,27 @@ export class WeixinAuthProvider extends AuthProvider {
     return loginState;
   }
 
-  private async _getRefreshTokenByWXCode(appid: string, loginType: string, code: string): Promise<{ refreshToken: string; accessToken: string; accessTokenExpire: number }> {
+  private async _getRefreshTokenByWXCode(
+    appid: string, 
+    loginType: string, 
+    code: string,
+    options: any = {}
+  ): Promise<{ refreshToken: string; accessToken: string; accessTokenExpire: number }> {
+    const { withUnionId = false, createUser = true } = options;
+    // snsapi_userinfo 和 snsapi_login 才可以获取用户的微信信息
+    const syncUserInfo = this._scope === 'snsapi_base' ? false : options.syncUserInfo || false;
+
     const action = 'auth.getJwt';
     const hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
-    return this._request.send(action, { appid, loginType, code, hybridMiniapp }).then(res => {
+    return this._request.send(action, { 
+      appid, 
+      loginType, 
+      hybridMiniapp,
+      syncUserInfo,
+      loginCredential: code,
+      withUnionId,
+      createUser
+    }).then(res => {
       if (res.code) {
         throw new Error(`[${SDK_NAME}][${ERRORS.OPERATION_FAIL}] failed login via wechat: ${res.code}`);
       }

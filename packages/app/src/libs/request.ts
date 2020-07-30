@@ -233,6 +233,19 @@ export class CloudbaseRequest implements ICloudbaseRequest{
         }
       }
     }
+    let opts: any = {
+      headers: {
+        'content-type': contentType
+      }
+    };
+    if (options && options['onUploadProgress']) {
+      opts.onUploadProgress = options['onUploadProgress'];
+    }
+
+    const traceHeader = this._localCache.getStore(tcbTraceKey);
+    if (traceHeader) {
+      opts.headers['X-TCB-Trace'] = traceHeader;
+    }
     // 非web平台使用凭证检验有效性
     if (Platform.runtime !== RUNTIME.WEB) {
       const { appSign, appSecret } = this.config;
@@ -245,26 +258,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
         appSign
       }, appAccessKey);
 
-      payload = {
-        ...payload,
-        timestamp,
-        appAccessKey,
-        appSign,
-        sign
-      };
-    }
-    let opts: any = {
-      headers: {
-        'content-type': contentType
-      }
-    };
-    if (options?.['onUploadProgress']) {
-      opts.onUploadProgress = options['onUploadProgress'];
-    }
-
-    const traceHeader = await this._localCache.getStore(tcbTraceKey);
-    if (traceHeader) {
-      opts.headers['X-TCB-Trace'] = traceHeader;
+      opts.headers['X-TCB-App-Source'] = `timestamp=${timestamp};appAccessKeyId=${appAccessKeyId};appSign=${appSign};sign=${sign}`;
     }
 
     // 发出请求
