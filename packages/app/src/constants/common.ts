@@ -14,11 +14,14 @@ export const DATA_VERSION = '2020-01-10';
 /**
  * request
  */
-export const PROTOCOL = 'https:';
-export const BASE_URL = '//tcb-api.tencentcloudapi.com/web';
+export const PROTOCOL = typeof location !== 'undefined' && location.protocol === 'http:' ? 'http:' : 'https:';
+export const BASE_URL =
+  typeof process !== 'undefined' && process.env.NODE_ENV === 'e2e' && process.env.END_POINT === 'pre'
+    ? '//tcb-pre.tencentcloudapi.com/web'
+    : '//tcb-api.tencentcloudapi.com/web';
 // debug
-export const PROTOCOL_DEBUG = 'http:'
-export const BASE_URL_DEBUG = '//tcb-pre.tencentcloudapi.com/web';
+// export const PROTOCOL_DEBUG = 'http:'
+// export const BASE_URL_DEBUG = '//tcb-pre.tencentcloudapi.com/web';
 
 export enum LOGINTYPE {
   ANONYMOUS = 'ANONYMOUS',

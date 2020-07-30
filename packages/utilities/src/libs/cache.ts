@@ -178,7 +178,7 @@ export class CloudbaseCache implements ICloudbaseCache{
     }
     try {
       //测试用例使用
-      if (process?.env?.tcb_token) {
+      if (typeof process!=='undefined'&&process.env?.tcb_token) {
         return process.env.tcb_token;
       }
 
@@ -206,7 +206,7 @@ export class CloudbaseCache implements ICloudbaseCache{
   public async getStoreAsync(key: string, version?: string) {
     try {
       //测试用例使用
-      if (process?.env?.tcb_token) {
+      if (typeof process!=='undefined'&&process.env?.tcb_token) {
         return process.env.tcb_token;
       }
 

@@ -67,6 +67,8 @@ class User implements IUser{
     const { cache, request} = options;
     this._cache = cache;
     this._request = request;
+
+    this._setUserInfo();
   }
   /**
    * 获取本地用户信息-同步
@@ -114,6 +116,7 @@ class User implements IUser{
       city: await this._getLocalUserInfoAsync('city')
     };
   }
+
   /**
    * 将当前账户与自定义登录 Ticket 进行绑定，绑定之后便可以通过自定义登录登录当前云开发账户。
    * @param {string} ticket 自定义登录ticket
@@ -171,7 +174,7 @@ class User implements IUser{
   public async update(userInfo:IUserInfo):Promise<void> {
     const { nickName, gender, avatarUrl, province, country, city } = userInfo;
     const { data: newUserInfo } = await this._request.send('auth.updateUserInfo', { nickName, gender, avatarUrl, province, country, city });
-    await this._setLocalUserInfo(newUserInfo);
+    this._setLocalUserInfo(newUserInfo);
   }
   /**
    * 更新邮箱密码
@@ -212,13 +215,8 @@ class User implements IUser{
   public async refresh():Promise<IUserInfo> {
     const action = 'auth.getUserInfo';
     const { data: userInfo } = await this._request.send(action, {});
-    await this._setLocalUserInfo(userInfo);
+    this._setLocalUserInfo(userInfo);
     return userInfo;
-  }
-
-  private async _setLocalUserInfo(userInfo:IUserInfo) {
-    const { userInfoKey } = this._cache.keys;
-    await this._cache.setStoreAsync(userInfoKey, userInfo);
   }
 
   private _getLocalUserInfo(key:string):string {
@@ -231,6 +229,40 @@ class User implements IUser{
     const { userInfoKey } = this._cache.keys;
     const userInfo = await this._cache.getStoreAsync(userInfoKey);
     return userInfo[key];
+  }
+
+  private _setUserInfo(){
+    const { userInfoKey } = this._cache.keys;
+    const userInfo = this._cache.getStore(userInfoKey);
+    [
+      'uid',
+      'loginType',
+      'openid',
+      'wxOpenId',
+      'wxPublicId',
+      'unionId',
+      'qqMiniOpenId',
+      'email',
+      'hasPassword',
+      'customUserId',
+      'nickName',
+      'gender',
+      'avatarUrl',
+    ].forEach(infoKey => {
+      this[infoKey] = userInfo[infoKey];
+    });
+
+    this.location = {
+      country: userInfo['country'],
+      province: userInfo['province'],
+      city: userInfo['city']
+    };
+  }
+
+  private _setLocalUserInfo(userInfo:any) {
+    const { userInfoKey } = this._cache.keys;
+    this._cache.setStore(userInfoKey, userInfo);
+    this._setUserInfo();
   }
 }
 interface ILoginStateOptions extends IUserOptions {

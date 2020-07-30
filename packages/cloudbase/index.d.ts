@@ -87,9 +87,11 @@ declare namespace cloudbase.auth{
   }
 
   interface IWeixinAuthProvider {
-    signIn():Promise<ILoginState>;
     signInWithRedirect():void;
-    getRedirectResult():Promise<ILoginState>;
+    getRedirectResult(options:{ 
+      createUser?: boolean; 
+      syncUserInfo?: boolean 
+    }):Promise<ILoginState>;
   }
 
   interface ICustomAuthProvider {
