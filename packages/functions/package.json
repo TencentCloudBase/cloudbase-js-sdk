@@ -47,8 +47,5 @@
     "**/*.ts": [
       "eslint --fix"
     ]
-  },
-  "peerDependencies": {
-    "@cloudbase/app": "^0.1.0-beta"
   }
 }
