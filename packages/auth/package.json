@@ -26,6 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
+    "@cloudbase/app": "^1.0.0",
     "@cloudbase/types": "^1.0.0",
     "@cloudbase/utilities": "^1.0.0"
   },
@@ -37,9 +38,6 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.0",
     "typescript": "^3.8.3"
-  },
-  "peerDependencies": {
-    "@cloudbase/app": "^0.1.0-beta"
   },
   "husky": {
     "hooks": {

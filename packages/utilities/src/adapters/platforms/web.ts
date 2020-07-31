@@ -61,23 +61,26 @@ class WebRequest extends AbstractSDKRequest {
     }, this._restrictedMethods.includes('upload'));
   }
   public async download(options: IRequestOptions): Promise<any> {
-    /**
-     * @todo
-     * blob下载文件的方式受CORS限制，暂不可用。
-     */
-    // const { data } = await this.get({
-    //   ...options,
-    //   headers: {}, // 下载资源请求不经过service，header清空
-    //   responseType: 'blob'
-    // });
-    // const url = window.URL.createObjectURL(new Blob([data]));
-    const fileName = decodeURIComponent(new URL(options.url).pathname.split('/').pop() || '');
-    const link = document.createElement('a');
-    link.href = options.url;
-    link.setAttribute('download', fileName);
-    link.setAttribute('target', '_blank');
-    document.body.appendChild(link);
-    link.click();
+    try {
+      const { data } = await this.get({
+        ...options,
+        headers: {}, // 下载资源请求不经过service，header清空
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const fileName = decodeURIComponent(new URL(options.url).pathname.split('/').pop() || '');
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.setAttribute('download', fileName);
+      link.style.display = 'none';
+
+      document.body.appendChild(link);
+      link.click();
+      // 回收内存
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (e) {}
     return new Promise(resolve => {
       resolve({
         statusCode: 200,
@@ -121,9 +124,9 @@ class WebRequest extends AbstractSDKRequest {
           result.statusCode = ajax.status;
           try {
             // 上传post请求返回数据格式为xml，此处容错
-            result.data = JSON.parse(ajax.responseText);
+            result.data = responseType === 'blob' ? ajax.response : JSON.parse(ajax.responseText);
           } catch (e) {
-            result.data = ajax.responseText;
+            result.data = responseType === 'blob' ? ajax.response : ajax.responseText;
           }
           clearTimeout(timer);
           resolve(result);

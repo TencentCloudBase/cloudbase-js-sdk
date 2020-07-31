@@ -95,21 +95,35 @@ var WebRequest = (function (_super) {
     };
     WebRequest.prototype.download = function (options) {
         return __awaiter(this, void 0, void 0, function () {
-            var fileName, link;
+            var data, url, fileName, link, e_1;
             return __generator(this, function (_a) {
-                fileName = decodeURIComponent(new URL(options.url).pathname.split('/').pop() || '');
-                link = document.createElement('a');
-                link.href = options.url;
-                link.setAttribute('download', fileName);
-                link.setAttribute('target', '_blank');
-                document.body.appendChild(link);
-                link.click();
-                return [2, new Promise(function (resolve) {
-                        resolve({
-                            statusCode: 200,
-                            tempFilePath: options.url
-                        });
-                    })];
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4, this.get(__assign(__assign({}, options), { headers: {}, responseType: 'blob' }))];
+                    case 1:
+                        data = (_a.sent()).data;
+                        url = window.URL.createObjectURL(new Blob([data]));
+                        fileName = decodeURIComponent(new URL(options.url).pathname.split('/').pop() || '');
+                        link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', fileName);
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(link);
+                        return [3, 3];
+                    case 2:
+                        e_1 = _a.sent();
+                        return [3, 3];
+                    case 3: return [2, new Promise(function (resolve) {
+                            resolve({
+                                statusCode: 200,
+                                tempFilePath: options.url
+                            });
+                        })];
+                }
             });
         });
     };
@@ -145,10 +159,10 @@ var WebRequest = (function (_super) {
                     result.header = headerMap_1;
                     result.statusCode = ajax.status;
                     try {
-                        result.data = JSON.parse(ajax.responseText);
+                        result.data = responseType === 'blob' ? ajax.response : JSON.parse(ajax.responseText);
                     }
                     catch (e) {
-                        result.data = ajax.responseText;
+                        result.data = responseType === 'blob' ? ajax.response : ajax.responseText;
                     }
                     clearTimeout(timer);
                     resolve(result);
