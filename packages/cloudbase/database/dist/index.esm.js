@@ -10,12 +10,9 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import { Db } from '@cloudbase/database';
-import { constants, adapters, utils } from '@cloudbase/utilities';
+import { constants } from '@cloudbase/utilities';
 var SDK_NAME = constants.SDK_NAME, ERRORS = constants.ERRORS;
-var RUNTIME = adapters.RUNTIME;
-var createSign = utils.createSign;
 var COMPONENT_NAME = 'database';
-var DATA_VERSION = '2020-01-10';
 function database(dbConfig) {
     if (!this.authInstance) {
         console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login ");
@@ -26,11 +23,6 @@ function database(dbConfig) {
     Db.wsClass = adapter.wsClass;
     Db.getAccessToken = this.authInstance.getAccessToken.bind(this.authInstance);
     Db.runtime = runtime;
-    if (runtime !== RUNTIME.WEB) {
-        Db.dataVersion = DATA_VERSION;
-        Db.createSign = createSign;
-        Db.appSecretInfo = __assign({ appSign: this.config.appSign }, this.config.appSecret);
-    }
     if (!Db.ws) {
         Db.ws = null;
     }

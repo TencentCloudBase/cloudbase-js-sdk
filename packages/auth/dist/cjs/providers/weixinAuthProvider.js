@@ -81,7 +81,7 @@ var WeixinAuthProvider = (function (_super) {
             });
         });
     };
-    WeixinAuthProvider.prototype.getRedirectResult = function () {
+    WeixinAuthProvider.prototype.getRedirectResult = function (options) {
         return __awaiter(this, void 0, void 0, function () {
             var code;
             return __generator(this, function (_a) {
@@ -89,7 +89,7 @@ var WeixinAuthProvider = (function (_super) {
                 if (!code) {
                     return [2, null];
                 }
-                return [2, this._signInWithCode(code)];
+                return [2, this._signInWithCode(code, options)];
             });
         });
     };
@@ -140,7 +140,7 @@ var WeixinAuthProvider = (function (_super) {
             throw new Error("[" + SDK_NAME + "][" + ERRORS.UNKOWN_ERROR + "]" + e);
         }
     };
-    WeixinAuthProvider.prototype._signInWithCode = function (code) {
+    WeixinAuthProvider.prototype._signInWithCode = function (code, options) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, accessTokenKey, accessTokenExpireKey, refreshTokenKey, loginType, refreshTokenRes, refreshToken, loginState;
             return __generator(this, function (_b) {
@@ -155,7 +155,7 @@ var WeixinAuthProvider = (function (_super) {
                                     return 'WECHAT-PUBLIC';
                             }
                         })(this._scope);
-                        return [4, this._getRefreshTokenByWXCode(this._appid, loginType, code)];
+                        return [4, this._getRefreshTokenByWXCode(this._appid, loginType, code, options)];
                     case 1:
                         refreshTokenRes = _b.sent();
                         refreshToken = refreshTokenRes.refreshToken;
@@ -175,7 +175,11 @@ var WeixinAuthProvider = (function (_super) {
                         _b.label = 6;
                     case 6:
                         __1.eventBus.fire(__1.EVENTS.LOGIN_STATE_CHANGED);
-                        __1.eventBus.fire(__1.EVENTS.LOGIN_TYPE_CHANGED, { loginType: constants_1.LOGINTYPE.WECHAT, persistence: this._config.persistence });
+                        __1.eventBus.fire(__1.EVENTS.LOGIN_TYPE_CHANGED, {
+                            env: this._config.env,
+                            loginType: constants_1.LOGINTYPE.WECHAT,
+                            persistence: this._config.persistence
+                        });
                         return [4, this.refreshUserInfo()];
                     case 7:
                         _b.sent();
@@ -192,13 +196,24 @@ var WeixinAuthProvider = (function (_super) {
             });
         });
     };
-    WeixinAuthProvider.prototype._getRefreshTokenByWXCode = function (appid, loginType, code) {
+    WeixinAuthProvider.prototype._getRefreshTokenByWXCode = function (appid, loginType, code, options) {
+        if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var action, hybridMiniapp;
-            return __generator(this, function (_a) {
+            var _a, withUnionId, _b, createUser, syncUserInfo, action, hybridMiniapp;
+            return __generator(this, function (_c) {
+                _a = options.withUnionId, withUnionId = _a === void 0 ? false : _a, _b = options.createUser, createUser = _b === void 0 ? true : _b;
+                syncUserInfo = this._scope === 'snsapi_base' ? false : options.syncUserInfo || false;
                 action = 'auth.getJwt';
                 hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
-                return [2, this._request.send(action, { appid: appid, loginType: loginType, code: code, hybridMiniapp: hybridMiniapp }).then(function (res) {
+                return [2, this._request.send(action, {
+                        appid: appid,
+                        loginType: loginType,
+                        hybridMiniapp: hybridMiniapp,
+                        syncUserInfo: syncUserInfo,
+                        loginCredential: code,
+                        withUnionId: withUnionId,
+                        createUser: createUser
+                    }).then(function (res) {
                         if (res.code) {
                             throw new Error("[" + SDK_NAME + "][" + ERRORS.OPERATION_FAIL + "] failed login via wechat: " + res.code);
                         }

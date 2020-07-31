@@ -15,10 +15,7 @@ exports.registerDatabase = void 0;
 var database_1 = require("@cloudbase/database");
 var utilities_1 = require("@cloudbase/utilities");
 var SDK_NAME = utilities_1.constants.SDK_NAME, ERRORS = utilities_1.constants.ERRORS;
-var RUNTIME = utilities_1.adapters.RUNTIME;
-var createSign = utilities_1.utils.createSign;
 var COMPONENT_NAME = 'database';
-var DATA_VERSION = '2020-01-10';
 function database(dbConfig) {
     if (!this.authInstance) {
         console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login ");
@@ -29,11 +26,6 @@ function database(dbConfig) {
     database_1.Db.wsClass = adapter.wsClass;
     database_1.Db.getAccessToken = this.authInstance.getAccessToken.bind(this.authInstance);
     database_1.Db.runtime = runtime;
-    if (runtime !== RUNTIME.WEB) {
-        database_1.Db.dataVersion = DATA_VERSION;
-        database_1.Db.createSign = createSign;
-        database_1.Db.appSecretInfo = __assign({ appSign: this.config.appSign }, this.config.appSecret);
-    }
     if (!database_1.Db.ws) {
         database_1.Db.ws = null;
     }

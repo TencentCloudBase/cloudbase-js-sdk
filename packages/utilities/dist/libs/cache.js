@@ -243,7 +243,7 @@ var CloudbaseCache = (function () {
             return;
         }
         try {
-            if ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.tcb_token) {
+            if (typeof process !== 'undefined' && ((_a = process.env) === null || _a === void 0 ? void 0 : _a.tcb_token)) {
                 return process.env.tcb_token;
             }
             if (!this._storage) {
@@ -274,7 +274,7 @@ var CloudbaseCache = (function () {
                 switch (_b.label) {
                     case 0:
                         try {
-                            if ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.tcb_token) {
+                            if (typeof process !== 'undefined' && ((_a = process.env) === null || _a === void 0 ? void 0 : _a.tcb_token)) {
                                 return [2, process.env.tcb_token];
                             }
                             if (!this._storage) {

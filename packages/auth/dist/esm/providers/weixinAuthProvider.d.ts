@@ -15,7 +15,10 @@ export declare class WeixinAuthProvider extends AuthProvider {
     }, appid: string, scope: string, state?: string);
     signIn(): Promise<void>;
     signInWithRedirect(): Promise<any>;
-    getRedirectResult(): Promise<LoginState>;
+    getRedirectResult(options: {
+        withUnionId?: boolean;
+        syncUserInfo?: boolean;
+    }): Promise<LoginState>;
     getLinkRedirectResult(options?: {
         withUnionId?: boolean;
     }): Promise<any>;

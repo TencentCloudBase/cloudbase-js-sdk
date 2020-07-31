@@ -234,7 +234,7 @@ var CloudbaseRequest = (function () {
     };
     CloudbaseRequest.prototype.request = function (action, params, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var tcbTraceKey, contentType, tmpObj, refreshTokenKey, refreshToken, _a, payload, key, key, _b, appSign, appSecret, timestamp, appAccessKey, appAccessKeyId, sign, opts, traceHeader, parse, inQuery, search, formatQuery, newUrl, res, resTraceHeader;
+            var tcbTraceKey, contentType, tmpObj, refreshTokenKey, refreshToken, _a, payload, key, key, opts, traceHeader, _b, appSign, appSecret, timestamp, appAccessKey, appAccessKeyId, sign, parse, inQuery, search, formatQuery, newUrl, res, resTraceHeader;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -271,6 +271,18 @@ var CloudbaseRequest = (function () {
                                 }
                             }
                         }
+                        opts = {
+                            headers: {
+                                'content-type': contentType
+                            }
+                        };
+                        if (options === null || options === void 0 ? void 0 : options['onUploadProgress']) {
+                            opts.onUploadProgress = options['onUploadProgress'];
+                        }
+                        traceHeader = this._localCache.getStore(tcbTraceKey);
+                        if (traceHeader) {
+                            opts.headers['X-TCB-Trace'] = traceHeader;
+                        }
                         if (Platform.runtime !== RUNTIME.WEB) {
                             _b = this.config, appSign = _b.appSign, appSecret = _b.appSecret;
                             timestamp = Date.now();
@@ -281,24 +293,7 @@ var CloudbaseRequest = (function () {
                                 appAccessKeyId: appAccessKeyId,
                                 appSign: appSign
                             }, appAccessKey);
-                            payload = __assign(__assign({}, payload), { timestamp: timestamp,
-                                appAccessKey: appAccessKey,
-                                appSign: appSign,
-                                sign: sign });
-                        }
-                        opts = {
-                            headers: {
-                                'content-type': contentType
-                            }
-                        };
-                        if (options === null || options === void 0 ? void 0 : options['onUploadProgress']) {
-                            opts.onUploadProgress = options['onUploadProgress'];
-                        }
-                        return [4, this._localCache.getStore(tcbTraceKey)];
-                    case 4:
-                        traceHeader = _c.sent();
-                        if (traceHeader) {
-                            opts.headers['X-TCB-Trace'] = traceHeader;
+                            opts.headers['X-TCB-App-Source'] = "timestamp=" + timestamp + ";appAccessKeyId=" + appAccessKeyId + ";appSign=" + appSign + ";sign=" + sign;
                         }
                         parse = params.parse, inQuery = params.inQuery, search = params.search;
                         formatQuery = {
@@ -311,7 +306,7 @@ var CloudbaseRequest = (function () {
                             newUrl += search;
                         }
                         return [4, this.post(__assign({ url: newUrl, data: payload }, opts))];
-                    case 5:
+                    case 4:
                         res = _c.sent();
                         resTraceHeader = res.header && res.header['x-tcb-trace'];
                         if (resTraceHeader) {

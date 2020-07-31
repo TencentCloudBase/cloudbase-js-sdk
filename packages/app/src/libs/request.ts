@@ -238,7 +238,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
         'content-type': contentType
       }
     };
-    if (options && options['onUploadProgress']) {
+    if (options?.['onUploadProgress']) {
       opts.onUploadProgress = options['onUploadProgress'];
     }
 

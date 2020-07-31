@@ -6,7 +6,7 @@
     "build": "BUILD_SRC='wrapper' lerna run --scope @cloudbase/* build",
     "build:e2e": "BUILD_SRC='wrapper' lerna run --scope @cloudbase/* build:e2e",
     "test:e2e": "jest --config=\"./jest.e2e.config.js\" --verbose false -i \"e2e\"",
-    "test:web": "webpack-dev-server --devtool eval-source-map --progress --colors --hot --inline --content-base ./test/web --host jimmytest-088bef.tcb.qcloud.la --port 80 --disableHostCheck true --mode development --config webpack.test-web.js",
+    "test:web": "webpack-dev-server --devtool eval-source-map --progress --colors --hot --inline --content-base ./test/web --host jimmytest-088bef.tcb.qcloud.la --port 8080 --disableHostCheck true --mode development --config webpack.test-web.js",
     "publish": "lerna publish",
     "publish:beta": "lerna publish --dist-tag beta"
   },
@@ -25,6 +25,7 @@
     "@cloudbase/database": "^0.9.15",
     "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
+    "core-js": "^3.6.5",
     "express": "^4.17.1",
     "jest": "^26.0.1",
     "jest-puppeteer": "^4.4.0",

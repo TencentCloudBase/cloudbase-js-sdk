@@ -34,7 +34,7 @@ async function init () {
   // await signInAnonymous(auth);
 
   // 自定义登录
-  // await signInCustom(auth);
+  await signInCustom(auth);
 
   // 用户名登录
   // await signInWithUsername(auth,{

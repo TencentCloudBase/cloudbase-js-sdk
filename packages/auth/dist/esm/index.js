@@ -64,6 +64,7 @@ var User = (function () {
         var cache = options.cache, request = options.request;
         this._cache = cache;
         this._request = request;
+        this._setUserInfo();
     }
     User.prototype.checkLocalInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -216,9 +217,7 @@ var User = (function () {
                         return [4, this._request.send('auth.updateUserInfo', { nickName: nickName, gender: gender, avatarUrl: avatarUrl, province: province, country: country, city: city })];
                     case 1:
                         newUserInfo = (_a.sent()).data;
-                        return [4, this._setLocalUserInfo(newUserInfo)];
-                    case 2:
-                        _a.sent();
+                        this._setLocalUserInfo(newUserInfo);
                         return [2];
                 }
             });
@@ -253,25 +252,8 @@ var User = (function () {
                         return [4, this._request.send(action, {})];
                     case 1:
                         userInfo = (_a.sent()).data;
-                        return [4, this._setLocalUserInfo(userInfo)];
-                    case 2:
-                        _a.sent();
+                        this._setLocalUserInfo(userInfo);
                         return [2, userInfo];
-                }
-            });
-        });
-    };
-    User.prototype._setLocalUserInfo = function (userInfo) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userInfoKey;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        userInfoKey = this._cache.keys.userInfoKey;
-                        return [4, this._cache.setStoreAsync(userInfoKey, userInfo)];
-                    case 1:
-                        _a.sent();
-                        return [2];
                 }
             });
         });
@@ -295,6 +277,38 @@ var User = (function () {
                 }
             });
         });
+    };
+    User.prototype._setUserInfo = function () {
+        var _this = this;
+        var userInfoKey = this._cache.keys.userInfoKey;
+        var userInfo = this._cache.getStore(userInfoKey);
+        [
+            'uid',
+            'loginType',
+            'openid',
+            'wxOpenId',
+            'wxPublicId',
+            'unionId',
+            'qqMiniOpenId',
+            'email',
+            'hasPassword',
+            'customUserId',
+            'nickName',
+            'gender',
+            'avatarUrl',
+        ].forEach(function (infoKey) {
+            _this[infoKey] = userInfo[infoKey];
+        });
+        this.location = {
+            country: userInfo['country'],
+            province: userInfo['province'],
+            city: userInfo['city']
+        };
+    };
+    User.prototype._setLocalUserInfo = function (userInfo) {
+        var userInfoKey = this._cache.keys.userInfoKey;
+        this._cache.setStore(userInfoKey, userInfo);
+        this._setUserInfo();
     };
     return User;
 }());

@@ -30,10 +30,10 @@ describe('鉴权', () => {
     });
     expect(result['x-cloudbase-credentials']).toBeDefined();
   });
-  it('getLoginState', async () => {
+  it('hasLoginState', async () => {
     const page = global.page;
     let result = await page.evaluate(() => {
-      return app.auth().getLoginState();
+      return app.auth().hasLoginState()
     });
 
     expect(typeof result.credential.refreshToken === 'string').toBeTruthy();
@@ -41,7 +41,7 @@ describe('鉴权', () => {
 
     result = await page.evaluate(() => {
       return app.auth().signOut().then(() => {
-        return app.auth().getLoginState();
+        return app.auth().hasLoginState();
       });
     });
     expect(result).toEqual(null);
@@ -91,7 +91,7 @@ describe('鉴权', () => {
     let result = await page.evaluate((oldRefreshToken) => {
       window.localStorage.clear();
       window.localStorage['refresh_token_starkwang-e850e3'] = oldRefreshToken;
-      return app.auth({ persistence: 'local' }).getLoginState();
+      return app.auth({ persistence: 'local' }).hasLoginState();
     }, oldRefreshToken);
     expect(result).toEqual(null);
   });
