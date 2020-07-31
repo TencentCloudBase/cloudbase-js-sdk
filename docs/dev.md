@@ -64,3 +64,5 @@ npm run publish:beta
 ```bash
 npm run publish
 ```
+
+发布过程中需要为每个包选择版本号。

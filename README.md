@@ -106,3 +106,7 @@ const app = cloudbase.init({
 
 ### 其他
 - [开发指南](./docs/dev.md)
+
+## 更新日志
+
+查看 [更新日志](./changelog.md)
