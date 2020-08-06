@@ -10,7 +10,8 @@
         "guard-for-in": 0,
         "no-param-reassign": 0,
         "no-undefined": 0,
-        "@typescript-eslint/explicit-member-accessibility": 0
+        "@typescript-eslint/explicit-member-accessibility": 0,
+        "@typescript-eslint/no-loss-of-precision": 0
     },
     "parserOptions": {
         "ecmaVersion": 6,
