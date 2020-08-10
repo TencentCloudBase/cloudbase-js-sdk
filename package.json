@@ -5,12 +5,13 @@
   "scripts": {
     "install-deps": "lerna bootstrap",
     "build": "BUILD_SRC='wrapper' lerna run --scope @cloudbase/* build",
+    "build:cdn": "BUILD_SRC='wrapper' lerna run --scope @cloudbase/* build:cdn",
     "build:e2e": "BUILD_SRC='wrapper' lerna run --scope @cloudbase/* build:e2e",
     "lint": "lerna run --scope @cloudbase/* lint",
     "test": "jest --verbose false -i",
     "test:e2e": "npm run build:e2e&&jest --config=\"./jest.e2e.config.js\" --verbose false -i \"e2e\"",
     "test:web": "webpack-dev-server --devtool eval-source-map --progress --colors --hot --inline --content-base ./test/web --host jimmytest-088bef.tcb.qcloud.la --port 80 --disableHostCheck true --mode development --config webpack.test-web.js",
-    "publish": "lerna publish",
+    "publish": "npm run lint && npm tun build && lerna publish",
     "publish:beta": "lerna publish --dist-tag beta"
   },
   "publishConfig": {

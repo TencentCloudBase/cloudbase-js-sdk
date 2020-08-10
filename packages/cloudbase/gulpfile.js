@@ -143,7 +143,5 @@ buildComponents.forEach(comp=>{
   buildTaskList.push(taskComp);
 });
 
-const buildTask = gulp.parallel(...buildTaskList);
-
-// exports.default = gulp.parallel([buildTask]);
-exports.default = gulp.series([tscTask,buildTask]);
+exports.tsc = gulp.parallel([tscTask]);
+exports.cdn = gulp.parallel(buildTaskList);

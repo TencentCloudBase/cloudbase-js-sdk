@@ -13,10 +13,11 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
-## [1.0.1] 2020-08-05
+## [1.0.2] 2020-08-10
+- [Changed] 优化版本统计信息
 
+## [1.0.1] 2020-08-05
 - [Fixed] `Storage.downloadFile` 可将文件直接下载到本地
 
 ## [1.0.0] 2020-07-31
-
 - [Added] 发布 1.0.0 版本，旧版本 SDK [tcb-js-sdk](https://github.com/TencentCloudBase/tcb-js-sdk) 未来不再增加新功能
