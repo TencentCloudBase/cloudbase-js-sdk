@@ -10,7 +10,7 @@ import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { initRequest, getRequestByEnvId } from './libs/request';
-import { SDK_NAME, setSdkVersion } from './constants/common';
+import { SDK_NAME, setSdkVersion, setEndPoint } from './constants/common';
 
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
 const { ERRORS } = constants;
@@ -132,6 +132,10 @@ class Cloudbase implements ICloudbase{
 
   public registerVersion(version:string){
     setSdkVersion(version);
+  }
+
+  public registerEndPoint(url:string,protocol?:'http'|'https'){
+    setEndPoint(url,protocol)
   }
 
   private _useDefaultAdapter() {

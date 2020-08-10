@@ -171,6 +171,9 @@ var Cloudbase = (function () {
     Cloudbase.prototype.registerVersion = function (version) {
         common_1.setSdkVersion(version);
     };
+    Cloudbase.prototype.registerEndPoint = function (url, protocol) {
+        common_1.setEndPoint(url, protocol);
+    };
     Cloudbase.prototype._useDefaultAdapter = function () {
         var _a = useDefaultAdapter(), adapter = _a.adapter, runtime = _a.runtime;
         adapter_1.Platform.adapter = adapter;
