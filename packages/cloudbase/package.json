@@ -7,7 +7,8 @@
   "typings": "./index.d.ts",
   "scripts": {
     "lint": "eslint --fix \"./src/**/*.ts\" \"./database/**/*.ts\"",
-    "build": "rm -rf dist/ && gulp",
+    "build": "rm -rf dist/ && gulp tsc",
+    "build:cdn": "rm -rf dist/ && gulp cdn",
     "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp",
     "prepublish": "npm run build"
   },

@@ -18,12 +18,12 @@ const localCacheMap: KV<ICloudbaseCache> = {};
 export function initCache(config: ICacheConfig&{env:string}) {
   const { env,persistence,platformInfo } = config;
 
-  const accessTokenKey = `${KEY_ACCESS_TOKEN}_${env}`;
+  const accessTokenKey       = `${KEY_ACCESS_TOKEN}_${env}`;
   const accessTokenExpireKey = `${KEY_ACCESS_TOKEN_EXPIRE}_${env}`;
-  const refreshTokenKey = `${KEY_REFRESH_TOKEN}_${env}`;
-  const anonymousUuidKey = `${KEY_ANONYMOUS_UUID}_${env}`;
-  const loginTypeKey = `${KEY_LOGIN_TYPE}_${env}`;
-  const userInfoKey = `${USER_INFO_KEY}_${env}`;
+  const refreshTokenKey      = `${KEY_REFRESH_TOKEN}_${env}`;
+  const anonymousUuidKey     = `${KEY_ANONYMOUS_UUID}_${env}`;
+  const loginTypeKey         = `${KEY_LOGIN_TYPE}_${env}`;
+  const userInfoKey          = `${USER_INFO_KEY}_${env}`;
 
   const keys = {
     accessTokenKey,

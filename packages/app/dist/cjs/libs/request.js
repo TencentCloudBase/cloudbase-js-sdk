@@ -102,7 +102,7 @@ function beforeEach() {
             seqId: seqId
         },
         headers: {
-            'X-SDK-Version': common_1.getSdkVersion(),
+            'X-SDK-Version': "@cloudbase/js-sdk/" + common_1.getSdkVersion(),
             'x-seqid': seqId
         }
     };
