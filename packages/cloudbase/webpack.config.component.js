@@ -1,10 +1,8 @@
 const path = require('path');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
-// const Visualizer = require('webpack-visualizer-plugin');
 const pkg = require('./package.json');
 
 const rootPath = path.resolve(__dirname,'../../');
-// const cdnJsDir = path.join(rootPath,`cdnjs/${pkg.version}`);
 
 const alias = {};
 Object.keys(pkg.dependencies || {}).forEach(dep=>{
@@ -37,13 +35,9 @@ module.exports = {
   plugins: [
     new TsConfigPathsPlugin({
       configFileName: path.resolve(__dirname,'tsconfig.json')
-    }),
-    // new Visualizer({
-    //   filename: './statistics.html'
-    // })
+    })
   ],
   optimization: {
     sideEffects: false
-  },
-  externals: { crypto: 'null'}
+  }
 }

@@ -1,6 +1,5 @@
 const path = require('path');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
-// const Visualizer = require('webpack-visualizer-plugin');
 const pkg = require('./package.json');
 
 const rootPath = path.resolve(__dirname,'../../');
@@ -50,10 +49,6 @@ module.exports = {
   plugins: [
     new TsConfigPathsPlugin({
       configFileName: path.resolve(__dirname,'tsconfig.json')
-    }),
-    // new Visualizer({
-    //   filename: './statistics.html'
-    // })
-  ],
-  externals: { crypto: 'crypto'}
+    })
+  ]
 }

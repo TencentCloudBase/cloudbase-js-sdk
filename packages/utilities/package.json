@@ -33,7 +33,7 @@
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
     "@cloudbase/types": "^1.0.0",
-    "crypto-js": "^4.0.0"
+    "crypto-js": "3"
   },
   "husky": {
     "hooks": {
