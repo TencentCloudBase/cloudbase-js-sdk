@@ -1,10 +1,9 @@
 import {
-  BASE_URL,
-  PROTOCOL,
   DATA_VERSION,
   LOGINTYPE,
+  SDK_NAME,
   getSdkVersion,
-  SDK_NAME
+  getEndPoint
 } from '../constants/common';
 import {
   IRequestOptions,
@@ -274,6 +273,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
       ...inQuery,
       ...formatQuery
     });
+    const { BASE_URL, PROTOCOL } = getEndPoint();
     // 生成请求 url
     let newUrl = formatUrl(PROTOCOL, BASE_URL, formatQuery);
 

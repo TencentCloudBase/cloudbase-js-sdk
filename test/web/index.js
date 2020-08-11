@@ -15,6 +15,8 @@ let app;
 let auth;
 let loginState;
 
+cloudbase.registerEndPoint('//tcb-pre.tencentcloudapi.com/web');
+
 async function init () {
   printInfo('web test starting init');
   // 初始化
@@ -43,8 +45,8 @@ async function init () {
   // });
 
   registerFunctionCases(app);
-  registerStorageCases(app);
-  registerDatabaseCases(app);
+  // registerStorageCases(app);
+  // registerDatabaseCases(app);
 
   initTestCasesIndex();
 };

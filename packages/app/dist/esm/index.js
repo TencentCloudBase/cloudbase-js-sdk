@@ -51,7 +51,7 @@ import { registerComponent } from './libs/component';
 import { Platform } from './libs/adapter';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { initRequest, getRequestByEnvId } from './libs/request';
-import { SDK_NAME, setSdkVersion } from './constants/common';
+import { SDK_NAME, setSdkVersion, setEndPoint } from './constants/common';
 var useAdapters = adapters.useAdapters, useDefaultAdapter = adapters.useDefaultAdapter, RUNTIME = adapters.RUNTIME;
 var ERRORS = constants.ERRORS;
 var DEFAULT_INIT_CONFIG = {
@@ -164,6 +164,9 @@ var Cloudbase = (function () {
     };
     Cloudbase.prototype.registerVersion = function (version) {
         setSdkVersion(version);
+    };
+    Cloudbase.prototype.registerEndPoint = function (url, protocol) {
+        setEndPoint(url, protocol);
     };
     Cloudbase.prototype._useDefaultAdapter = function () {
         var _a = useDefaultAdapter(), adapter = _a.adapter, runtime = _a.runtime;
