@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/functions",
-  "version": "1.0.3-beta",
+  "version": "1.0.3",
   "description": "cloudbase javascript sdk functions componets",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
     "@cloudbase/types": "^1.0.0",
-    "@cloudbase/utilities": "^1.0.3-beta"
+    "@cloudbase/utilities": "^1.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.30.0",

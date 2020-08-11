@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/js-sdk",
-  "version": "1.0.3-beta",
+  "version": "1.0.3",
   "description": "cloudbase javascript sdk",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -39,13 +39,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cloudbase/app": "^1.0.3-beta",
-    "@cloudbase/auth": "^1.0.3-beta",
+    "@cloudbase/app": "^1.0.3",
+    "@cloudbase/auth": "^1.0.3",
     "@cloudbase/database": "^0.9.15",
-    "@cloudbase/functions": "^1.0.3-beta",
-    "@cloudbase/storage": "^1.0.3-beta",
+    "@cloudbase/functions": "^1.0.3",
+    "@cloudbase/storage": "^1.0.3",
     "@cloudbase/types": "^1.0.0",
-    "@cloudbase/utilities": "^1.0.3-beta"
+    "@cloudbase/utilities": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
