@@ -41,7 +41,7 @@
   "dependencies": {
     "@cloudbase/app": "^1.0.3",
     "@cloudbase/auth": "^1.0.3",
-    "@cloudbase/database": "^0.9.15",
+    "@cloudbase/database": "^0.9.18-beta",
     "@cloudbase/functions": "^1.0.3",
     "@cloudbase/storage": "^1.0.3",
     "@cloudbase/types": "^1.0.0",
