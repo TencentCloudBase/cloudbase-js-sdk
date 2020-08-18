@@ -13,6 +13,9 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
+## [1.1.0] 2020-08-18
+- [Added] 增加 `cloudbase.registerSdkName` API
+
 ## [1.0.4] 2020-08-13
 - [Fixed] 修复实时推送多环境混淆问题
 
