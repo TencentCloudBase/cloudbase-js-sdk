@@ -5,13 +5,13 @@ import { ICloudbaseComponent } from '@cloudbase/types/component';
 
 declare const cloudbase: ICloudbase;
 
-const { SDK_NAME,ERRORS } = constants;
+const { getSdkName,ERRORS } = constants;
 
 const COMPONENT_NAME = 'database';
 
 function database(dbConfig?: object) {
   if (!this.authInstance) {
-    console.warn(`[${SDK_NAME}][${ERRORS.INVALID_OPERATION}] not login `);
+    console.warn(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}] not login `);
     return;
   }
 

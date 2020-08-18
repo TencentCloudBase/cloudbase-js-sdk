@@ -1,3 +1,3 @@
-import { registerAuth } from '@cloudbase/auth';
+import { registerAuth, registerProvider } from '@cloudbase/auth';
 
-export {registerAuth};
+export { registerAuth, registerProvider };

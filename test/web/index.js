@@ -33,10 +33,10 @@ async function init () {
   // await signInWeixin(auth,appid);
 
   // 匿名登录
-  // await signInAnonymous(auth);
+  await signInAnonymous(auth);
 
   // 自定义登录
-  await signInCustom(auth);
+  // await signInCustom(auth);
 
   // 用户名登录
   // await signInWithUsername(auth,{
@@ -45,8 +45,8 @@ async function init () {
   // });
 
   registerFunctionCases(app);
-  // registerStorageCases(app);
-  // registerDatabaseCases(app);
+  registerStorageCases(app);
+  registerDatabaseCases(app);
 
   initTestCasesIndex();
 };

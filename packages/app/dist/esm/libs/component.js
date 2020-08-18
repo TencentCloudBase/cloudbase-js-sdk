@@ -6,13 +6,13 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 import { constants } from '@cloudbase/utilities';
-import { SDK_NAME } from '../constants/common';
+import { getSdkName } from '../constants/common';
 var ERRORS = constants.ERRORS;
 var components = {};
 export function registerComponent(app, component) {
     var name = component.name, namespace = component.namespace, entity = component.entity, injectEvents = component.injectEvents;
     if (components[name] || (namespace && app[namespace])) {
-        throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "]There were multiple attempts to register component " + name + ".");
+        throw new Error("[" + getSdkName() + "][" + ERRORS.INVALID_OPERATION + "]There were multiple attempts to register component " + name + ".");
     }
     components[name] = component;
     if (namespace) {

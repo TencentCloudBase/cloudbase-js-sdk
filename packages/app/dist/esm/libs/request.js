@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { DATA_VERSION, LOGINTYPE, SDK_NAME, getSdkVersion, getEndPoint } from '../constants/common';
+import { DATA_VERSION, LOGINTYPE, getSdkName, getSdkVersion, getEndPoint } from '../constants/common';
 import { utils, adapters, constants } from '@cloudbase/utilities';
 import { cloudbase } from '..';
 import { getCacheByEnvId, getLocalCache } from './cache';
@@ -367,7 +367,7 @@ var CloudbaseRequest = (function () {
                     case 3:
                         refreshToken = _b.sent();
                         if (!refreshToken) {
-                            throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login");
+                            throw new Error("[" + getSdkName() + "][" + ERRORS.INVALID_OPERATION + "] not login");
                         }
                         params = {
                             refresh_token: refreshToken
@@ -402,7 +402,7 @@ var CloudbaseRequest = (function () {
                     case 10:
                         _b.sent();
                         _b.label = 11;
-                    case 11: throw new Error("[" + SDK_NAME + "][" + ERRORS.NETWORK_ERROR + "] refresh access_token failed\uFF1A" + response.data.code);
+                    case 11: throw new Error("[" + getSdkName() + "][" + ERRORS.NETWORK_ERROR + "] refresh access_token failed\uFF1A" + response.data.code);
                     case 12:
                         if (!response.data.access_token) return [3, 15];
                         cloudbase.fire(EVENTS.ACCESS_TOKEN_REFRESHD);

@@ -8,4 +8,3 @@ export declare enum LOGINTYPE {
     USERNAME = "USERNAME",
     NULL = "NULL"
 }
-export declare const SDK_NAME = "@cloudbase/js-sdk";

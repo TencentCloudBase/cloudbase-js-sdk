@@ -14,11 +14,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerDatabase = void 0;
 var database_1 = require("@cloudbase/database");
 var utilities_1 = require("@cloudbase/utilities");
-var SDK_NAME = utilities_1.constants.SDK_NAME, ERRORS = utilities_1.constants.ERRORS;
+var getSdkName = utilities_1.constants.getSdkName, ERRORS = utilities_1.constants.ERRORS;
 var COMPONENT_NAME = 'database';
 function database(dbConfig) {
     if (!this.authInstance) {
-        console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login ");
+        console.warn("[" + getSdkName() + "][" + ERRORS.INVALID_OPERATION + "] not login ");
         return;
     }
     var _a = this.platform, adapter = _a.adapter, runtime = _a.runtime;

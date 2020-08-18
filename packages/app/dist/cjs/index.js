@@ -113,19 +113,19 @@ var Cloudbase = (function () {
         }
         this.requestClient = new adapter_1.Platform.adapter.reqClass({
             timeout: config.timeout || 5000,
-            timeoutMsg: "[" + common_1.SDK_NAME + "][REQUEST TIMEOUT] request had been abort since didn't finished within" + config.timeout / 1000 + "s"
+            timeoutMsg: "[" + common_1.getSdkName() + "][REQUEST TIMEOUT] request had been abort since didn't finished within" + config.timeout / 1000 + "s"
         });
         if (adapter_1.Platform.runtime !== RUNTIME.WEB) {
             if (!config.appSecret) {
-                throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSecret");
+                throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]invalid appSecret");
             }
             var appSign_1 = adapter_1.Platform.adapter.getAppSign ? adapter_1.Platform.adapter.getAppSign() : '';
             if (config.appSign && appSign_1 && config.appSign !== appSign_1) {
-                throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
+                throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
             }
             appSign_1 && (config.appSign = appSign_1);
             if (!config.appSign) {
-                throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
+                throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
             }
         }
         this._config = __assign(__assign({}, DEFAULT_INIT_CONFIG), config);
@@ -152,7 +152,7 @@ var Cloudbase = (function () {
                     case 0:
                         ext = extensionMap[name];
                         if (!ext) {
-                            throw Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]extension:" + name + " must be registered before invoke");
+                            throw Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]extension:" + name + " must be registered before invoke");
                         }
                         return [4, ext.invoke(opts, this)];
                     case 1: return [2, _a.sent()];
@@ -171,6 +171,9 @@ var Cloudbase = (function () {
     Cloudbase.prototype.registerVersion = function (version) {
         common_1.setSdkVersion(version);
     };
+    Cloudbase.prototype.registerSdkName = function (name) {
+        common_1.setSdkVersion(name);
+    };
     Cloudbase.prototype.registerEndPoint = function (url, protocol) {
         common_1.setEndPoint(url, protocol);
     };
@@ -182,10 +185,10 @@ var Cloudbase = (function () {
     Cloudbase.prototype._formatTimeout = function (timeout) {
         switch (true) {
             case timeout > MAX_TIMEOUT:
-                console.warn("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]timeout is greater than maximum value[10min]");
+                console.warn("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]timeout is greater than maximum value[10min]");
                 return MAX_TIMEOUT;
             case timeout < MIN_TIMEOUT:
-                console.warn("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]timeout is less than maximum value[100ms]");
+                console.warn("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_PARAMS + "]timeout is less than maximum value[100ms]");
                 return MIN_TIMEOUT;
             default:
                 return timeout;

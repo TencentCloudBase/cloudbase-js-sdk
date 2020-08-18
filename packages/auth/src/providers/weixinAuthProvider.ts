@@ -6,7 +6,7 @@ import { constants, adapters,utils } from '@cloudbase/utilities/';
 import { eventBus, EVENTS, LoginState } from '..';
 import { LOGINTYPE } from '../constants';
 
-const { SDK_NAME, ERRORS } = constants;
+const { getSdkName, ERRORS } = constants;
 const { RUNTIME } = adapters;
 const { getQuery, getHash, removeParam, printWarn } = utils;
 
@@ -78,7 +78,7 @@ export class WeixinAuthProvider extends AuthProvider {
     try{
       location.href = `${host}?appid=${this._appid}&redirect_uri=${currUrl}&response_type=code&scope=${this._scope}&state=${this._state}#wechat_redirect`;
     }catch(e){
-      throw new Error(`[${SDK_NAME}][${ERRORS.UNKOWN_ERROR}]${e}`)
+      throw new Error(`[${getSdkName()}][${ERRORS.UNKOWN_ERROR}]${e}`)
     }
   }
 
@@ -145,7 +145,7 @@ export class WeixinAuthProvider extends AuthProvider {
       createUser
     }).then(res => {
       if (res.code) {
-        throw new Error(`[${SDK_NAME}][${ERRORS.OPERATION_FAIL}] failed login via wechat: ${res.code}`);
+        throw new Error(`[${getSdkName()}][${ERRORS.OPERATION_FAIL}] failed login via wechat: ${res.code}`);
       }
       if (res.refresh_token) {
         return {
@@ -154,7 +154,7 @@ export class WeixinAuthProvider extends AuthProvider {
           accessTokenExpire: res.access_token_expire
         };
       } else {
-        throw new Error(`[${SDK_NAME}][${ERRORS.OPERATION_FAIL}] action:getJwt not return refreshToken`);
+        throw new Error(`[${getSdkName()}][${ERRORS.OPERATION_FAIL}] action:getJwt not return refreshToken`);
       }
     });
   }

@@ -744,11 +744,11 @@ type IProvider = new(...args:any[]) => any;
  */
 export function registerProvider(name:string,provider:IProvider){
   const proto = Auth.prototype;
-  proto[name] = function(...args:any[]){
+  proto[name] = function(options:object){
     const privateName = `_${name}`;
     if(!this[privateName]){
       this[privateName] = new provider({
-        ...args,
+        ...options,
         cache: this._cache,
         request: this._request,
         runtime: this._runtime

@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { constants, utils } from '@cloudbase/utilities';
-var SDK_NAME = constants.SDK_NAME, ERRORS = constants.ERRORS;
+var getSdkName = constants.getSdkName, ERRORS = constants.ERRORS;
 var isArray = utils.isArray, isString = utils.isString, isPalinObject = utils.isPalinObject, execCallback = utils.execCallback;
 var COMPONENT_NAME = 'storage';
 var uploadFile = function (params, callback) {
@@ -76,7 +76,7 @@ var uploadFile = function (params, callback) {
                             })];
                     }
                     else {
-                        return [2, execCallback(callback, new Error("[" + SDK_NAME + "][" + ERRORS.OPERATION_FAIL + "][" + COMPONENT_NAME + "]:" + res.data))];
+                        return [2, execCallback(callback, new Error("[" + getSdkName() + "][" + ERRORS.OPERATION_FAIL + "][" + COMPONENT_NAME + "]:" + res.data))];
                     }
                     return [2];
             }
@@ -117,12 +117,12 @@ var deleteFile = function (params, callback) {
                 case 0:
                     fileList = params.fileList;
                     if (!fileList || !isArray(fileList) || fileList.length === 0) {
-                        throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".deleteFile] fileList must not be empty");
+                        throw new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".deleteFile] fileList must not be empty");
                     }
                     for (_i = 0, fileList_1 = fileList; _i < fileList_1.length; _i++) {
                         fileId = fileList_1[_i];
                         if (!fileId || !isString(fileId)) {
-                            throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".deleteFile] fileID must be string");
+                            throw new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".deleteFile] fileID must be string");
                         }
                     }
                     action = 'storage.batchDeleteFile';
@@ -152,7 +152,7 @@ var getTempFileURL = function (params, callback) {
                 case 0:
                     fileList = params.fileList;
                     if (!fileList || !isArray(fileList) || fileList.length === 0) {
-                        err = new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] fileList must not be empty");
+                        err = new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] fileList must not be empty");
                         return [2, execCallback(callback, err)];
                     }
                     file_list = [];
@@ -160,7 +160,7 @@ var getTempFileURL = function (params, callback) {
                         file = fileList_2[_i];
                         if (isPalinObject(file)) {
                             if (!file.hasOwnProperty('fileID') || !file.hasOwnProperty('maxAge')) {
-                                err = new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] file info must include fileID and maxAge ");
+                                err = new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] file info must include fileID and maxAge ");
                                 return [2, execCallback(callback, err)];
                             }
                             file_list.push({
@@ -174,7 +174,7 @@ var getTempFileURL = function (params, callback) {
                             });
                         }
                         else {
-                            err = new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] invalid fileList");
+                            err = new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".getTempFileURL] invalid fileList");
                             return [2, execCallback(callback, err)];
                         }
                     }

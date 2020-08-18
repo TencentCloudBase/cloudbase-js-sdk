@@ -133,7 +133,7 @@ var WebRequest = (function (_super) {
         var method = (String(options.method)).toLowerCase() || 'get';
         return new Promise(function (resolve) {
             var url = options.url, _a = options.headers, headers = _a === void 0 ? {} : _a, data = options.data, responseType = options.responseType, withCredentials = options.withCredentials, body = options.body, onUploadProgress = options.onUploadProgress;
-            var realUrl = util_1.formatUrl(common_1.PROTOCOL, url, method === 'get' ? data : {});
+            var realUrl = util_1.formatUrl(common_1.getProtocol(), url, method === 'get' ? data : {});
             var ajax = new XMLHttpRequest();
             ajax.open(method, realUrl);
             responseType && (ajax.responseType = responseType);

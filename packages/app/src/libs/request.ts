@@ -1,7 +1,7 @@
 import {
   DATA_VERSION,
   LOGINTYPE,
-  SDK_NAME,
+  getSdkName,
   getSdkVersion,
   getEndPoint
 } from '../constants/common';
@@ -327,7 +327,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
 
     let refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refreshToken) {
-      throw new Error(`[${SDK_NAME}][${ERRORS.INVALID_OPERATION}] not login`);
+      throw new Error(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}] not login`);
     }
     const params: KV<string> = {
       refresh_token: refreshToken
@@ -356,7 +356,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
         cloudbase.fire(EVENTS.LOGIN_STATE_EXPIRED);
         await this._cache.removeStoreAsync(refreshTokenKey);
       }
-      throw new Error(`[${SDK_NAME}][${ERRORS.NETWORK_ERROR}] refresh access_token failed：${response.data.code}`);
+      throw new Error(`[${getSdkName()}][${ERRORS.NETWORK_ERROR}] refresh access_token failed：${response.data.code}`);
     }
     if (response.data.access_token) {
       cloudbase.fire(EVENTS.ACCESS_TOKEN_REFRESHD);

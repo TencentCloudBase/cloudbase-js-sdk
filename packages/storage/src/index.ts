@@ -13,7 +13,7 @@ import {
 
 declare const cloudbase: ICloudbase;
 
-const { SDK_NAME, ERRORS } = constants;
+const { getSdkName, ERRORS } = constants;
 const { isArray, isString, isPalinObject,execCallback } = utils;
 
 const COMPONENT_NAME = 'storage';
@@ -55,7 +55,7 @@ const uploadFile:ICloudbaseUploadFile = async function (params,callback) {
       requestId
     });
   }else{
-    return execCallback(callback,new Error(`[${SDK_NAME}][${ERRORS.OPERATION_FAIL}][${COMPONENT_NAME}]:${res.data}`));
+    return execCallback(callback,new Error(`[${getSdkName()}][${ERRORS.OPERATION_FAIL}][${COMPONENT_NAME}]:${res.data}`));
   }
 };
 
@@ -79,12 +79,12 @@ const deleteFile:ICloudbaseDeleteFile = async function (params,callback) {
   const { fileList } = params;
 
   if (!fileList || !isArray(fileList) || fileList.length === 0) {
-    throw new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.deleteFile] fileList must not be empty`);
+    throw new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.deleteFile] fileList must not be empty`);
   }
 
   for (const fileId of fileList) {
     if (!fileId || !isString(fileId)) {
-      throw new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.deleteFile] fileID must be string`);
+      throw new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.deleteFile] fileID must be string`);
     }
   }
 
@@ -109,7 +109,7 @@ const getTempFileURL:ICloudbaseGetTempFileURL = async function (params,callback)
   const { fileList } = params;
 
   if (!fileList || !isArray(fileList) || fileList.length === 0) {
-    const err = new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] fileList must not be empty`);
+    const err = new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] fileList must not be empty`);
     return execCallback(callback,err);
   }
 
@@ -117,7 +117,7 @@ const getTempFileURL:ICloudbaseGetTempFileURL = async function (params,callback)
   for (const file of fileList) {
     if (isPalinObject(file)) {
       if (!file.hasOwnProperty('fileID') || !file.hasOwnProperty('maxAge')) {
-        const err = new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] file info must include fileID and maxAge `);
+        const err = new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] file info must include fileID and maxAge `);
         return execCallback(callback,err);
       }
 
@@ -130,7 +130,7 @@ const getTempFileURL:ICloudbaseGetTempFileURL = async function (params,callback)
         fileid: file
       });
     } else {
-      const err = new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] invalid fileList`);
+      const err = new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.getTempFileURL] invalid fileList`);
       return execCallback(callback,err);
     }
   }

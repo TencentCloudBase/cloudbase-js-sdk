@@ -1,7 +1,12 @@
+import { constants } from '@cloudbase/utilities';
+
+// @ts-ignore
+const { setSdkName: setUtilitiesSdkName, setProtocol: setUtilitiesProtocol } = constants;
 /**
  * SDK
  */
 let sdk_version = '';
+let sdk_name = '@cloudbase/js-sdk';
 
 export function setSdkVersion(version:string){
   sdk_version = version;
@@ -9,7 +14,13 @@ export function setSdkVersion(version:string){
 export function getSdkVersion(){
   return sdk_version;
 }
-export const SDK_NAME = '@cloudbase/js-sdk';
+export function setSdkName(name:string){
+  sdk_name = name;
+  setUtilitiesSdkName(name);
+}
+export function getSdkName(){
+  return sdk_name;
+}
 export const DATA_VERSION = '2020-01-10';
 /**
  * request
@@ -22,7 +33,10 @@ let BASE_URL = typeof process !== 'undefined' && process.env.NODE_ENV === 'e2e' 
   : '//tcb-api.tencentcloudapi.com/web';
 export function setEndPoint(url:string,protocol?:'http'|'https'){
   BASE_URL = url;
-  protocol&&(PROTOCOL = protocol);
+  if(protocol){
+    PROTOCOL = protocol;
+    setUtilitiesProtocol(protocol);
+  }
 }
 export function getEndPoint(){
   return { BASE_URL, PROTOCOL };
