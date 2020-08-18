@@ -8,7 +8,7 @@ import {
   IRequestMethod
 } from '@cloudbase/adapter-interface';
 import { isFormData, formatUrl, toQueryString } from '../../libs/util';
-import { PROTOCOL } from '../../constants/common';
+import { getProtocol } from '../../constants/common';
 
 /**
  * @class WebRequest
@@ -96,7 +96,7 @@ class WebRequest extends AbstractSDKRequest {
     const method = (String(options.method)).toLowerCase() || 'get';
     return new Promise(resolve => {
       const { url, headers = {}, data, responseType, withCredentials, body, onUploadProgress } = options;
-      const realUrl = formatUrl(PROTOCOL, url, method === 'get' ? data : {});
+      const realUrl = formatUrl(getProtocol(), url, method === 'get' ? data : {});
       const ajax = new XMLHttpRequest();
       ajax.open(method, realUrl);
       responseType && (ajax.responseType = responseType);

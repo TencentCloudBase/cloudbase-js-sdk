@@ -1,7 +1,7 @@
 import { KV } from '@cloudbase/types';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
 import { constants } from '@cloudbase/utilities';
-import { SDK_NAME } from '../constants/common';
+import { getSdkName } from '../constants/common';
 
 const { ERRORS } = constants;
 
@@ -11,7 +11,7 @@ export function registerComponent(app:any,component:ICloudbaseComponent){
   const { name, namespace, entity, injectEvents } = component;
   // 不允许重复注册或命名空间重名
   if(components[name]||(namespace&&app[namespace])){
-    throw new Error(`[${SDK_NAME}][${ERRORS.INVALID_OPERATION}]There were multiple attempts to register component ${name}.`);
+    throw new Error(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}]There were multiple attempts to register component ${name}.`);
   }
 
   components[name] = component;

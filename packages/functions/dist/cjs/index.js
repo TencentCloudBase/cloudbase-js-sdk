@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerFunctions = void 0;
 var utilities_1 = require("@cloudbase/utilities");
-var SDK_NAME = utilities_1.constants.SDK_NAME, ERRORS = utilities_1.constants.ERRORS;
+var getSdkName = utilities_1.constants.getSdkName, ERRORS = utilities_1.constants.ERRORS;
 var execCallback = utilities_1.utils.execCallback;
 var COMPONENT_NAME = 'functions';
 var callFunction = function (options, callback) {
@@ -49,13 +49,13 @@ var callFunction = function (options, callback) {
                 case 0:
                     name = options.name, data = options.data, query = options.query, parse = options.parse, search = options.search;
                     if (!name) {
-                        execCallback(callback, new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] invalid name"));
+                        execCallback(callback, new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] invalid name"));
                     }
                     try {
                         jsonData = data ? JSON.stringify(data) : '';
                     }
                     catch (e) {
-                        execCallback(callback, new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] invalid data"));
+                        execCallback(callback, new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] invalid data"));
                     }
                     action = 'functions.invokeFunction';
                     params = {
@@ -92,7 +92,7 @@ var callFunction = function (options, callback) {
                                     })];
                             }
                             catch (e) {
-                                execCallback(callback, new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] response data must be json"));
+                                execCallback(callback, new Error("[" + getSdkName() + "][" + ERRORS.INVALID_PARAMS + "][" + COMPONENT_NAME + ".callFunction] response data must be json"));
                             }
                         }
                     }

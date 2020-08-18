@@ -9,4 +9,3 @@ export var LOGINTYPE;
     LOGINTYPE["USERNAME"] = "USERNAME";
     LOGINTYPE["NULL"] = "NULL";
 })(LOGINTYPE || (LOGINTYPE = {}));
-export var SDK_NAME = '@cloudbase/js-sdk';

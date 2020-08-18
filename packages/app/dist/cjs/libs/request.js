@@ -370,7 +370,7 @@ var CloudbaseRequest = (function () {
                     case 3:
                         refreshToken = _b.sent();
                         if (!refreshToken) {
-                            throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login");
+                            throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_OPERATION + "] not login");
                         }
                         params = {
                             refresh_token: refreshToken
@@ -405,7 +405,7 @@ var CloudbaseRequest = (function () {
                     case 10:
                         _b.sent();
                         _b.label = 11;
-                    case 11: throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.NETWORK_ERROR + "] refresh access_token failed\uFF1A" + response.data.code);
+                    case 11: throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.NETWORK_ERROR + "] refresh access_token failed\uFF1A" + response.data.code);
                     case 12:
                         if (!response.data.access_token) return [3, 15];
                         __1.cloudbase.fire(events_1.EVENTS.ACCESS_TOKEN_REFRESHD);

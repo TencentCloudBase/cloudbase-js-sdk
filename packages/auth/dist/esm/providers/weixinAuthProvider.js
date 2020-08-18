@@ -51,7 +51,7 @@ import { AuthProvider } from './base';
 import { constants, adapters, utils } from '@cloudbase/utilities/';
 import { eventBus, EVENTS, LoginState } from '..';
 import { LOGINTYPE } from '../constants';
-var SDK_NAME = constants.SDK_NAME, ERRORS = constants.ERRORS;
+var getSdkName = constants.getSdkName, ERRORS = constants.ERRORS;
 var RUNTIME = adapters.RUNTIME;
 var getQuery = utils.getQuery, getHash = utils.getHash, removeParam = utils.removeParam, printWarn = utils.printWarn;
 var WeixinAuthProvider = (function (_super) {
@@ -134,7 +134,7 @@ var WeixinAuthProvider = (function (_super) {
             location.href = host + "?appid=" + this._appid + "&redirect_uri=" + currUrl + "&response_type=code&scope=" + this._scope + "&state=" + this._state + "#wechat_redirect";
         }
         catch (e) {
-            throw new Error("[" + SDK_NAME + "][" + ERRORS.UNKOWN_ERROR + "]" + e);
+            throw new Error("[" + getSdkName() + "][" + ERRORS.UNKOWN_ERROR + "]" + e);
         }
     };
     WeixinAuthProvider.prototype._signInWithCode = function (code, options) {
@@ -212,7 +212,7 @@ var WeixinAuthProvider = (function (_super) {
                         createUser: createUser
                     }).then(function (res) {
                         if (res.code) {
-                            throw new Error("[" + SDK_NAME + "][" + ERRORS.OPERATION_FAIL + "] failed login via wechat: " + res.code);
+                            throw new Error("[" + getSdkName() + "][" + ERRORS.OPERATION_FAIL + "] failed login via wechat: " + res.code);
                         }
                         if (res.refresh_token) {
                             return {
@@ -222,7 +222,7 @@ var WeixinAuthProvider = (function (_super) {
                             };
                         }
                         else {
-                            throw new Error("[" + SDK_NAME + "][" + ERRORS.OPERATION_FAIL + "] action:getJwt not return refreshToken");
+                            throw new Error("[" + getSdkName() + "][" + ERRORS.OPERATION_FAIL + "] action:getJwt not return refreshToken");
                         }
                     })];
             });

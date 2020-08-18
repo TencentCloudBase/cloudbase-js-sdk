@@ -45,15 +45,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { adapters, constants } from '@cloudbase/utilities';
+import { adapters, constants, utils } from '@cloudbase/utilities';
 import adapterForWxMp from 'cloudbase-adapter-wx_mp';
 import { registerComponent } from './libs/component';
 import { Platform } from './libs/adapter';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { initRequest, getRequestByEnvId } from './libs/request';
-import { SDK_NAME, setSdkVersion, setEndPoint } from './constants/common';
+import { getSdkName, setSdkVersion, setEndPoint, setSdkName } from './constants/common';
 var useAdapters = adapters.useAdapters, useDefaultAdapter = adapters.useDefaultAdapter, RUNTIME = adapters.RUNTIME;
 var ERRORS = constants.ERRORS;
+var printWarn = utils.printWarn, throwError = utils.throwError;
 var DEFAULT_INIT_CONFIG = {
     timeout: 15000,
     persistence: 'session'
@@ -102,24 +103,27 @@ var Cloudbase = (function () {
         configurable: true
     });
     Cloudbase.prototype.init = function (config) {
+        if (!config.env) {
+            throwError(ERRORS.INVALID_PARAMS, 'env must not be specified');
+        }
         if (!Platform.adapter) {
             this._useDefaultAdapter();
         }
         this.requestClient = new Platform.adapter.reqClass({
             timeout: config.timeout || 5000,
-            timeoutMsg: "[" + SDK_NAME + "][REQUEST TIMEOUT] request had been abort since didn't finished within" + config.timeout / 1000 + "s"
+            timeoutMsg: "[" + getSdkName() + "][REQUEST TIMEOUT] request had been abort since didn't finished within" + config.timeout / 1000 + "s"
         });
         if (Platform.runtime !== RUNTIME.WEB) {
             if (!config.appSecret) {
-                throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSecret");
+                throwError(ERRORS.INVALID_PARAMS, 'invalid appSecret');
             }
             var appSign_1 = Platform.adapter.getAppSign ? Platform.adapter.getAppSign() : '';
             if (config.appSign && appSign_1 && config.appSign !== appSign_1) {
-                throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
+                throwError(ERRORS.INVALID_PARAMS, 'invalid appSign');
             }
             appSign_1 && (config.appSign = appSign_1);
             if (!config.appSign) {
-                throw new Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]invalid appSign");
+                throwError(ERRORS.INVALID_PARAMS, 'invalid appSign');
             }
         }
         this._config = __assign(__assign({}, DEFAULT_INIT_CONFIG), config);
@@ -146,7 +150,7 @@ var Cloudbase = (function () {
                     case 0:
                         ext = extensionMap[name];
                         if (!ext) {
-                            throw Error("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]extension:" + name + " must be registered before invoke");
+                            throwError(ERRORS.INVALID_PARAMS, "extension:" + name + " must be registered before invoke");
                         }
                         return [4, ext.invoke(opts, this)];
                     case 1: return [2, _a.sent()];
@@ -165,6 +169,9 @@ var Cloudbase = (function () {
     Cloudbase.prototype.registerVersion = function (version) {
         setSdkVersion(version);
     };
+    Cloudbase.prototype.registerSdkName = function (name) {
+        setSdkName(name);
+    };
     Cloudbase.prototype.registerEndPoint = function (url, protocol) {
         setEndPoint(url, protocol);
     };
@@ -176,10 +183,10 @@ var Cloudbase = (function () {
     Cloudbase.prototype._formatTimeout = function (timeout) {
         switch (true) {
             case timeout > MAX_TIMEOUT:
-                console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]timeout is greater than maximum value[10min]");
+                printWarn(ERRORS.INVALID_PARAMS, 'timeout is greater than maximum value[10min]');
                 return MAX_TIMEOUT;
             case timeout < MIN_TIMEOUT:
-                console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_PARAMS + "]timeout is less than maximum value[100ms]");
+                printWarn(ERRORS.INVALID_PARAMS, 'timeout is less than maximum value[100ms]');
                 return MIN_TIMEOUT;
             default:
                 return timeout;

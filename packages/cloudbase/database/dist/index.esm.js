@@ -11,11 +11,11 @@ var __assign = (this && this.__assign) || function () {
 };
 import { Db } from '@cloudbase/database';
 import { constants } from '@cloudbase/utilities';
-var SDK_NAME = constants.SDK_NAME, ERRORS = constants.ERRORS;
+var getSdkName = constants.getSdkName, ERRORS = constants.ERRORS;
 var COMPONENT_NAME = 'database';
 function database(dbConfig) {
     if (!this.authInstance) {
-        console.warn("[" + SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "] not login ");
+        console.warn("[" + getSdkName() + "][" + ERRORS.INVALID_OPERATION + "] not login ");
         return;
     }
     var _a = this.platform, adapter = _a.adapter, runtime = _a.runtime;

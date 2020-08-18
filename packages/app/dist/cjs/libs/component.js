@@ -15,7 +15,7 @@ var components = {};
 function registerComponent(app, component) {
     var name = component.name, namespace = component.namespace, entity = component.entity, injectEvents = component.injectEvents;
     if (components[name] || (namespace && app[namespace])) {
-        throw new Error("[" + common_1.SDK_NAME + "][" + ERRORS.INVALID_OPERATION + "]There were multiple attempts to register component " + name + ".");
+        throw new Error("[" + common_1.getSdkName() + "][" + ERRORS.INVALID_OPERATION + "]There were multiple attempts to register component " + name + ".");
     }
     components[name] = component;
     if (namespace) {

@@ -839,14 +839,10 @@ function registerAuth(app) {
 exports.registerAuth = registerAuth;
 function registerProvider(name, provider) {
     var proto = Auth.prototype;
-    proto[name] = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    proto[name] = function (options) {
         var privateName = "_" + name;
         if (!this[privateName]) {
-            this[privateName] = new provider(__assign(__assign({}, args), { cache: this._cache, request: this._request, runtime: this._runtime }));
+            this[privateName] = new provider(__assign(__assign({}, options), { cache: this._cache, request: this._request, runtime: this._runtime }));
         }
         return this[privateName];
     };

@@ -5,7 +5,7 @@ import { ICloudbaseComponent } from '@cloudbase/types/component';
 
 declare const cloudbase: ICloudbase;
 
-const { SDK_NAME,ERRORS } = constants;
+const { getSdkName ,ERRORS } = constants;
 const { execCallback } = utils;
 
 const COMPONENT_NAME = 'functions';
@@ -13,13 +13,13 @@ const COMPONENT_NAME = 'functions';
 const callFunction:ICallFunction = async function (options: ICallFunctionOptions,callback?:Function):Promise<ICallFunctionResponse> {
   const { name, data, query, parse, search } = options;
   if (!name) {
-    execCallback(callback,new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] invalid name`));
+    execCallback(callback,new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] invalid name`));
   }
   let jsonData;
   try {
     jsonData = data ? JSON.stringify(data) : '';
   } catch (e) {
-    execCallback(callback, new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] invalid data`));
+    execCallback(callback, new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] invalid data`));
   }
 
   const action = 'functions.invokeFunction';
@@ -53,7 +53,7 @@ const callFunction:ICallFunction = async function (options: ICallFunctionOptions
             requestId: res.requestId
           });
         } catch (e) {
-          execCallback(callback, new Error(`[${SDK_NAME}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] response data must be json`));
+          execCallback(callback, new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}][${COMPONENT_NAME}.callFunction] response data must be json`));
         }
       }
     }

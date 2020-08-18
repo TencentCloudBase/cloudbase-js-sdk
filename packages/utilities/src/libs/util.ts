@@ -2,7 +2,7 @@ import hs256 from 'crypto-js/hmac-sha256';
 import base64 from 'crypto-js/enc-base64';
 import utf8 from 'crypto-js/enc-utf8';
 import { KV } from '@cloudbase/types';
-import { SDK_NAME } from '../constants';
+import { getSdkName } from '../constants';
 
 export function isArray(val: any): boolean {
   return Object.prototype.toString.call(val) === '[object Array]';
@@ -155,20 +155,20 @@ export function execCallback(fn:Function|null|undefined,err:any,data=null){
 }
 
 export function printWarn(error:string,msg:string){
-  console.warn(`[${SDK_NAME}][${error}]:${msg}`);
+  console.warn(`[${getSdkName()}][${error}]:${msg}`);
 }
 export function printError(error:string,msg:string){
   console.error({
     code: error,
-    msg: `[${SDK_NAME}][${error}]:${msg}`
+    msg: `[${getSdkName()}][${error}]:${msg}`
   });
 }
 export function printInfo(error:string,msg:string){
-  console.log(`[${SDK_NAME}][${error}]:${msg}`);
+  console.log(`[${getSdkName()}][${error}]:${msg}`);
 }
 export function throwError(error:string,msg:string){
   throw new Error(JSON.stringify({
     code: error,
-    msg: `[${SDK_NAME}][${error}]:${msg}`
+    msg: `[${getSdkName()}][${error}]:${msg}`
   }));
 }

@@ -14,15 +14,15 @@ import cloudbase from '../../packages/cloudbase';
 let app;
 let auth;
 let loginState;
-
+cloudbase.registerSdkName('@cloudbase/js-sdk-test');
 cloudbase.registerEndPoint('//tcb-pre.tencentcloudapi.com/web');
 
 async function init () {
   printInfo('web test starting init');
   // 初始化
   app = cloudbase.init({
-    env,
-    timeout: 150000
+    // env,
+    // timeout: 150000
   });
 
   auth = app.auth({
@@ -33,10 +33,10 @@ async function init () {
   // await signInWeixin(auth,appid);
 
   // 匿名登录
-  // await signInAnonymous(auth);
+  await signInAnonymous(auth);
 
   // 自定义登录
-  await signInCustom(auth);
+  // await signInCustom(auth);
 
   // 用户名登录
   // await signInWithUsername(auth,{
@@ -45,8 +45,8 @@ async function init () {
   // });
 
   registerFunctionCases(app);
-  // registerStorageCases(app);
-  // registerDatabaseCases(app);
+  registerStorageCases(app);
+  registerDatabaseCases(app);
 
   initTestCasesIndex();
 };

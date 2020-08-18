@@ -162,24 +162,24 @@ function execCallback(fn, err, data) {
 }
 exports.execCallback = execCallback;
 function printWarn(error, msg) {
-    console.warn("[" + constants_1.SDK_NAME + "][" + error + "]:" + msg);
+    console.warn("[" + constants_1.getSdkName() + "][" + error + "]:" + msg);
 }
 exports.printWarn = printWarn;
 function printError(error, msg) {
     console.error({
         code: error,
-        msg: "[" + constants_1.SDK_NAME + "][" + error + "]:" + msg
+        msg: "[" + constants_1.getSdkName() + "][" + error + "]:" + msg
     });
 }
 exports.printError = printError;
 function printInfo(error, msg) {
-    console.log("[" + constants_1.SDK_NAME + "][" + error + "]:" + msg);
+    console.log("[" + constants_1.getSdkName() + "][" + error + "]:" + msg);
 }
 exports.printInfo = printInfo;
 function throwError(error, msg) {
     throw new Error(JSON.stringify({
         code: error,
-        msg: "[" + constants_1.SDK_NAME + "][" + error + "]:" + msg
+        msg: "[" + constants_1.getSdkName() + "][" + error + "]:" + msg
     }));
 }
 exports.throwError = throwError;
