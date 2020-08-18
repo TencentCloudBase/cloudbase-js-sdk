@@ -1,4 +1,4 @@
-import { adapters,constants } from '@cloudbase/utilities';
+import { adapters, constants, utils } from '@cloudbase/utilities';
 import { SDKAdapterInterface, CloudbaseAdapter, IRequestConfig } from '@cloudbase/adapter-interface';
 import { ICloudbaseConfig, ICloudbaseUpgradedConfig, ICloudbase, ICloudbaseExtension, KV, ICloudbasePlatformInfo } from '@cloudbase/types';
 import { ICloudbaseAuth } from '@cloudbase/types/auth';
@@ -10,10 +10,11 @@ import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { initRequest, getRequestByEnvId } from './libs/request';
-import { getSdkName, setSdkVersion, setEndPoint } from './constants/common';
+import { getSdkName, setSdkVersion, setEndPoint, setSdkName } from './constants/common';
 
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
 const { ERRORS } = constants;
+const { printWarn, throwError } = utils;
 
 /**
  * @constant 默认配置
@@ -61,6 +62,9 @@ class Cloudbase implements ICloudbase{
   }
 
   public init(config: ICloudbaseConfig):Cloudbase {
+    if(!config.env){
+      throwError(ERRORS.INVALID_PARAMS,'env must not be specified');
+    }
     // 初始化时若未兼容平台，则使用默认adapter
     if (!Platform.adapter) {
       this._useDefaultAdapter();
@@ -72,17 +76,17 @@ class Cloudbase implements ICloudbase{
     } as IRequestConfig);
     if (Platform.runtime !== RUNTIME.WEB) {
       if (!config.appSecret) {
-        throw new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]invalid appSecret`);
+        throwError(ERRORS.INVALID_PARAMS,'invalid appSecret');
       }
       // adapter提供获取应用标识的接口
       const appSign = Platform.adapter.getAppSign ? Platform.adapter.getAppSign() : '';
       if (config.appSign && appSign && config.appSign !== appSign) {
         // 传入的appSign与sdk获取的不一致
-        throw new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]invalid appSign`);
+        throwError(ERRORS.INVALID_PARAMS,'invalid appSign');
       }
       appSign && (config.appSign = appSign);
       if (!config.appSign) {
-        throw new Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]invalid appSign`);
+        throwError(ERRORS.INVALID_PARAMS,'invalid appSign')
       }
     }
     this._config = {
@@ -114,7 +118,7 @@ class Cloudbase implements ICloudbase{
   public async invokeExtension(name:string, opts:any) {
     const ext = extensionMap[name];
     if (!ext) {
-      throw Error(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]extension:${name} must be registered before invoke`);
+      throwError(ERRORS.INVALID_PARAMS,`extension:${name} must be registered before invoke`);
     }
 
     return await ext.invoke(opts, this);
@@ -135,7 +139,7 @@ class Cloudbase implements ICloudbase{
   }
 
   public registerSdkName(name:string){
-    setSdkVersion(name);
+    setSdkName(name);
   }
 
   public registerEndPoint(url:string,protocol?:'http'|'https'){
@@ -151,10 +155,10 @@ class Cloudbase implements ICloudbase{
   private _formatTimeout(timeout:number){
     switch (true) {
       case timeout > MAX_TIMEOUT:
-        console.warn(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]timeout is greater than maximum value[10min]`);
+        printWarn(ERRORS.INVALID_PARAMS,'timeout is greater than maximum value[10min]');
         return MAX_TIMEOUT;
       case timeout < MIN_TIMEOUT:
-        console.warn(`[${getSdkName()}][${ERRORS.INVALID_PARAMS}]timeout is less than maximum value[100ms]`);
+        printWarn(ERRORS.INVALID_PARAMS,'timeout is less than maximum value[100ms]');
         return MIN_TIMEOUT;
       default:
         return timeout;

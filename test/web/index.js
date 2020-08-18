@@ -14,15 +14,15 @@ import cloudbase from '../../packages/cloudbase';
 let app;
 let auth;
 let loginState;
-
+cloudbase.registerSdkName('@cloudbase/js-sdk-test');
 cloudbase.registerEndPoint('//tcb-pre.tencentcloudapi.com/web');
 
 async function init () {
   printInfo('web test starting init');
   // 初始化
   app = cloudbase.init({
-    env,
-    timeout: 150000
+    // env,
+    // timeout: 150000
   });
 
   auth = app.auth({
