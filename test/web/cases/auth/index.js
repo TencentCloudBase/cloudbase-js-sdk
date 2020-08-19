@@ -133,7 +133,7 @@ export async function signInWeixin(auth,appid){
   }
 }
 
-export async function signInWithUsername(auth,username,password){
+export async function signInWithUsername(auth,{username,password}){
   if(!username||!password){
     throw new Error('请配置用户名&密码');
   }
@@ -142,7 +142,13 @@ export async function signInWithUsername(auth,username,password){
     alert('当前已有其他登录类型的登录态，请清空localstorage后重新发起测试');
     return;
   }
-  await auth.signInWithUsernameAndPassword(username,password);
+  // 检查用户名是否绑定过
+  if (!(await auth.isUsernameRegistered(username))) {
+    await signInCustom(auth)
+    await auth.currentUser.updateUsername(username); // 绑定用户名
+  }else{
+    await auth.signInWithUsernameAndPassword(username,password);
+  }
 }
 
 export async function clearLoginState(){
