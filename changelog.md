@@ -13,6 +13,9 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
+## [1.1.1] 2020-08-19
+- [Fixed] 修复用户名密码登录bug
+
 ## [1.1.0] 2020-08-18
 - [Added] 增加 `cloudbase.registerSdkName` API
 
