@@ -523,7 +523,7 @@ var Auth = (function () {
     Auth.prototype.signInWithUsernameAndPassword = function (username, password) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2, this._usernameAuthProvider.signIn(username, password)];
+                return [2, this.usernameAuthProvider().signIn(username, password)];
             });
         });
     };

@@ -464,7 +464,7 @@ class Auth{
    * @param password 
    */
   public async signInWithUsernameAndPassword(username: string, password: string) {
-    return this._usernameAuthProvider.signIn(username, password);
+    return this.usernameAuthProvider().signIn(username, password);
   }
   /**
    * 检测用户名是否已经占用
