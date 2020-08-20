@@ -10,9 +10,13 @@ const webpackConfOfComponent = require('./webpack.config.component');
 const pkg = require('./package.json');
 
 const rootPath = __dirname;
-const distPath = process.env.BUILD_SRC==='wrapper'?path.resolve(rootPath,'../../'):rootPath;
-const cdnJsDir = process.env.NODE_ENV==='e2e'?path.join(distPath,`cdnjs_e2e`):path.join(distPath,`cdnjs/${pkg.version}`);
+// cdn构建输出根路径：BUILD_SRC=wrapper时输出到外层目录，否则输出到当前目录
+const cdnJsRootPath = process.env.BUILD_SRC==='wrapper'?path.resolve(rootPath,'../../'):rootPath;
+const cdnJsDir = process.env.NODE_ENV==='e2e'?path.join(cdnJsRootPath,`cdnjs_e2e`):path.join(cdnJsRootPath,`cdnjs/${pkg.version}`);
+// 小程序文件输出路径
+const miniappDistDir = `${rootPath}/${pkg.miniprogram}`;
 
+// tsc task列表
 const tscTaskList = [];
 
 const tsconfigCjs = {
@@ -88,14 +92,18 @@ if(pkg.module){
 
 const tscTask = gulp.series(...tscTaskList);
 
-const buildTaskList  = [];
-const buildComponents = [
+// cdn task列表
+const cdnTaskList  = [];
+// 小程序 task 列表
+const miniappTaskList = [];
+const cdnComponents = [
   'auth',
   'functions',
   'storage',
   'database'
 ];
-const taskOfBuildFullJs = function(){
+
+cdnTaskList.push(function taskOfBuildFullJs(){
   return gulp.src(`${rootPath}/src/index.ts`).pipe(webpack({
     ...webpackConfOfApp,
     entry: {
@@ -105,11 +113,23 @@ const taskOfBuildFullJs = function(){
       ]
     },
     mode: 'production'
-  })).pipe(gulp.dest(cdnJsDir))
-}
-buildTaskList.push(taskOfBuildFullJs);
+  })).pipe(gulp.dest(cdnJsDir));
+});
 
-const taskOfBuildApp = function(){
+miniappTaskList.push(function taskOfBuildMiniappFullJs(){
+  return gulp.src(`${rootPath}/src/index.ts`).pipe(webpack({
+    ...webpackConfOfApp,
+    entry: {
+      'index.js': [
+        'regenerator-runtime/runtime',
+        path.resolve(rootPath,'src/index.ts')
+      ]
+    },
+    mode: 'production'
+  })).pipe(gulp.dest(miniappDistDir));
+});
+
+cdnTaskList.push(function taskOfBuildApp(){
   return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpack({
     ...webpackConfOfApp,
     entry: {
@@ -120,10 +140,23 @@ const taskOfBuildApp = function(){
     },
     mode: 'production'
   })).pipe(gulp.dest(cdnJsDir))
-}
-buildTaskList.push(taskOfBuildApp);
-buildComponents.forEach(comp=>{
-  const taskComp =  function(){
+});
+
+miniappTaskList.push(function taskOfBuildApp(){
+  return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpack({
+    ...webpackConfOfApp,
+    entry: {
+      'app.js': [
+        'regenerator-runtime/runtime',
+        path.resolve(rootPath,'app/src/index.ts')
+      ]
+    },
+    mode: 'production'
+  })).pipe(gulp.dest(miniappDistDir));
+});
+
+cdnTaskList.push(...cdnComponents.map(comp=>{
+  return function taskComp(){
     return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpack({
       ...webpackConfOfComponent,
       entry: {
@@ -138,10 +171,29 @@ buildComponents.forEach(comp=>{
         globalObject: 'typeof window !== "undefined"?window:this'
       },
       mode: 'production'
-    })).pipe(gulp.dest(cdnJsDir))
-  }
-  buildTaskList.push(taskComp);
-});
+    })).pipe(gulp.dest(cdnJsDir));
+  };
+}));
 
-exports.tsc = gulp.parallel([tscTask]);
-exports.cdn = gulp.parallel(buildTaskList);
+miniappTaskList.push(...cdnComponents.map(comp=>{
+  return function taskComp(){
+    return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpack({
+      ...webpackConfOfComponent,
+      entry: {
+        [`${comp}.js`]: path.resolve(rootPath,`${comp}/src/index.ts`)
+      },
+      output: {
+        path: miniappDistDir,
+        filename: '[name]',
+        library: `cloudbase_${comp}`,
+        libraryTarget: 'umd',
+        umdNamedDefine: true,
+        globalObject: 'typeof window !== "undefined"?window:this'
+      },
+      mode: 'production'
+    })).pipe(gulp.dest(miniappDistDir));
+  };
+}));
+
+exports.build = gulp.parallel([tscTask,miniappTaskList]);
+exports.cdn = gulp.parallel(cdnTaskList);

@@ -1,16 +1,17 @@
 {
   "name": "@cloudbase/js-sdk",
-  "version": "1.1.1",
+  "version": "1.1.2-beta.0",
   "description": "cloudbase javascript sdk",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "miniprogram": "miniprogram_dist",
   "typings": "./index.d.ts",
   "scripts": {
     "lint": "eslint --fix \"./src/**/*.ts\" \"./database/**/*.ts\"",
-    "build": "rm -rf dist/ && gulp tsc",
+    "build": "rm -rf dist/ && gulp build",
     "build:cdn": "gulp cdn",
-    "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp",
-    "prepublish": "npm run build"
+    "build:miniapp": "gulp miniapp",
+    "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp"
   },
   "publishConfig": {
     "access": "public"
@@ -25,6 +26,7 @@
     "JavaScript"
   ],
   "files": [
+    "miniprogram_dist",
     "**/dist/",
     "/index.d.ts",
     "**/package.json"
@@ -39,13 +41,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cloudbase/app": "^1.1.0",
-    "@cloudbase/auth": "^1.1.1",
+    "@cloudbase/app": "^1.1.1-beta.0",
+    "@cloudbase/auth": "^1.1.2-beta.0",
     "@cloudbase/database": "^0.9.18-beta",
-    "@cloudbase/functions": "^1.1.0",
-    "@cloudbase/storage": "^1.1.0",
-    "@cloudbase/types": "^1.0.0",
-    "@cloudbase/utilities": "^1.1.0"
+    "@cloudbase/functions": "^1.1.1-alpha.2",
+    "@cloudbase/storage": "^1.1.1-alpha.2",
+    "@cloudbase/types": "^1.0.1-alpha.1",
+    "@cloudbase/utilities": "^1.1.1-alpha.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

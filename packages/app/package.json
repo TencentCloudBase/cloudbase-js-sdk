@@ -1,14 +1,13 @@
 {
   "name": "@cloudbase/app",
-  "version": "1.1.0",
+  "version": "1.1.1-beta.0",
   "description": "cloudbase javascript sdk core",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
     "tsc": "rm -rf dist/ && tsc -p tsconfig.esm.json && tsc -p tsconfig.json",
     "lint": "eslint --fix \"./src/**/*.ts\"",
-    "build": "npm run lint&&npm run tsc",
-    "prepublish": "npm run tsc"
+    "build": "npm run lint&&npm run tsc"
   },
   "publishConfig": {
     "access": "public"
@@ -25,8 +24,8 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/types": "^1.0.0",
-    "@cloudbase/utilities": "^1.1.0",
+    "@cloudbase/types": "^1.0.1-alpha.1",
+    "@cloudbase/utilities": "^1.1.1-alpha.2",
     "cloudbase-adapter-wx_mp": "^0.1.1"
   },
   "devDependencies": {

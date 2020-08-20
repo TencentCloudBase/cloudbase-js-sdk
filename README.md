@@ -1,4 +1,7 @@
 ## @cloudbase/js-sdk
+[![NPM Version](https://img.shields.io/npm/v/@cloudbase/js-sdk.svg?style=flat)](https://www.npmjs.com/package/@cloudbase/js-sdk)
+[![](https://img.shields.io/npm/dt/@cloudbase/js-sdk.svg)](https://www.npmjs.com/package/@cloudbase/js-sdk)
+
 云开发 Cloudbase JavaScript SDK。
 
 ### 安装使用

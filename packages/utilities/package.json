@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/utilities",
-  "version": "1.1.0",
+  "version": "1.1.1-alpha.2",
   "description": "cloudbase javascript sdk utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,7 @@
   "scripts": {
     "tsc": "rm -rf dist/ && tsc -p tsconfig.json",
     "lint": "eslint --fix \"./src/**/*.ts\"",
-    "build": "npm run lint&& npm run tsc",
-    "prepublish": "npm run tsc"
+    "build": "npm run lint&& npm run tsc"
   },
   "keywords": [
     "tcb",
@@ -32,7 +31,7 @@
   },
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/types": "^1.0.0",
+    "@cloudbase/types": "^1.0.1-alpha.1",
     "crypto-js": "3"
   },
   "husky": {
