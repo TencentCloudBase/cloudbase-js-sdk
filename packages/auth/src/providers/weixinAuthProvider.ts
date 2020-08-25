@@ -133,7 +133,7 @@ export class WeixinAuthProvider extends AuthProvider {
     // snsapi_userinfo 和 snsapi_login 才可以获取用户的微信信息
     const syncUserInfo = this._scope === 'snsapi_base' ? false : options.syncUserInfo || false;
 
-    const action = 'auth.getJwt';
+    const action = 'auth.signIn';
     const hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
     return this._request.send(action, { 
       appid, 

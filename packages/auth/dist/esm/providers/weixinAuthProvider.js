@@ -200,7 +200,7 @@ var WeixinAuthProvider = (function (_super) {
             return __generator(this, function (_c) {
                 _a = options.withUnionId, withUnionId = _a === void 0 ? false : _a, _b = options.createUser, createUser = _b === void 0 ? true : _b;
                 syncUserInfo = this._scope === 'snsapi_base' ? false : options.syncUserInfo || false;
-                action = 'auth.getJwt';
+                action = 'auth.signIn';
                 hybridMiniapp = this._runtime === RUNTIME.WX_MP ? '1' : '0';
                 return [2, this._request.send(action, {
                         appid: appid,
