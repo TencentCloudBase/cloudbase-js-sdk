@@ -29,7 +29,7 @@ async function init () {
   });
 
   // 公众号微信登录
-  // await signInWeixin(auth,appid);
+  await signInWeixin(auth,appid);
 
   // 匿名登录
   // await signInAnonymous(auth);
@@ -38,10 +38,10 @@ async function init () {
   // await signInCustom(auth);
 
   // 用户名登录
-  await signInWithUsername(auth,{
-    username: authUsername,
-    password: authPassword
-  });
+  // await signInWithUsername(auth,{
+  //   username: authUsername,
+  //   password: authPassword
+  // });
 
   registerFunctionCases(app);
   registerStorageCases(app);
