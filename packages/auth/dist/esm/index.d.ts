@@ -90,10 +90,7 @@ declare class Auth {
     getLoginState(): Promise<LoginState>;
     shouldRefreshAccessToken(hook: any): void;
     getUserInfo(): Promise<any>;
-    getAuthHeader(): {
-        'x-cloudbase-credentials': string;
-    };
-    getAuthHeaderAsync(): Promise<{
+    getAuthHeader(): Promise<{
         'x-cloudbase-credentials': string;
     }>;
     private _onLoginTypeChanged;
