@@ -13,8 +13,8 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
-## [1.2.0] 2020-08-25
-- [Changed] `Auth.getAuthHeader` API 修改为异步模式
+## [1.2.1] 2020-08-26
+- [Added] 新增 `Auth.getAuthHeaderAsync` API 
 
 ## [1.1.4] 2020-08-25
 - [Fixed] 修复微信公众号登录 Bug
