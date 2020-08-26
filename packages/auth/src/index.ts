@@ -621,26 +621,11 @@ class Auth{
   /**
    * 获取Http鉴权header，用于云接入 HTTP 访问云函数时的鉴权
    */
-  public getAuthHeader() {
-    if(this._cache.mode==='async'){
-      // async storage的平台调用此API提示
-      printWarn(ERRORS.INVALID_OPERATION,'current platform\'s storage is asynchronous, please use getAuthHeaderAsync insteed');
-      return;
-    }
+  public async getAuthHeader() {
+    await this._request.refreshAccessToken();
+    
     const { refreshTokenKey, accessTokenKey } = this._cache.keys;
-    const refreshToken = this._cache.getStore(refreshTokenKey);
-    const accessToken = this._cache.getStore(accessTokenKey);
-    return {
-      'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
-    };
-  }
-  /**
-   * 异步获取Http鉴权header，用于云接入 HTTP 访问云函数时的鉴权
-   * 此API为兼容异步storage的平台
-   */
-  public async getAuthHeaderAsync() {
-    const { refreshTokenKey, accessTokenKey } = this._cache.keys;
-    const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
+    const refreshToken = await  this._cache.getStoreAsync(refreshTokenKey);
     const accessToken = await this._cache.getStoreAsync(accessTokenKey);
     return {
       'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken

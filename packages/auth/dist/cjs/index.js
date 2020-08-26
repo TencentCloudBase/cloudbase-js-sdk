@@ -730,29 +730,19 @@ var Auth = (function () {
         });
     };
     Auth.prototype.getAuthHeader = function () {
-        if (this._cache.mode === 'async') {
-            printWarn(ERRORS.INVALID_OPERATION, 'current platform\'s storage is asynchronous, please use getAuthHeaderAsync insteed');
-            return;
-        }
-        var _a = this._cache.keys, refreshTokenKey = _a.refreshTokenKey, accessTokenKey = _a.accessTokenKey;
-        var refreshToken = this._cache.getStore(refreshTokenKey);
-        var accessToken = this._cache.getStore(accessTokenKey);
-        return {
-            'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
-        };
-    };
-    Auth.prototype.getAuthHeaderAsync = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, refreshTokenKey, accessTokenKey, refreshToken, accessToken;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
+                    case 0: return [4, this._request.refreshAccessToken()];
+                    case 1:
+                        _b.sent();
                         _a = this._cache.keys, refreshTokenKey = _a.refreshTokenKey, accessTokenKey = _a.accessTokenKey;
                         return [4, this._cache.getStoreAsync(refreshTokenKey)];
-                    case 1:
+                    case 2:
                         refreshToken = _b.sent();
                         return [4, this._cache.getStoreAsync(accessTokenKey)];
-                    case 2:
+                    case 3:
                         accessToken = _b.sent();
                         return [2, {
                                 'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
