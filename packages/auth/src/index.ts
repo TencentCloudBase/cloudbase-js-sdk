@@ -621,7 +621,19 @@ class Auth{
   /**
    * 获取Http鉴权header，用于云接入 HTTP 访问云函数时的鉴权
    */
-  public async getAuthHeader() {
+  public getAuthHeader() {
+    const { refreshTokenKey, accessTokenKey } = this._cache.keys;
+    const refreshToken = this._cache.getStore(refreshTokenKey);
+    const accessToken = this._cache.getStore(accessTokenKey);
+    return {
+      'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
+    };
+  }
+  /**
+   * 异步模式获取Http鉴权header，用于云接入 HTTP 访问云函数时的鉴权
+   * 调用此API会刷新登录态
+   */
+  public async getAuthHeaderAsync() {
     await this._request.refreshAccessToken();
     
     const { refreshTokenKey, accessTokenKey } = this._cache.keys;

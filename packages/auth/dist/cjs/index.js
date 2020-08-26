@@ -730,6 +730,14 @@ var Auth = (function () {
         });
     };
     Auth.prototype.getAuthHeader = function () {
+        var _a = this._cache.keys, refreshTokenKey = _a.refreshTokenKey, accessTokenKey = _a.accessTokenKey;
+        var refreshToken = this._cache.getStore(refreshTokenKey);
+        var accessToken = this._cache.getStore(accessTokenKey);
+        return {
+            'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
+        };
+    };
+    Auth.prototype.getAuthHeaderAsync = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, refreshTokenKey, accessTokenKey, refreshToken, accessToken;
             return __generator(this, function (_b) {
