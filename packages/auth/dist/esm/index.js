@@ -833,7 +833,7 @@ export function registerProvider(name, provider) {
     proto[name] = function (options) {
         var privateName = "_" + name;
         if (!this[privateName]) {
-            this[privateName] = new provider(__assign(__assign({}, options), { cache: this._cache, request: this._request, runtime: this._runtime }));
+            this[privateName] = new provider(__assign(__assign({}, options), this._config));
         }
         return this[privateName];
     };
