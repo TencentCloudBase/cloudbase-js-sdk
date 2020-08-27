@@ -746,9 +746,7 @@ export function registerProvider(name:string,provider:IProvider){
     if(!this[privateName]){
       this[privateName] = new provider({
         ...options,
-        cache: this._cache,
-        request: this._request,
-        runtime: this._runtime
+        ...this._config
       });
     }
     return this[privateName];
