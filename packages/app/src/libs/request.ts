@@ -241,6 +241,10 @@ export class CloudbaseRequest implements ICloudbaseRequest{
       opts.onUploadProgress = options['onUploadProgress'];
     }
 
+    if (this.config.region) {
+      opts.headers['X-TCB-Region'] = this.config.region;
+    }
+
     const traceHeader = this._localCache.getStore(tcbTraceKey);
     if (traceHeader) {
       opts.headers['X-TCB-Trace'] = traceHeader;

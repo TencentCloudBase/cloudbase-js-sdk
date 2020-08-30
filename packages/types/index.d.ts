@@ -16,6 +16,7 @@ export interface ICloudbaseAppSecret {
 
 export interface ICloudbaseConfig {
   env: string;
+  region: string;
   timeout?: number;
   persistence?: Persistence;
   appSecret?: ICloudbaseAppSecret;

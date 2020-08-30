@@ -10,7 +10,7 @@ import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { initRequest, getRequestByEnvId } from './libs/request';
-import { getSdkName, setSdkVersion, setEndPoint, setSdkName } from './constants/common';
+import { getSdkName, setSdkVersion, setEndPoint, setRegionLevelEndpoint, setSdkName } from './constants/common';
 
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
 const { ERRORS } = constants;
@@ -100,6 +100,7 @@ class Cloudbase implements ICloudbase{
     initCache({ env, persistence, debug, platformInfo:this.platform});
     initRequest({ env, timeout, appSecret, appSign});
 
+    setRegionLevelEndpoint(env, config.region || '')
     return new Cloudbase(this._config);
   }
 
