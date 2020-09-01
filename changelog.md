@@ -13,6 +13,9 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
+## [1.2.2] 2020-09-01
+- [Changed] 优化开发环境的错误信息
+
 ## [1.2.1] 2020-08-26
 - [Added] 新增 `Auth.getAuthHeaderAsync` API 
 
