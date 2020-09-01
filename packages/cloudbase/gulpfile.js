@@ -1,9 +1,11 @@
 const path = require('path');
 const gulp = require("gulp");
-const webpack = require('webpack-stream');
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
 const clean = require('gulp-clean');
 const rename = require('gulp-rename');
 const ts = require("gulp-typescript");
+const sourcemaps = require('gulp-sourcemaps');
 const tsconfig = require('./tsconfig.base.json');
 const webpackConfOfApp = require('./webpack.config.app');
 const webpackConfOfComponent = require('./webpack.config.component');
@@ -51,15 +53,28 @@ tscComponents.forEach(name=>{
   tscTaskList.push(taskClean);
   const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
   const taskCjs = function(){
-    const result = gulp.src(pattern).pipe(ts(tsconfigCjs));
-    return result.js.pipe(rename(cjsName)).pipe(gulp.dest(distDir));
+  const result = gulp
+    .src(pattern)
+    .pipe(sourcemaps.init())
+    .pipe(ts(tsconfigCjs))
+    
+  return result.js
+    .pipe(rename(cjsName))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(distDir));
   }
   tscTaskList.push(taskCjs);
   if(pkg.module){
     const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
     const taskEsm = function(){
-      const result = gulp.src(pattern).pipe(ts(tsconfigEsm));
-      return result.js.pipe(rename(esmName)).pipe(gulp.dest(distDir));
+      const result = gulp
+        .src(pattern)
+        .pipe(sourcemaps.init())
+        .pipe(ts(tsconfigEsm));
+      return result.js
+        .pipe(rename(esmName))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(distDir));
     }
     tscTaskList.push(taskEsm);
   }  
@@ -77,15 +92,27 @@ const taskCleanOfMain = function(){
 tscTaskList.push(taskCleanOfMain);
 const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
 const taskCjsOfMain = function(){
-  const result = gulp.src(pattern).pipe(ts(tsconfigCjs));
-    return result.js.pipe(rename(cjsName)).pipe(gulp.dest(distDir));
+  const result = gulp
+    .src(pattern)
+    .pipe(sourcemaps.init())
+    .pipe(ts(tsconfigCjs));
+  return result.js
+    .pipe(rename(cjsName))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(distDir));
 }
 tscTaskList.push(taskCjsOfMain);
 if(pkg.module){
   const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
   const taskEsmOfMain = function(){
-    const result = gulp.src(pattern).pipe(ts(tsconfigEsm));
-    return result.js.pipe(rename(esmName)).pipe(gulp.dest(distDir));
+    const result = gulp
+      .src(pattern)
+      .pipe(sourcemaps.init())
+      .pipe(ts(tsconfigEsm));
+    return result.js
+      .pipe(rename(esmName))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(distDir));
   }
   tscTaskList.push(taskEsmOfMain);
 }
@@ -104,7 +131,7 @@ const cdnComponents = [
 ];
 
 cdnTaskList.push(function taskOfBuildFullJs(){
-  return gulp.src(`${rootPath}/src/index.ts`).pipe(webpack({
+  return gulp.src(`${rootPath}/src/index.ts`).pipe(webpackStream({
     ...webpackConfOfApp,
     entry: {
       'cloudbase.full.js': [
@@ -117,7 +144,7 @@ cdnTaskList.push(function taskOfBuildFullJs(){
 });
 
 miniappTaskList.push(function taskOfBuildMiniappFullJs(){
-  return gulp.src(`${rootPath}/src/index.ts`).pipe(webpack({
+  return gulp.src(`${rootPath}/src/index.ts`).pipe(webpackStream({
     ...webpackConfOfApp,
     entry: {
       'index.js': [
@@ -129,8 +156,8 @@ miniappTaskList.push(function taskOfBuildMiniappFullJs(){
   })).pipe(gulp.dest(miniappDistDir));
 });
 
-cdnTaskList.push(function taskOfBuildApp(){
-  return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpack({
+cdnTaskList.push(function taskOfBuildAppJs(){
+  return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpackStream({
     ...webpackConfOfApp,
     entry: {
       'cloudbase.js': [
@@ -143,7 +170,7 @@ cdnTaskList.push(function taskOfBuildApp(){
 });
 
 miniappTaskList.push(function taskOfBuildApp(){
-  return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpack({
+  return gulp.src(`${rootPath}/app/src/index.ts`).pipe(webpackStream({
     ...webpackConfOfApp,
     entry: {
       'app.js': [
@@ -156,8 +183,8 @@ miniappTaskList.push(function taskOfBuildApp(){
 });
 
 cdnTaskList.push(...cdnComponents.map(comp=>{
-  return function taskComp(){
-    return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpack({
+  return function taskCompJs(){
+    return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpackStream({
       ...webpackConfOfComponent,
       entry: {
         [`cloudbase.${comp}.js`]: path.resolve(rootPath,`${comp}/src/index.ts`)
@@ -177,7 +204,7 @@ cdnTaskList.push(...cdnComponents.map(comp=>{
 
 miniappTaskList.push(...cdnComponents.map(comp=>{
   return function taskComp(){
-    return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpack({
+    return gulp.src(`${rootPath}/${comp}/src/index.ts`).pipe(webpackStream({
       ...webpackConfOfComponent,
       entry: {
         [`${comp}.js`]: path.resolve(rootPath,`${comp}/src/index.ts`)
@@ -196,4 +223,6 @@ miniappTaskList.push(...cdnComponents.map(comp=>{
 }));
 
 exports.build = gulp.parallel([tscTask,miniappTaskList]);
+// debug
+// exports.build = gulp.parallel([tscTask]);
 exports.cdn = gulp.parallel(cdnTaskList);

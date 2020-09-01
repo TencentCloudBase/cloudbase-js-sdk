@@ -10,7 +10,6 @@ Object.keys(pkg.dependencies || {}).forEach(dep=>{
 });
 
 module.exports = {
-  mode: 'production',
   target: 'web',
   module: {
     rules: [{

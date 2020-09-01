@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/types",
-  "version": "1.0.1",
+  "version": "1.0.2-alpha.0",
   "description": "cloudbase javascript sdk types",
   "files": [
     "index.js",
@@ -31,5 +31,12 @@
   },
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.10.1",
+    "@typescript-eslint/parser": "^3.10.1",
+    "eslint": "^7.7.0",
+    "eslint-config-alloy": "^3.8.0",
+    "typescript": "^4.0.2"
   }
 }

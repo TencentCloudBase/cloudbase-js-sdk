@@ -1,17 +1,33 @@
 
-import { utils, constants } from '@cloudbase/utilities';
+import { utils, constants, helpers } from '@cloudbase/utilities';
 import { ILoginState } from '@cloudbase/types/auth';
 import { AuthProvider } from './base';
 import { LOGINTYPE } from '../constants';
 import { eventBus, EVENTS, LoginState } from '..';
 
-const { ERRORS } = constants;
-const { throwError,isString } = utils;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { isString } = utils;
+const { catchErrorsDecorator } = helpers;
 
 export class CustomAuthProvider extends AuthProvider {
-  async signIn(ticket: string): Promise<ILoginState> {
+
+  @catchErrorsDecorator({
+    title: '自定义登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 当前环境是否开启了自定义登录',
+      '  2 - 调用 auth().customAuthProvider().signIn() 的语法或参数是否正确',
+      '  3 - ticket 是否归属于当前环境',
+      '  4 - 创建 ticket 的自定义登录私钥是否过期',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
+  public async signIn(ticket: string): Promise<ILoginState> {
     if (!isString(ticket)) {
-      throwError(ERRORS.INVALID_PARAMS,'ticket must be a string');
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_PARAMS,
+        msg: 'ticket must be a string'
+      }));
     }
     const { refreshTokenKey } = this._cache.keys;
     const res = await this._request.send('auth.signInWithTicket', {
@@ -43,7 +59,10 @@ export class CustomAuthProvider extends AuthProvider {
       
       return loginState;
     } else {
-      throwError(ERRORS.OPERATION_FAIL,'custom signIn failed');
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: 'custom signIn failed'
+      }));
     }
   }
 }

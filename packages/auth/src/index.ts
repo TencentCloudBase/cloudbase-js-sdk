@@ -1,5 +1,5 @@
 import { ICloudbase } from '@cloudbase/types';
-import { events,adapters,utils,constants } from  '@cloudbase/utilities';
+import { events,adapters,utils,constants, helpers } from  '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig, ICredential, IUser, IUserInfo, IAuthProvider, ILoginState } from '@cloudbase/types/auth';
@@ -17,7 +17,8 @@ declare const cloudbase: ICloudbase;
 const { CloudbaseEventEmitter } = events;
 const { RUNTIME } = adapters;
 const { printWarn, throwError } = utils;
-const { ERRORS } = constants;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { catchErrorsDecorator } = helpers;
 
 const COMPONENT_NAME = 'auth';
 
@@ -121,6 +122,17 @@ class User implements IUser{
    * 将当前账户与自定义登录 Ticket 进行绑定，绑定之后便可以通过自定义登录登录当前云开发账户。
    * @param {string} ticket 自定义登录ticket
    */
+  @catchErrorsDecorator({
+    title: '绑定自定义登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.linkWithTicket() 的语法或参数是否正确',
+      '  2 - 此账户是否已经绑定自定义登录',
+      '  3 - ticket 参数是否归属当前环境',
+      '  4 - 创建 ticket 的自定义登录私钥是否过期',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public linkWithTicket(ticket: string): Promise<void> {
     if (typeof ticket !== 'string') {
       throw new Error('ticket must be string');
@@ -131,12 +143,30 @@ class User implements IUser{
    * 将当前账户与第三方鉴权提供方，以重定向的形式，进行绑定，绑定之后便可以通过第三方鉴权提供方登录当前的云开发账户。
    * @param provider 特定登录方式的provider，必须具备signInWithRedirect方法
    */
+  @catchErrorsDecorator({
+    title: '绑定第三方登录方式失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.linkWithRedirect() 的语法或参数是否正确',
+      '  2 - 此账户是否已经绑定此第三方',
+      '  3 - 此第三方是否已经授权',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public linkWithRedirect(provider:IAuthProvider): void {
     provider.signInWithRedirect();
   }
   /**
    * 获取当前账户的微信 UnionID 绑定的云开发账户列表。如果当前账户不存在 UnionID，会返回错误。
    */
+  @catchErrorsDecorator({
+    title: '获取账户列表失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.getLinkedUidList() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async getLinkedUidList() {
     const { data } = await this._request.send('auth.getLinkedUidList', {});
     let hasPrimaryUid = false;
@@ -157,6 +187,14 @@ class User implements IUser{
    * 设置之后，通过 UnionID 登录便会登录至主账号之上。
    * @param uid 
    */
+  @catchErrorsDecorator({
+    title: '设置微信主账号失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.setPrimaryUid() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public setPrimaryUid(uid:string) {
     return this._request.send('auth.setPrimaryUid', { uid });
   }
@@ -164,6 +202,15 @@ class User implements IUser{
    * 解绑某个登录方式
    * @param loginType 
    */
+  @catchErrorsDecorator({
+    title: '接触绑定失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.unlink() 的语法或参数是否正确',
+      '  2 - 当前账户是否已经与此登录方式解绑',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public unlink(loginType:'CUSTOM'|'WECHAT-OPEN'|'WECHAT-PUBLIC'|'WECHAT-UNION') {
     return this._request.send('auth.unlink', { platform: loginType });
   }
@@ -171,16 +218,34 @@ class User implements IUser{
    * 更新用户信息
    * @param userInfo 
    */
+  @catchErrorsDecorator({
+    title: '更新用户信息失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.update() 的语法或参数是否正确',
+      '  2 - 用户信息中是否包含非法值',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async update(userInfo:IUserInfo):Promise<void> {
     const { nickName, gender, avatarUrl, province, country, city } = userInfo;
     const { data: newUserInfo } = await this._request.send('auth.updateUserInfo', { nickName, gender, avatarUrl, province, country, city });
     this._setLocalUserInfo(newUserInfo);
   }
   /**
-   * 更新邮箱密码
+   * 更新密码
    * @param newPassword 
    * @param oldPassword 
    */
+  @catchErrorsDecorator({
+    title: '更新密码失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.updatePassword() 的语法或参数是否正确',
+      '  3 - 新密码中是否包含非法字符',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public updatePassword(newPassword:string, oldPassword:string) {
     return this._request.send('auth.updatePassword', {
       oldPassword,
@@ -188,9 +253,18 @@ class User implements IUser{
     });
   }
   /**
-   * 更新邮箱
+   * 更新邮箱地址
    * @param newEmail 
    */
+  @catchErrorsDecorator({
+    title: '更新邮箱地址失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.updateEmail() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱密码登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public updateEmail(newEmail:string) {
     return this._request.send('auth.updateEmail', {
       newEmail
@@ -200,6 +274,15 @@ class User implements IUser{
    * 更新用户名
    * @param username 
    */
+  @catchErrorsDecorator({
+    title: '更新用户名失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.updateUsername() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了用户名密码登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public updateUsername(username: string) {
     if (typeof username !== 'string') {
       throwError(ERRORS.INVALID_PARAMS,'username must be a string');
@@ -212,6 +295,14 @@ class User implements IUser{
   /**
    * 刷新本地用户信息。当用户在其他客户端更新用户信息之后，可以调用此接口同步更新之后的信息。
    */
+  @catchErrorsDecorator({
+    title: '刷新本地用户信息失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 User.refresh() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async refresh():Promise<IUserInfo> {
     const action = 'auth.getUserInfo';
     const { data: userInfo } = await this._request.send(action, {});
@@ -378,8 +469,22 @@ class Auth{
     }
   }
   /**
+   * 获取当前登录类型-同步
+   */
+  get loginType(): LOGINTYPE {
+    return this._cache.getStore(this._cache.keys.loginTypeKey);
+  }
+  /**
    * 获取当前登录的用户信息-异步
    */
+  @catchErrorsDecorator({
+    title: '获取用户信息失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().getCurrenUser() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async getCurrenUser(){
     const loginState = await this.getLoginState();
     if (loginState) {
@@ -388,12 +493,6 @@ class Auth{
     } else {
       return null;
     }
-  }
-  /**
-   * 获取当前登录类型-同步
-   */
-  get loginType(): LOGINTYPE {
-    return this._cache.getStore(this._cache.keys.loginTypeKey);
   }
   /**
    * 获取当前登录类型-异步
@@ -470,6 +569,14 @@ class Auth{
    * 检测用户名是否已经占用
    * @param username 
    */
+  @catchErrorsDecorator({
+    title: '获取用户是否被占用失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().isUsernameRegistered() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async isUsernameRegistered(username: string): Promise<boolean> {
     if (typeof username !== 'string') {
       throwError(ERRORS.INVALID_PARAMS,'username must be a string');
@@ -506,10 +613,22 @@ class Auth{
   /**
    * 登出
    */
+  @catchErrorsDecorator({
+    title: '用户登出失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().signOut() 的语法或参数是否正确',
+      '  2 - 当前用户是否为匿名登录（匿名登录不支持signOut）',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signOut() {
     const loginType = await this.getLoginType();
     if (loginType === LOGINTYPE.ANONYMOUS) {
-      throwError(ERRORS.INVALID_OPERATION,'anonymous user doesn\'t support signOut action');
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_OPERATION,
+        msg: 'anonymous user doesn\'t support signOut action'
+      }));
     }
     const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
     const action = 'auth.logout';
@@ -584,6 +703,14 @@ class Auth{
    * 获取本地登录态-异步
    * 此API为兼容异步storage的平台
    */
+  @catchErrorsDecorator({
+    title: '获取本地登录态失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().getLoginState() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async getLoginState() {
     const { refreshTokenKey } = this._cache.keys;
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
@@ -604,7 +731,15 @@ class Auth{
     // @ts-ignore
     this._request._shouldRefreshAccessTokenHook = hook.bind(this);
   }
-
+  @catchErrorsDecorator({
+    title: '获取用户信息失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 是否已登录',
+      '  2 - 调用 auth().getUserInfo() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async getUserInfo(): Promise<any> {
     const action = 'auth.getUserInfo';
 

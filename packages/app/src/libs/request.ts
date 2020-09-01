@@ -1,7 +1,6 @@
 import {
   DATA_VERSION,
   LOGINTYPE,
-  getSdkName,
   getSdkVersion,
   getEndPoint
 } from '../constants/common';
@@ -20,7 +19,6 @@ import { cloudbase } from '..';
 import { getCacheByEnvId, getLocalCache } from './cache';
 import { EVENTS } from '../constants/events';
 import { Platform } from './adapter';
-import { throwError } from '@cloudbase/utilities/dist/libs/util';
 
 const { ERRORS } = constants;
 const { genSeqId, isFormData, formatUrl, createSign }  = utils;
@@ -92,6 +90,7 @@ export interface ICloudbaseRequest {
   request: (action:string, params:KV<any>, options?:KV<any>) => Promise<ResponseObject>;
   send: (action: string, data: KV<any>) => Promise<any>;
 }
+
 /**
  * @class CloudbaseRequest
  */
@@ -165,7 +164,10 @@ export class CloudbaseRequest implements ICloudbaseRequest{
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refreshToken) {
       // 不该出现的状态：有 access token 却没有 refresh token
-      throwError(ERRORS.INVALID_PARAMS,'refresh token is not exist');
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: 'refresh token is not exist, your local data might be messed up, please retry after clear localStorage or sessionStorage'
+      }));
     }
     // 如果没有access token或者过期，那么刷新
     const accessToken = await this._cache.getStoreAsync(accessTokenKey);
@@ -301,19 +303,18 @@ export class CloudbaseRequest implements ICloudbaseRequest{
   }
 
   public async send(action: string, data: KV<any> = {}): Promise<any> {
-    const response = await this.request(action, data, { onUploadProgress: data.onUploadProgress });
+    let response = await this.request(action, data, { onUploadProgress: data.onUploadProgress });
     if (response.data.code === 'ACCESS_TOKEN_EXPIRED' && ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1) {
       // access_token过期，重新获取
       await this.refreshAccessToken();
-      const response = await this.request(action, data, { onUploadProgress: data.onUploadProgress });
-      if (response.data.code&&this._throwWhenRequestFail) {
-        throwError(ERRORS.OPERATION_FAIL,`[${response.data.code}] ${response.data.message}`);
-      }
-      return response.data;
+      response = await this.request(action, data, { onUploadProgress: data.onUploadProgress });
     }
 
     if (response.data.code&&this._throwWhenRequestFail) {
-      throwError(ERRORS.OPERATION_FAIL,`[${response.data.code}] ${response.data.message}`);
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: `[${response.data.code}] ${response.data.message}`
+      }));
     }
 
     return response.data;
@@ -327,7 +328,10 @@ export class CloudbaseRequest implements ICloudbaseRequest{
 
     let refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refreshToken) {
-      throw new Error(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}] not login`);
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_OPERATION,
+        msg: 'not login'
+      }));
     }
     const params: KV<string> = {
       refresh_token: refreshToken
@@ -356,7 +360,10 @@ export class CloudbaseRequest implements ICloudbaseRequest{
         cloudbase.fire(EVENTS.LOGIN_STATE_EXPIRED);
         await this._cache.removeStoreAsync(refreshTokenKey);
       }
-      throw new Error(`[${getSdkName()}][${ERRORS.NETWORK_ERROR}] refresh access_token failed：${response.data.code}`);
+      throw new Error(JSON.stringify({
+        code: ERRORS.NETWORK_ERROR,
+        msg: `refresh access_token failed：${response.data.code}`
+      }));
     }
     if (response.data.access_token) {
       cloudbase.fire(EVENTS.ACCESS_TOKEN_REFRESHD);

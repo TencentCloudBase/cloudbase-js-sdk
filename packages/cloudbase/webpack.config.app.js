@@ -12,7 +12,6 @@ Object.keys(pkg.dependencies || {}).forEach(dep=>{
 });
 
 module.exports = {
-  mode: 'production',
   output: {
     path: distPath,
     filename: '[name]',

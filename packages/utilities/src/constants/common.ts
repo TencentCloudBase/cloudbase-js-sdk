@@ -17,3 +17,7 @@ export function setProtocol(protocol:'http'|'https'){
 export function getProtocol(){
   return PROTOCOL;
 }
+// 是否为开发模式
+export const IS_DEBUG_MODE = process.env.NODE_ENV === 'development';
+// 问答社区链接
+export const COMMUNITY_SITE_URL = 'https://support.qq.com/products/148793';

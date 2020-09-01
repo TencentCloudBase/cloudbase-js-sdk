@@ -29,13 +29,16 @@ async function init () {
   });
 
   // 公众号微信登录
-  await signInWeixin(auth,appid);
+  // await signInWeixin(auth,appid);
 
   // 匿名登录
   // await signInAnonymous(auth);
+  // debugs
+  // await app.callFunction({})
+  // await app.deleteFile({})
 
   // 自定义登录
-  // await signInCustom(auth);
+  await signInCustom(auth);
 
   // 用户名登录
   // await signInWithUsername(auth,{
