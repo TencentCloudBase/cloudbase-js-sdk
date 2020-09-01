@@ -13,6 +13,10 @@
     "functions.d.ts",
     "storage.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TencentCloudBase/cloudbase-js-sdk"
+  },
   "keywords": [
     "cloudbase",
     "Cloudbase",

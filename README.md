@@ -108,6 +108,7 @@ const app = cloudbase.init({
 ```
 
 ### 其他
+- [更友好的错误提示](./docs/errlog.md)
 - [开发指南](./docs/dev.md)
 
 ## 更新日志
