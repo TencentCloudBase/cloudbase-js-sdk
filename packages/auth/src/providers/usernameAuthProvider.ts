@@ -2,15 +2,29 @@ import { AuthProvider } from './base';
 import { ILoginState } from '@cloudbase/types/auth';
 import { eventBus, EVENTS, LoginState } from '..';
 import { LOGINTYPE } from '../constants';
-import { utils, constants } from '@cloudbase/utilities';
+import { utils, constants, helpers } from '@cloudbase/utilities';
 
-const { throwError,printWarn } = utils;
-const { ERRORS } = constants;
+const { printWarn } = utils;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { catchErrorsDecorator } = helpers;
 
 export class UsernameAuthProvider extends AuthProvider {
+  @catchErrorsDecorator({
+    title: '用户名密码登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().signInWithUsernameAndPassword() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了用户名密码登录',
+      '  3 - 用户名密码是否匹配',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signIn(username: string, password: string): Promise<ILoginState> {
     if (typeof username !== 'string') {
-      throwError(ERRORS.INVALID_PARAMS,'username must be a string');
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_PARAMS,
+        msg: 'username must be a string'
+      }));
     }
     // 用户不设置密码
     if (typeof password !== 'string') {
@@ -48,9 +62,15 @@ export class UsernameAuthProvider extends AuthProvider {
         request: this._request
       });
     } else if (res.code) {
-      throwError(ERRORS.OPERATION_FAIL,`login failed:[${res.code}] ${res.message}`);
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: `login by username failed:[${res.code}] ${res.message}`
+      }));
     } else {
-      throwError(ERRORS.OPERATION_FAIL,'login failed');
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: 'login by username failed'
+      }));
     }
   }
 }

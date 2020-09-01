@@ -17,6 +17,9 @@
     "removeComments": true,
     "skipLibCheck": true,
     "strictBindCallApply": true,
+    "declarationMap": false,
+    "inlineSourceMap": true,
+    "inlineSources": true,
     "target": "es5",
     "moduleResolution": "node",
     "typeRoots": [

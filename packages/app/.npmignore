@@ -1,7 +1,6 @@
 .vscode
 .github
 node_modules
-src
 test
 jest.config.js
 webpack.test.js

@@ -19,3 +19,15 @@ export declare function printWarn(error: string, msg: string): void;
 export declare function printError(error: string, msg: string): void;
 export declare function printInfo(error: string, msg: string): void;
 export declare function throwError(error: string, msg: string): void;
+interface IPrintGroupLogOptions {
+    title: string;
+    subtitle: string | object;
+    content: {
+        type: 'info' | 'warn' | 'error';
+        body: string | Error;
+    }[];
+    printTrace?: boolean;
+    collapsed?: boolean;
+}
+export declare function printGroupLog(options: IPrintGroupLogOptions): void;
+export {};

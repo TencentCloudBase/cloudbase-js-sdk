@@ -2,13 +2,14 @@ import { AuthProvider } from './base';
 import { ICloudbaseAuthConfig } from '@cloudbase/types/auth';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
-import { constants, adapters,utils } from '@cloudbase/utilities/';
+import { constants, adapters,utils, helpers } from '@cloudbase/utilities/';
 import { eventBus, EVENTS, LoginState } from '..';
 import { LOGINTYPE } from '../constants';
 
-const { getSdkName, ERRORS } = constants;
+const { getSdkName, ERRORS, COMMUNITY_SITE_URL } = constants;
 const { RUNTIME } = adapters;
 const { getQuery, getHash, removeParam, printWarn } = utils;
+const { catchErrorsDecorator } = helpers;
 
 export class WeixinAuthProvider extends AuthProvider {
   private readonly _scope: string;
@@ -24,14 +25,31 @@ export class WeixinAuthProvider extends AuthProvider {
     this._scope = scope;
     this._state = state || 'weixin';
   }
+  
   public async signIn(){
     return printWarn(ERRORS.OPERATION_FAIL,'API signIn has been deprecated, please use signInWithRedirect insteed');
   }
-
+  @catchErrorsDecorator({
+    title: '跳转微信公众号授权失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().weixinAuthProvider().signInWithRedirect() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signInWithRedirect() {
     return this._redirect();
   }
-
+  @catchErrorsDecorator({
+    title: '微信公众号登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().weixinAuthProvider().getRedirectResult() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了微信公众号登录授权',
+      '  3 - 微信公众号的 AppId 与 AppSecret 配置是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async getRedirectResult(options:{ withUnionId?: boolean; syncUserInfo?: boolean }) {
     const code = getWeixinCode();
     if (!code) {
@@ -39,6 +57,16 @@ export class WeixinAuthProvider extends AuthProvider {
     }
     return this._signInWithCode(code,options);
   }
+  @catchErrorsDecorator({
+    title: '获取微信重定向绑定结果',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().weixinAuthProvider().getLinkRedirectResult() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了微信公众号登录授权',
+      '  3 - 微信公众号的 AppId 与 AppSecret 配置是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   async getLinkRedirectResult(options: { withUnionId?: boolean } = {}) {
     const { withUnionId = false } = options;
     const code = getWeixinCode();

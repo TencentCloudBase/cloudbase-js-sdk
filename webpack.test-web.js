@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 
-const modName = 'tcb-js-sdk';
+const modName = 'cloudbase';
 
 module.exports = {
   entry: [
@@ -12,12 +12,27 @@ module.exports = {
 
     './test/web/index.js'
   ],
+  mode: 'development',
   devtool: 'inline-source-map',
+  mode: 'development',
+  devServer: {
+      hot: true,
+      host: 'jimmytest-088bef.tcb.qcloud.la',
+      port: 8080,
+      open: false,
+      inline: true,
+      clientLogLevel: 'error',
+      disableHostCheck: true,
+      contentBase: './test/web',
+      watchContentBase: false,
+      index: 'index.html',
+      publicPath: '/'
+  },
   output: {
     filename: `./test.js`,
-    library: modName,
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    // library: modName,
+    // libraryTarget: 'umd',
+    // umdNamedDefine: true
   },
   resolve: {
     extensions: ['.js']

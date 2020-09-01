@@ -157,6 +157,7 @@ export function execCallback(fn:Function|null|undefined,err:any,data=null){
 export function printWarn(error:string,msg:string){
   console.warn(`[${getSdkName()}][${error}]:${msg}`);
 }
+
 export function printError(error:string,msg:string){
   console.error({
     code: error,
@@ -171,4 +172,41 @@ export function throwError(error:string,msg:string){
     code: error,
     msg: `[${getSdkName()}][${error}]:${msg}`
   }));
+}
+
+interface IPrintGroupLogOptions {
+  title: string;
+  subtitle: string|object;
+  content: {
+    type: 'info'|'warn'|'error',
+    body: string|Error;
+  }[];
+  printTrace?: boolean;
+  collapsed?: boolean;
+}
+export function printGroupLog(options:IPrintGroupLogOptions){
+  const { title, subtitle='', content=[],printTrace=false,collapsed=false } = options;
+  if(collapsed){
+    console.groupCollapsed(title,subtitle);
+  }else{
+    console.group(title,subtitle);
+  }
+  for(const tip of content){
+    const { type, body } = tip;
+    switch(type){
+      case 'info':
+        console.log(body);
+        break;
+      case 'warn':
+        console.warn(body);
+        break;
+      case 'error':
+        console.error(body);
+        break;
+    }
+  }
+  if(printTrace){
+    console.trace('stack trace:');
+  }
+  console.groupEnd();
 }

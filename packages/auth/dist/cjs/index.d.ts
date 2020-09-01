@@ -59,8 +59,8 @@ declare class Auth {
         runtime?: string;
     });
     get currentUser(): IUser;
-    getCurrenUser(): Promise<IUser>;
     get loginType(): LOGINTYPE;
+    getCurrenUser(): Promise<IUser>;
     getLoginType(): Promise<LOGINTYPE>;
     getAccessToken(): Promise<{
         accessToken: string;

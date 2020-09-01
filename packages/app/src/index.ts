@@ -1,4 +1,4 @@
-import { adapters, constants, utils } from '@cloudbase/utilities';
+import { adapters, constants, utils, helpers } from '@cloudbase/utilities';
 import { SDKAdapterInterface, CloudbaseAdapter, IRequestConfig } from '@cloudbase/adapter-interface';
 import { ICloudbaseConfig, ICloudbaseUpgradedConfig, ICloudbase, ICloudbaseExtension, KV, ICloudbasePlatformInfo } from '@cloudbase/types';
 import { ICloudbaseAuth } from '@cloudbase/types/auth';
@@ -13,8 +13,9 @@ import { initRequest, getRequestByEnvId } from './libs/request';
 import { getSdkName, setSdkVersion, setEndPoint, setSdkName } from './constants/common';
 
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
-const { ERRORS } = constants;
-const { printWarn, throwError } = utils;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { printWarn } = utils;
+const { catchErrorsDecorator } = helpers;
 
 /**
  * @constant 默认配置
@@ -60,10 +61,22 @@ class Cloudbase implements ICloudbase{
   get request():ICloudbaseRequest{
     return getRequestByEnvId(this._config.env);
   }
-
+  @catchErrorsDecorator({
+    mode: 'sync',
+    title: 'Cloudbase 初始化失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 cloudbase.init() 的语法或参数是否正确',
+      '  2 - 如果是非浏览器环境，是否配置了安全应用来源（https://docs.cloudbase.net/api-reference/webv2/adapter.html#jie-ru-liu-cheng）',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public init(config: ICloudbaseConfig):Cloudbase {
     if(!config.env){
-      throwError(ERRORS.INVALID_PARAMS,'env must not be specified');
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_PARAMS,
+        msg: 'env must not be specified'
+      }));
     }
     // 初始化时若未兼容平台，则使用默认adapter
     if (!Platform.adapter) {
@@ -76,17 +89,26 @@ class Cloudbase implements ICloudbase{
     } as IRequestConfig);
     if (Platform.runtime !== RUNTIME.WEB) {
       if (!config.appSecret) {
-        throwError(ERRORS.INVALID_PARAMS,'invalid appSecret');
+        throw new Error(JSON.stringify({
+          code: ERRORS.INVALID_PARAMS,
+          msg: 'invalid appSecret'
+        }));
       }
       // adapter提供获取应用标识的接口
       const appSign = Platform.adapter.getAppSign ? Platform.adapter.getAppSign() : '';
       if (config.appSign && appSign && config.appSign !== appSign) {
         // 传入的appSign与sdk获取的不一致
-        throwError(ERRORS.INVALID_PARAMS,'invalid appSign');
+        throw new Error(JSON.stringify({
+          code: ERRORS.INVALID_PARAMS,
+          msg: 'invalid appSign'
+        }));
       }
       appSign && (config.appSign = appSign);
       if (!config.appSign) {
-        throwError(ERRORS.INVALID_PARAMS,'invalid appSign')
+        throw new Error(JSON.stringify({
+          code: ERRORS.INVALID_PARAMS,
+          msg: 'invalid appSign'
+        }));
       }
     }
     this._config = {
@@ -114,11 +136,22 @@ class Cloudbase implements ICloudbase{
   public registerExtension(ext:ICloudbaseExtension) {
     extensionMap[ext.name] = ext;
   }
-
+  @catchErrorsDecorator({
+    title: '调用扩展能力失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 invokeExtension() 的语法或参数是否正确',
+      '  2 - 被调用的扩展能力是否已经安装并通过 registerExtension() 注册',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async invokeExtension(name:string, opts:any) {
     const ext = extensionMap[name];
     if (!ext) {
-      throwError(ERRORS.INVALID_PARAMS,`extension:${name} must be registered before invoke`);
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_PARAMS,
+        msg: `extension:${name} must be registered before invoke`
+      }));
     }
 
     return await ext.invoke(opts, this);

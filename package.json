@@ -10,7 +10,7 @@
     "lint": "lerna run --scope @cloudbase/* lint",
     "test": "jest --verbose false -i",
     "test:e2e": "npm run build:e2e&&jest --config=\"./jest.e2e.config.js\" --verbose false -i \"e2e\"",
-    "test:web": "webpack-dev-server --devtool eval-source-map --progress --colors --hot --inline --content-base ./test/web --host jimmytest-088bef.tcb.qcloud.la --port 80 --disableHostCheck true --mode development --config webpack.test-web.js",
+    "test:web": "webpack-dev-server --config webpack.test-web.js",
     "publish": "npm run lint && lerna publish",
     "publish:beta": "lerna publish --dist-tag beta"
   },

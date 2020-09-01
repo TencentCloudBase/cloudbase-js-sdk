@@ -1,13 +1,24 @@
-import { constants,utils } from '@cloudbase/utilities';
+import { constants,utils,helpers } from '@cloudbase/utilities';
 import { ILoginState } from '@cloudbase/types/auth';
 import { AuthProvider } from './base';
 import { LOGINTYPE } from '../constants';
 import { eventBus, EVENTS, LoginState } from '..';
 
 const { throwError, isString } = utils;
-const { ERRORS } = constants;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { catchErrorsDecorator } = helpers;
 
 export class EmailAuthProvider extends AuthProvider {
+  @catchErrorsDecorator({
+    title: '邮箱密码登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().emailAuthProvider() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱登录',
+      '  3 - 邮箱地址与密码是否匹配',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signIn(email: string, password: string): Promise<ILoginState> {
     if (!isString(email)) {
       throwError(ERRORS.INVALID_PARAMS,'email must be a string');
@@ -51,6 +62,16 @@ export class EmailAuthProvider extends AuthProvider {
    * @param email 
    * @param password 
    */
+  @catchErrorsDecorator({
+    title: '邮箱注册失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().signUpWithEmailAndPassword() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱登录',
+      '  3 - 此邮箱地址是否已经被其他用户占用',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signUp(email:string, password:string) {
     return this._request.send('auth.signUpWithEmailAndPassword', {
       email,
@@ -61,6 +82,17 @@ export class EmailAuthProvider extends AuthProvider {
    * 发起重置密码请求，发起后推送邮件到指定邮箱
    * @param email 
    */
+  @catchErrorsDecorator({
+    title: '重置密码失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().sendPasswordResetEmail() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱登录',
+      '  3 - 此邮箱地址是否已经与当前用户绑定',
+      '  4 - 此邮箱地址是否已经被其他用户占用',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async resetPassword(email:string) {
     return this._request.send('auth.sendPasswordResetEmail', {
       email
@@ -71,6 +103,15 @@ export class EmailAuthProvider extends AuthProvider {
    * @param token 
    * @param newPassword 
    */
+  @catchErrorsDecorator({
+    title: '重置密码失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async resetPasswordWithToken(token:string, newPassword:string) {
     return this._request.send('auth.resetPasswordWithToken', {
       token,
@@ -81,6 +122,15 @@ export class EmailAuthProvider extends AuthProvider {
    * 激活邮箱
    * @param token 
    */
+  @catchErrorsDecorator({
+    title: '邮箱激活失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用语法或参数是否正确',
+      '  2 - 当前环境是否开通了邮箱登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async activate(token: string) {
     return this._request.send('auth.activateEndUserMail', {
       token

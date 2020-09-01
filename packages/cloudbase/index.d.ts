@@ -63,6 +63,12 @@ declare namespace cloudbase.app {
      * adapters API
      */
     useAdapters(adapters: CloudbaseAdapter|CloudbaseAdapter[]):void;
+    /**
+     * other APIs
+     */
+    registerVersion(version:string):void;
+    registerSdkName(name:string):void;
+    registerEndPoint(url:string,protocol?:'http'|'https'):void;
   }
 }
 /**

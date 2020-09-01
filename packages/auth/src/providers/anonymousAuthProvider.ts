@@ -1,13 +1,14 @@
 import { AuthProvider } from './base';
 import { ICloudbaseAuthConfig, ILoginState } from '@cloudbase/types/auth';
-import { constants, utils } from '@cloudbase/utilities';
+import { constants, utils, helpers } from '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { LOGINTYPE } from '../constants';
 import { EVENTS, eventBus, LoginState } from '..';
 
-const { ERRORS } = constants;
+const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { throwError, isString } = utils;
+const { catchErrorsDecorator } = helpers;
 
 export class AnonymousAuthProvider extends AuthProvider {
   constructor(config:ICloudbaseAuthConfig&{cache:ICloudbaseCache,request:ICloudbaseRequest}){
@@ -17,6 +18,16 @@ export class AnonymousAuthProvider extends AuthProvider {
     // 监听转正事件
     addEventListener(EVENTS.ANONYMOUS_CONVERTED, this._onConverted);
   }
+
+  @catchErrorsDecorator({
+    title: '匿名登录失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 当前环境是否开启了匿名登录',
+      '  2 - 调用 auth().anonymouseProvider().signIn() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signIn():Promise<ILoginState> {
     // 匿名登录前迁移cache到localstorage
     await this._cache.updatePersistenceAsync('local');
@@ -25,6 +36,7 @@ export class AnonymousAuthProvider extends AuthProvider {
     const anonymous_uuid = await this._cache.getStoreAsync(anonymousUuidKey);
     // 此处cache为基类property
     const refresh_token = await this._cache.getStoreAsync(refreshTokenKey);
+
     const res = await this._request.send('auth.signInAnonymously', {
       anonymous_uuid,
       refresh_token
@@ -51,7 +63,10 @@ export class AnonymousAuthProvider extends AuthProvider {
       await loginState.user.refresh();
       return loginState;
     } else {
-      throwError(ERRORS.OPERATION_FAIL,JSON.stringify(res)||'anonymous signIn failed');
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: JSON.stringify(res)||'anonymous signIn failed'
+      }));
     }
   }
   /**
