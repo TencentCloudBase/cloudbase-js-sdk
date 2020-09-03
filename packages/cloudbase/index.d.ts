@@ -1857,11 +1857,13 @@ declare namespace cloudbase.database {
     requestId:string;
   }
   interface GetRes {
-    data: any[]
-    requestId: string
-    total: number
-    limit: number
-    offset: number
+    data: any[];
+    requestId: string;
+    total: number;
+    limit: number;
+    offset: number;
+    code?:string;
+    message?:string;
   }
   
   interface QueryOrder {
