@@ -21,6 +21,11 @@ declare namespace cloudbase {
     appSign?: string;
     debug?:boolean;
   }
+
+  interface ICloudbaseExtension {
+    name: string;
+    invoke(opts:any,app:cloudbase.app.App):Promise<any>;
+  }
   /**
    * 初始化Cloudbase
    * 
@@ -60,7 +65,7 @@ declare namespace cloudbase {
    * 
    * @param adapters 适配器对象，入参可以为单个适配器对象，也可以是多个适配器对象的数组
    */
-  function useAdapters(adapters: CloudbaseAdapter|CloudbaseAdapter[]):void;
+  function useAdapters(adapters: any):void;
   /**
    * 注册扩展能力插件，使用方式参考 {@link https://docs.cloudbase.net/extension/abilities/image-examination.html#shi-yong-kuo-zhan}
    * 
@@ -163,7 +168,7 @@ declare namespace cloudbase.app {
      * 
      * @return Promise-函数执行结果
      */
-    callFunction(options: cloudbase.functions.ICallFunctionOptions):Promise<ICallFunctionResponse>;
+    callFunction(options: cloudbase.functions.ICallFunctionOptions):Promise<cloudbase.functions.ICallFunctionResponse>;
     /**
      * 云存储-上传文件
      * 
@@ -188,7 +193,7 @@ declare namespace cloudbase.app {
      * 
      * @return Promise-上传结果
      */
-    uploadFile(params:ICloudbaseUploadFileParams):Promise<ICloudbaseUploadFileResult>;
+    uploadFile(params:cloudbase.storage.ICloudbaseUploadFileParams):Promise<cloudbase.storage.ICloudbaseUploadFileResult>;
     /**
      * 云存储-下载文件
      * 
@@ -209,7 +214,7 @@ declare namespace cloudbase.app {
      * 
      * @return Promise-下载结果
      */
-    downloadFile(params:ICloudbaseDownloadFileParams):Promise<ICloudbaseDownloadFileResult>;
+    downloadFile(params:cloudbase.storage.ICloudbaseDownloadFileParams):Promise<cloudbase.storage.ICloudbaseDownloadFileResult>;
     /**
      * 云存储-获取文件的下载链接
      * 
@@ -238,7 +243,7 @@ declare namespace cloudbase.app {
      * 
      * @return Promise-文件下载链接
      */
-    getTempFileURL(params:ICloudbaseGetTempFileURLParams):Promise<ICloudbaseGetTempFileURLResult>;
+    getTempFileURL(params:cloudbase.storage.ICloudbaseGetTempFileURLParams):Promise<cloudbase.storage.ICloudbaseGetTempFileURLResult>;
     /**
      * 云存储-删除文件
      * 
@@ -262,7 +267,7 @@ declare namespace cloudbase.app {
      * 
      * @return Promise-删除结果
      */
-    deleteFile(params:ICloudbaseDeleteFileParams):Promise<ICloudbaseDeleteFileResult>;
+    deleteFile(params:cloudbase.storage.ICloudbaseDeleteFileParams):Promise<cloudbase.storage.ICloudbaseDeleteFileResult>;
     /**
      * 获取数据库实例
      * 
@@ -651,7 +656,7 @@ declare namespace cloudbase.auth{
      * @param provider 第三方鉴权Provider实例
      * 
      */
-    linkWithRedirect(provider:IAuthProvider):void;
+    linkWithRedirect(provider:any):void;
     /**
      * 获取已绑定的用户信息
      * 
@@ -1421,7 +1426,7 @@ declare namespace cloudbase.database {
    * command types 
    */
   interface IGeoNearOptions {
-    geometry: Point // 点的地理位置
+    geometry: IGeo['Point'] // 点的地理位置
     maxDistance?: number // 选填，最大距离，米为单位
     minDistance?: number // 选填，最小距离，米为单位
   }
@@ -2000,12 +2005,12 @@ declare namespace cloudbase.database {
   /**
    * geo types
    */
-  interface IPoint {};
-  interface ILineString {};
-  interface IPolygon {};
-  interface IMultiPoint {};
-  interface IMultiLineString {};
-  interface IMultiPolygon {};
+  interface IPoint {}
+  interface ILineString {}
+  interface IPolygon {}
+  interface IMultiPoint {}
+  interface IMultiLineString {}
+  interface IMultiPolygon {}
   interface IGeo {
     /**
      * 用于表示地理位置点
