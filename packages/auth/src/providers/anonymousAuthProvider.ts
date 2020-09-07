@@ -1,6 +1,6 @@
 import { AuthProvider } from './base';
 import { ICloudbaseAuthConfig, ILoginState } from '@cloudbase/types/auth';
-import { constants, utils, helpers } from '@cloudbase/utilities';
+import { constants, utils, helpers, events } from '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { LOGINTYPE } from '../constants';
@@ -8,6 +8,7 @@ import { EVENTS, eventBus, LoginState } from '..';
 
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { throwError, isString } = utils;
+const { addEventListener } = events;
 const { catchErrorsDecorator } = helpers;
 
 export class AnonymousAuthProvider extends AuthProvider {
