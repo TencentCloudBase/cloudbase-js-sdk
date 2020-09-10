@@ -2,10 +2,16 @@ import { ICloudbaseEventEmitter } from './events';
 
 export interface ICloudbaseComponent {
   name: string;
-  namespace?:string;
-  entity:any;
-  injectEvents?:{
+  entity: any;
+  namespace?: string;
+  injectEvents?: {
     bus: ICloudbaseEventEmitter,
     events: string[];
   };
+  IIFE?: boolean
+}
+
+export interface ICloudbaseHook {
+  entity: any;
+  target: string;
 }

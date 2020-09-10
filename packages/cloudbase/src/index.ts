@@ -2,6 +2,7 @@ import cloudbase from '@cloudbase/app';
 import { registerAuth } from '@cloudbase/auth';
 import { registerFunctions } from '@cloudbase/functions';
 import { registerStorage } from '@cloudbase/storage';
+import { registerRealtime } from '@cloudbase/realtime';
 // @ts-ignore
 import { registerDatabase } from './../database';
 import * as pkg from '../package.json';
@@ -15,6 +16,7 @@ try{
   registerFunctions(cloudbase);
   registerStorage(cloudbase);
   registerDatabase(cloudbase);
+  registerRealtime(cloudbase);
 }catch(e){}
 
 declare global {

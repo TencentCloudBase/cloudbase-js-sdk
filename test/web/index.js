@@ -7,6 +7,10 @@ import { registerDatabaseCases } from './cases/database';
 import { runAllTestCases, runSelectedTestCase, printInfo } from './util';
 
 import cloudbase from '../../packages/cloudbase';
+// import cloudbase from '../../packages/cloudbase/app';
+// import '../../packages/cloudbase/auth';
+// import '../../packages/cloudbase/database';
+// import '../../packages/cloudbase/realtime';
 // import { test_ext_ci } from './ext_ci';
 
 // import * as extCi from '@cloudbase/extension-ci';
@@ -33,9 +37,6 @@ async function init () {
 
   // 匿名登录
   // await signInAnonymous(auth);
-  // debugs
-  // await app.callFunction({})
-  // await app.deleteFile({})
 
   // 自定义登录
   await signInCustom(auth);
@@ -49,7 +50,7 @@ async function init () {
   registerFunctionCases(app);
   registerStorageCases(app);
   registerDatabaseCases(app);
-
+  
   initTestCasesIndex();
 };
 

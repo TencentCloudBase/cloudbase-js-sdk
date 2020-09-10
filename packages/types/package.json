@@ -11,7 +11,9 @@
     "auth.d.ts",
     "component.d.ts",
     "functions.d.ts",
-    "storage.d.ts"
+    "storage.d.ts",
+    "realtime.d.ts",
+    "database.d.ts"
   ],
   "repository": {
     "type": "git",

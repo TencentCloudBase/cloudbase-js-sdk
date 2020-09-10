@@ -1,18 +1,32 @@
 import { KV } from '@cloudbase/types';
-import { ICloudbaseComponent } from '@cloudbase/types/component';
+import { ICloudbaseComponent, ICloudbaseHook } from '@cloudbase/types/component';
 import { constants } from '@cloudbase/utilities';
-import { getSdkName } from '../constants/common';
 
 const { ERRORS } = constants;
 
 const components:KV<ICloudbaseComponent> = {};
 
 export function registerComponent(app:any,component:ICloudbaseComponent){
-  const { name, namespace, entity, injectEvents } = component;
+  const { name, namespace, entity, injectEvents, IIFE=false } = component;
+  
   // 不允许重复注册或命名空间重名
   if(components[name]||(namespace&&app[namespace])){
-    throw new Error(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}]There were multiple attempts to register component ${name}.`);
+    throw new Error(JSON.stringify({
+      code: ERRORS.INVALID_OPERATION,
+      msg: `Duplicate component ${name}`
+    }));
   }
+  // IIFE类型的组件以app为scope执行entity函数，不挂载到app.prototype上
+  if(IIFE){
+    if(!entity||typeof entity !== 'function'){
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_PARAMS,
+        msg: 'IIFE component\'s entity must be a function'
+      }));
+    }
+    entity.call(app);
+  }
+  
 
   components[name] = component;
 
@@ -77,4 +91,25 @@ function deepExtend(target:any,source:any):KV<any>{
   }
 
   return target;
+}
+
+export function registerHook(app:any,hook:ICloudbaseHook){
+  const { entity, target } = hook;
+  if(!app.prototype.hasOwnProperty(target)){
+    throw new Error(JSON.stringify({
+      code: ERRORS.INVALID_OPERATION,
+      msg: `target:${target} is not exist`
+    }));
+  }
+  const originMethod = app.prototype[target];
+  if(typeof originMethod !== 'function'){
+    throw new Error(JSON.stringify({
+      code: ERRORS.INVALID_OPERATION,
+      msg: `target:${target} is not a function which is the only type supports hook`
+    }));
+  }
+  app.prototype[target] = function(...args:any){
+    entity.call(this,...args);
+    return originMethod.call(this,...args);
+  }
 }
