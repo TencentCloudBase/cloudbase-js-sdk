@@ -17,7 +17,6 @@ import {
 import { 
   ISingleDBEvent
 } from '@cloudbase/types/database'
-import { utils } from '@cloudbase/utilities'
 // import Reporter from "./externals/public-lib/reporter"
 import { RealtimeListener } from './listener'
 import { Snapshot } from './snapshot'
@@ -32,8 +31,7 @@ import {
   RealtimeErrorMessageError, 
   TimeoutError 
 } from './error'
-
-const { sleep } = utils;
+import { sleep } from './utils'
 
 // =============== Realtime Virtual WebSocket Client (Internal) ====================
 

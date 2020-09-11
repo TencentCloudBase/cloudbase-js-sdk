@@ -1,9 +1,5 @@
-import { adapters } from "@cloudbase/utilities";
-
-const { RUNTIME } = adapters;
-
 let wsClass = null;
-let runtime = RUNTIME.WEB as string;
+let runtime = 'web';
 
 export function getWsClass(){
   return wsClass;

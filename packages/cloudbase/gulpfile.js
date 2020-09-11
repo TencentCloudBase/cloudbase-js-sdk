@@ -6,6 +6,7 @@ const clean = require('gulp-clean');
 const rename = require('gulp-rename');
 const ts = require("gulp-typescript");
 const sourcemaps = require('gulp-sourcemaps');
+const Visualizer = require('webpack-visualizer-plugin');
 const tsconfig = require('./tsconfig.base.json');
 const webpackConfOfApp = require('./webpack.config.app');
 const webpackConfOfComponent = require('./webpack.config.component');
@@ -141,7 +142,13 @@ cdnTaskList.push(function taskOfBuildFullJs(){
         path.resolve(rootPath,'src/index.ts')
       ]
     },
-    mode: 'production'
+    mode: 'production',
+    plugins: [
+      ...webpackConfOfApp.plugins,
+      new Visualizer({
+        filename: `./statistics-full.html`
+      })
+    ]
   })).pipe(gulp.dest(cdnJsDir));
 });
 
@@ -167,7 +174,13 @@ cdnTaskList.push(function taskOfBuildAppJs(){
         path.resolve(rootPath,'app/src/index.ts')
       ]
     },
-    mode: 'production'
+    mode: 'production',
+    plugins: [
+      ...webpackConfOfApp.plugins,
+      new Visualizer({
+        filename: `./statistics-app.html`
+      })
+    ]
   })).pipe(gulp.dest(cdnJsDir))
 });
 
@@ -199,7 +212,13 @@ cdnTaskList.push(...cdnComponents.map(comp=>{
         umdNamedDefine: true,
         globalObject: 'typeof window !== "undefined"?window:this'
       },
-      mode: 'production'
+      mode: 'production',
+      plugins: [
+        ...webpackConfOfApp.plugins,
+        new Visualizer({
+          filename: `./statistics-${comp}.html`
+        })
+      ]
     })).pipe(gulp.dest(cdnJsDir));
   };
 }));

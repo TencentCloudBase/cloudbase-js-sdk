@@ -13,7 +13,7 @@ Object.keys(pkg.dependencies || {}).forEach(dep=>{
 
 module.exports = {
   output: {
-    path: distPath,
+    path: cdnJsDir,
     filename: '[name]',
     library: 'cloudbase',
     libraryTarget: 'umd',

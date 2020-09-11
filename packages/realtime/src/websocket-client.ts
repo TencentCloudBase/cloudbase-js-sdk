@@ -1,5 +1,4 @@
 import { VirtualWebSocketClient } from './virtual-websocket-client'
-import { utils } from '@cloudbase/utilities'
 import { genRequestId } from './message'
 import {
   IDatabaseServiceContext,
@@ -22,8 +21,7 @@ import {
 
 import { ERR_CODE, TimeoutError, RealtimeErrorMessageError,CloudSDKError } from './error'
 import { getWsClass, getRuntime } from './common'
-
-const { sleep } = utils;
+import { sleep } from './utils'
 
 export interface IRealtimeWebSocketClientConstructorOptions {
   maxReconnect?: number
