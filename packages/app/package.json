@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/app",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "cloudbase javascript sdk core",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,8 +28,8 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/types": "^1.0.2",
-    "@cloudbase/utilities": "^1.1.2",
+    "@cloudbase/types": "^1.1.0",
+    "@cloudbase/utilities": "^1.2.0",
     "cloudbase-adapter-wx_mp": "^0.1.2"
   },
   "devDependencies": {
