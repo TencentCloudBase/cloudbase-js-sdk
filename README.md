@@ -34,6 +34,8 @@ import '@cloudbase/js-sdk/functions';
 import '@cloudbase/js-sdk/storage';
 // 数据库模块
 import '@cloudbase/js-sdk/database';
+// 数据库实时推送模块，必须引入数据库模块
+import '@cloudbase/js-sdk/realtime';
 ```
 
 #### CDN引入
@@ -55,6 +57,8 @@ import '@cloudbase/js-sdk/database';
     <script src="/cloudbase.storage.js"></script>
     <!-- 数据库模块 -->
     <script src="/cloudbase.database.js"></script>
+    <!-- 数据库实时推送模块，必须引入数据库模块 -->
+    <script src="/cloudbase.realtime.js"></script>
     ```
 
 > 浏览器环境下分包模块引入后会自动注册至全局变量`cloudbase`。
@@ -92,6 +96,7 @@ const { registerAuth } = require('./cloudbase.auth.js');
 const { registerFunctions } = require('./cloudbase.functions.js');
 const { registerStorage } = require('./cloudbase.storage.js');
 const { registerDatabase } = require('./cloudbase.database.js');
+const { registerRealtime } = require('./cloudbase.realtime.js');
 const { adapter } = require('cloudbase-adapter-cocos_native');
 // 使用适配器
 cloudbase.useAdapter(adapter);
@@ -101,6 +106,7 @@ registerAuth(cloudbase);
 registerFunctions(cloudbase);
 registerStorage(cloudbase);
 registerDatabase(cloudbase);
+registerRealtime(cloudbase);
 
 const app = cloudbase.init({
     // ...
