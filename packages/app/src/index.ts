@@ -3,9 +3,9 @@ import { SDKAdapterInterface, CloudbaseAdapter, IRequestConfig } from '@cloudbas
 import { ICloudbaseConfig, ICloudbaseUpgradedConfig, ICloudbase, ICloudbaseExtension, KV, ICloudbasePlatformInfo } from '@cloudbase/types';
 import { ICloudbaseAuth } from '@cloudbase/types/auth';
 import adapterForWxMp from 'cloudbase-adapter-wx_mp';
-import { registerComponent } from './libs/component';
+import { registerComponent, registerHook } from './libs/component';
 import { Platform } from './libs/adapter';
-import { ICloudbaseComponent } from '@cloudbase/types/component';
+import { ICloudbaseComponent, ICloudbaseHook } from '@cloudbase/types/component';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
@@ -161,6 +161,10 @@ class Cloudbase implements ICloudbase{
     const { adapter, runtime } = useAdapters(adapters) || {};
     adapter && (Platform.adapter = adapter as SDKAdapterInterface);
     runtime && (Platform.runtime = runtime as string);
+  }
+
+  public registerHook(hook:ICloudbaseHook){
+    registerHook(Cloudbase,hook)
   }
 
   public registerComponent(component:ICloudbaseComponent){

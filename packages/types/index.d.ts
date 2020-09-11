@@ -1,5 +1,5 @@
 import { CloudbaseAdapter, SDKAdapterInterface } from '@cloudbase/adapter-interface';
-import { ICloudbaseComponent } from "./component";
+import { ICloudbaseComponent, ICloudbaseHook } from "./component";
 import { ICloudbaseRequest } from "./request";
 import { ICloudbaseCache } from "./cache";
 
@@ -42,6 +42,7 @@ export interface ICloudbase{
   invokeExtension(name:string,opts:any):Promise<any>;
   useAdapters(adapters: CloudbaseAdapter|CloudbaseAdapter[]):void;
   registerComponent(component:ICloudbaseComponent):void;
+  registerHook(hook:ICloudbaseHook):void;
   registerVersion(version:string):void;
   fire?(...args:any[]):void;
 }
@@ -49,4 +50,10 @@ export interface ICloudbase{
 export interface ICloudbasePlatformInfo {
   adapter?: SDKAdapterInterface;
   runtime?: string;
+}
+
+export interface IGenericError<T extends string, P = any> extends Error {
+  type: T
+  payload: P
+  generic: boolean
 }

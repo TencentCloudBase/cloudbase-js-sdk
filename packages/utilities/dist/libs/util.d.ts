@@ -30,4 +30,5 @@ interface IPrintGroupLogOptions {
     collapsed?: boolean;
 }
 export declare function printGroupLog(options: IPrintGroupLogOptions): void;
+export declare const sleep: (ms?: number) => Promise<unknown>;
 export {};

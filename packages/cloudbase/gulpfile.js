@@ -36,7 +36,8 @@ const tscComponents = [
   'auth',
   'functions',
   'storage',
-  'database'
+  'database',
+  'realtime'
 ];
 
 tscComponents.forEach(name=>{
@@ -127,7 +128,8 @@ const cdnComponents = [
   'auth',
   'functions',
   'storage',
-  'database'
+  'database',
+  'realtime'
 ];
 
 cdnTaskList.push(function taskOfBuildFullJs(){

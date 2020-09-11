@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setRuntime = exports.getRuntime = exports.setWsClass = exports.getWsClass = void 0;
+var utilities_1 = require("@cloudbase/utilities");
+var RUNTIME = utilities_1.adapters.RUNTIME;
+var wsClass = null;
+var runtime = RUNTIME.WEB;
+function getWsClass() {
+    return wsClass;
+}
+exports.getWsClass = getWsClass;
+function setWsClass(val) {
+    wsClass = val;
+}
+exports.setWsClass = setWsClass;
+function getRuntime() {
+    return runtime;
+}
+exports.getRuntime = getRuntime;
+function setRuntime(val) {
+    runtime = val;
+}
+exports.setRuntime = setRuntime;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29tbW9uLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL2NvbW1vbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFBQSxrREFBZ0Q7QUFFeEMsSUFBQSxPQUFPLEdBQUssb0JBQVEsUUFBYixDQUFjO0FBRTdCLElBQUksT0FBTyxHQUFHLElBQUksQ0FBQztBQUNuQixJQUFJLE9BQU8sR0FBRyxPQUFPLENBQUMsR0FBYSxDQUFDO0FBRXBDLFNBQWdCLFVBQVU7SUFDeEIsT0FBTyxPQUFPLENBQUM7QUFDakIsQ0FBQztBQUZELGdDQUVDO0FBQ0QsU0FBZ0IsVUFBVSxDQUFDLEdBQU87SUFDaEMsT0FBTyxHQUFHLEdBQUcsQ0FBQztBQUNoQixDQUFDO0FBRkQsZ0NBRUM7QUFFRCxTQUFnQixVQUFVO0lBQ3hCLE9BQU8sT0FBTyxDQUFDO0FBQ2pCLENBQUM7QUFGRCxnQ0FFQztBQUNELFNBQWdCLFVBQVUsQ0FBQyxHQUFVO0lBQ25DLE9BQU8sR0FBRyxHQUFHLENBQUM7QUFDaEIsQ0FBQztBQUZELGdDQUVDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgYWRhcHRlcnMgfSBmcm9tIFwiQGNsb3VkYmFzZS91dGlsaXRpZXNcIjtcblxuY29uc3QgeyBSVU5USU1FIH0gPSBhZGFwdGVycztcblxubGV0IHdzQ2xhc3MgPSBudWxsO1xubGV0IHJ1bnRpbWUgPSBSVU5USU1FLldFQiBhcyBzdHJpbmc7XG5cbmV4cG9ydCBmdW5jdGlvbiBnZXRXc0NsYXNzKCl7XG4gIHJldHVybiB3c0NsYXNzO1xufVxuZXhwb3J0IGZ1bmN0aW9uIHNldFdzQ2xhc3ModmFsOmFueSl7XG4gIHdzQ2xhc3MgPSB2YWw7XG59XG5cbmV4cG9ydCBmdW5jdGlvbiBnZXRSdW50aW1lKCl7XG4gIHJldHVybiBydW50aW1lO1xufVxuZXhwb3J0IGZ1bmN0aW9uIHNldFJ1bnRpbWUodmFsOnN0cmluZyl7XG4gIHJ1bnRpbWUgPSB2YWw7XG59Il19
