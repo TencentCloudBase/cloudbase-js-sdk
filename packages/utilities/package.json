@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/utilities",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "cloudbase javascript sdk utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
