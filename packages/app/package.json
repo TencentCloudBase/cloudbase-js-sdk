@@ -30,7 +30,7 @@
     "@cloudbase/adapter-interface": "^0.4.0",
     "@cloudbase/types": "^1.1.0",
     "@cloudbase/utilities": "^1.2.0",
-    "cloudbase-adapter-wx_mp": "^0.1.3"
+    "cloudbase-adapter-wx_mp": "0.2.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.30.0",

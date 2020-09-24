@@ -113,7 +113,7 @@ export class CloudbaseRequest implements ICloudbaseRequest{
     // eslint-disable-next-line
     this._reqClass = new Platform.adapter.reqClass(<IRequestConfig>{
       timeout: this.config.timeout,
-      timeoutMsg: `[tcb-js-sdk] 请求在${this.config.timeout / 1000}s内未完成，已中断`,
+      timeoutMsg: `[@cloudbase/js-sdk] 请求在${this.config.timeout / 1000}s内未完成，已中断`,
       restrictedMethods: ['post']
     });
     this._throwWhenRequestFail = config.throw||false;
