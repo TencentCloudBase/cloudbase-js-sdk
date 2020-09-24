@@ -2,7 +2,7 @@ import { StorageInterface, AbstractStorage, SDKAdapterInterface } from '@cloudba
 import { ICloudbaseCache,ICacheConfig } from '@cloudbase/types/cache';
 import { KV, Persistence, ICloudbasePlatformInfo } from '@cloudbase/types';
 import { isUndefined,isNull, printWarn } from './util';
-import { ERRORS } from '../constants';
+import { ERRORS, getSdkName } from '../constants';
 
 /**
  * persitence=none时登录态保存在内存中
@@ -149,7 +149,11 @@ export class CloudbaseCache implements ICloudbaseCache{
       };
       this._storage.setItem(key, JSON.stringify(val));
     } catch (e) {
-      return;
+      throw new Error(JSON.stringify({
+        code: ERRORS.OPERATION_FAIL,
+        msg: `[${getSdkName()}][${ERRORS.OPERATION_FAIL}]setStore failed`,
+        info: e
+      }));
     }
 
     return;
