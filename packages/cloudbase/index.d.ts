@@ -26,6 +26,38 @@ declare namespace cloudbase {
     name: string;
     invoke(opts:any,app:cloudbase.app.App):Promise<any>;
   }
+
+  interface Listeners {
+    [key: string]: Function[];
+  }
+
+  interface ICloudbaseEvent {
+    name:string;
+    target: any;
+    data:any;
+  }
+
+  interface ICloudbaseEventEmitter {
+    on(name: string, listener: Function): this;
+    off(name: string, listener: Function): this;
+    fire(event: string | ICloudbaseEvent, data?: any): this;
+  }
+
+  interface ICloudbaseComponent {
+    name: string;
+    entity: any;
+    namespace?: string;
+    injectEvents?: {
+      bus: ICloudbaseEventEmitter,
+      events: string[];
+    };
+    IIFE?: boolean
+  }
+
+  interface ICloudbaseHook {
+    entity: any;
+    target: string;
+  }
   /**
    * 初始化Cloudbase
    * 
@@ -111,6 +143,28 @@ declare namespace cloudbase {
    * @param protocol 【可选】强制使用某种协议，默认与主站协议一致
    */
   function registerEndPoint(url:string,protocol?:'http'|'https'):void;
+  /**
+   * 【谨慎操作】注册功能模块
+   * 
+   * @example
+   * ```javascript
+   * cloudbase.registerComponent({});
+   * ```
+   * 
+   * @param component 功能模块对象
+   */
+  function registerComponent(component:ICloudbaseComponent):void;
+  /**
+   * 【谨慎操作】注册hook
+   * 
+   * @example
+   * ```javascript
+   * cloudbase.registerHook({});
+   * ```
+   * 
+   * @param hook hook对象
+   */
+  function registerHook(hook:ICloudbaseHook):void;
 }
 /**
  * instance
@@ -2166,5 +2220,5 @@ declare namespace cloudbase.database {
   }
 }
 
-export = cloudbase;
+export default cloudbase;
 export as namespace cloudbase;

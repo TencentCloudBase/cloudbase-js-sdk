@@ -309,6 +309,10 @@ try{
   cloudbase.registerComponent(component);
 }catch(e){}
 
-export function registerStorage(app:ICloudbase){
-  app.registerComponent(component);
+export function registerStorage(app:Pick<ICloudbase, 'registerComponent'>){
+  try{
+    app.registerComponent(component);
+  }catch(e){
+    console.warn(e);
+  }
 }
