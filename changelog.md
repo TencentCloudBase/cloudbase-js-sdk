@@ -13,6 +13,10 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
+## [1.3.3] 2020-09-25
+- [Changed] 优化 TypeScript 语法提示
+- [Fixed] 修复未登录调用数据库报错问题
+
 ## [1.3.2] 2020-09-24
 - [Fixed] 微信小程序插件环境获取 appSign 取插件 AppId
 - [Fixed] storage 满仓情况下写入抛出错误
