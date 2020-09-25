@@ -98,6 +98,10 @@ try{
   cloudbase.registerComponent(component);
 }catch(e){}
 
-export function registerFunctions(app:ICloudbase){
-  app.registerComponent(component);
+export function registerFunctions(app:Pick<ICloudbase, 'registerComponent'>){
+  try{
+    app.registerComponent(component);
+  }catch(e){
+    console.warn(e);
+  }
 }

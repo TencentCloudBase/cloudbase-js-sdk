@@ -1,6 +1,6 @@
 const path = require('path');
 const gulp = require("gulp");
-const webpack = require('webpack');
+const merge = require('merge-stream');
 const webpackStream = require('webpack-stream');
 const clean = require('gulp-clean');
 const rename = require('gulp-rename');
@@ -53,15 +53,14 @@ tscComponents.forEach(name=>{
     }).pipe(clean());
   }
   tscTaskList.push(taskClean);
-  const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
+  // const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
   const taskCjs = function(){
   const result = gulp
     .src(pattern)
     .pipe(sourcemaps.init())
     .pipe(ts(tsconfigCjs))
-    
-  return result.js
-    .pipe(rename(cjsName))
+  
+  return merge(result, result.js)
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(distDir));
   }

@@ -106,6 +106,6 @@ declare const EVENTS: {
     ACCESS_TOKEN_REFRESHD: string;
 };
 export { UserInfo, Auth, AuthProvider, EVENTS, eventBus };
-export declare function registerAuth(app: ICloudbase): void;
+export declare function registerAuth(app: Pick<ICloudbase, 'registerComponent'>): void;
 declare type IProvider = new (...args: any[]) => any;
 export declare function registerProvider(name: string, provider: IProvider): void;

@@ -1,3 +1,4 @@
-import { registerRealtime } from '@cloudbase/realtime';
+import { registerRealtime as registerRealtimeOrigin } from '@cloudbase/realtime';
+import cloudbase from '../../index';
 
-export { registerRealtime };
+export const registerRealtime = registerRealtimeOrigin as (app:typeof cloudbase)=>void;

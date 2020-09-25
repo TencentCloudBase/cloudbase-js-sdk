@@ -1,3 +1,4 @@
-import { registerStorage } from '@cloudbase/storage';
+import { registerStorage as registerStorageOrigin } from '@cloudbase/storage';
+import cloudbase from '../../index';
 
-export { registerStorage };
+export const registerStorage = registerStorageOrigin as (app:typeof cloudbase)=>void;

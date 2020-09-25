@@ -1,4 +1,4 @@
-import { ICloudbaseConfig, KV } from '.';
+import { ICloudbaseConfig, KV, ICloudbase } from '.';
 
 export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig,'env'|'persistence'|'debug'>;
 
@@ -74,4 +74,11 @@ export interface ICloudbaseAuth {
   onAnonymousConverted(callback: Function):void;
   onLoginTypeChanged(callback: Function):void;
   shouldRefreshAccessToken(hook:Function):void;
+}
+
+type IProvider = new(...args:any[]) => any;
+
+export interface ICloudbaseAuthModule {
+  registerAuth(app:ICloudbase):void,
+  registerProvider(name:string,provider:IProvider):void;
 }

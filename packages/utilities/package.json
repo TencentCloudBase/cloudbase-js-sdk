@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/utilities",
-  "version": "1.2.1",
+  "version": "1.2.2-alpha.0",
   "description": "cloudbase javascript sdk utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/types": "^1.1.0",
+    "@cloudbase/types": "^1.1.1-alpha.0",
     "crypto-js": "3"
   },
   "husky": {

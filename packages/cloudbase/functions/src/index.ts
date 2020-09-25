@@ -1,3 +1,4 @@
-import { registerFunctions } from '@cloudbase/functions';
+import { registerFunctions as registerFunctionsOrigin } from '@cloudbase/functions';
+import cloudbase from '../../index';
 
-export { registerFunctions };
+export const registerFunctions = registerFunctionsOrigin as (app:typeof cloudbase)=>void;

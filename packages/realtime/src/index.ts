@@ -27,9 +27,11 @@ try{
   cloudbase.registerHook(hook);
 }catch(e){}
 
-export function registerRealtime(app:ICloudbase){
+export function registerRealtime(app:Pick<ICloudbase, 'registerComponent'|'registerHook'>){
   try{
     app.registerComponent(component);
     app.registerHook(hook);
-  }catch(e){}
+  }catch(e){
+    console.warn(e);
+  }
 }

@@ -857,8 +857,12 @@ export {
 /**
  * @api 手动注册至cloudbase app
  */
-export function registerAuth(app:ICloudbase){
-  app.registerComponent(component);
+export function registerAuth(app:Pick<ICloudbase, 'registerComponent'>){
+  try{
+    app.registerComponent(component);
+  }catch(e){
+    console.warn(e);
+  }
 }
 
 type IProvider = new(...args:any[]) => any;

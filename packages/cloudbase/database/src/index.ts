@@ -1,6 +1,7 @@
 import { Db } from '@cloudbase/database';
 import { ICloudbase } from '@cloudbase/types';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
+import cloudbaseNS from '../../index';
 
 declare const cloudbase: ICloudbase;
 
@@ -15,8 +16,10 @@ function database(dbConfig?: object) {
   const { adapter,runtime } = this.platform;
   
   Db.reqClass = this.request.constructor;
-  
-  Db.getAccessToken = this.authInstance.getAccessToken.bind(this.authInstance);
+  // 未登录情况下传入空函数
+  Db.getAccessToken = this.authInstance ? this.authInstance.getAccessToken.bind(this.authInstance) : () => {
+    return '';
+  };
   Db.runtime = runtime;
   if(this.wsClientClass){
     Db.wsClass = adapter.wsClass;
@@ -40,6 +43,10 @@ try{
   cloudbase.registerComponent(component);
 }catch(e){}
 
-export function registerDatabase(app:ICloudbase){
-  app.registerComponent(component);
+export function registerDatabase(app:ICloudbase | typeof cloudbaseNS){
+  try{
+    app.registerComponent(component);
+  }catch(e){
+    console.warn(e);
+  }
 }
