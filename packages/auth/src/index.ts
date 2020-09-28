@@ -684,7 +684,7 @@ const component:ICloudbaseComponent = {
       EVENTS.ANONYMOUS_CONVERTED
     ]
   },
-  entity: function(config:Pick<ICloudbaseAuthConfig,'persistence'>={persistence:'session'}){
+  entity: function(config:Pick<ICloudbaseAuthConfig,'region'|'persistence'>={region:'',persistence:'session'}){
     if (this.authInstance) {
       printWarn(ERRORS.INVALID_OPERATION,'every cloudbase instance should has only one auth object');
       return this.authInstance;
@@ -698,7 +698,8 @@ const component:ICloudbaseComponent = {
 
     const { env, persistence, debug } = this.config;
     this.authInstance = new Auth({
-      env, 
+      env,
+      region: config.region,
       persistence, 
       debug,
       cache: this.cache,

@@ -6,7 +6,7 @@ export interface IGetAccessTokenResult {
   accessTokenExpire: number;
 }
 
-export type ICloudbaseRequestConfig = Pick<ICloudbaseConfig, 'env'|'timeout'|'appSecret'|'appSign'>;
+export type ICloudbaseRequestConfig = Pick<ICloudbaseConfig, 'env'|'region'|'timeout'|'appSecret'|'appSign'>;
 
 export type IAppendedRequestInfo = {
   data: KV<any>;

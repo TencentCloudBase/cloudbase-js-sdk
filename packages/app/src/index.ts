@@ -98,7 +98,7 @@ class Cloudbase implements ICloudbase{
     // 初始化cache和request
     const { env, persistence, debug, timeout, appSecret, appSign} = this._config;
     initCache({ env, persistence, debug, platformInfo:this.platform});
-    initRequest({ env, timeout, appSecret, appSign});
+    initRequest({ env, region:config.region, timeout, appSecret, appSign});
 
     setRegionLevelEndpoint(env, config.region || '')
     return new Cloudbase(this._config);

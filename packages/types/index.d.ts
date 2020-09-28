@@ -24,7 +24,7 @@ export interface ICloudbaseConfig {
   debug?:boolean;
 }
 // 可更新的配置字段
-export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence'|'debug'>;
+export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence'|'region'|'debug'>;
 
 export interface ICloudbaseExtension {
   name: string;
