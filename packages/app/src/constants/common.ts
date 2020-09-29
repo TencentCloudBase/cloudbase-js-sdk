@@ -38,6 +38,12 @@ export function setEndPoint(url:string,protocol?:'http'|'https'){
     setUtilitiesProtocol(protocol);
   }
 }
+export function setRegionLevelEndpoint(env:string,region:string,protocol?:'http'|'https') {
+  const endpoiont = region
+    ? `//${env}.${region}.tcb-api.tencentcloudapi.com/web`
+    : `//${env}.ap-shanghai.tcb-api.tencentcloudapi.com/web`
+  setEndPoint(endpoiont, protocol)
+}
 export function getEndPoint(){
   return { BASE_URL, PROTOCOL };
 }

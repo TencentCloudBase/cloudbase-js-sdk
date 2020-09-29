@@ -16,6 +16,7 @@ export interface ICloudbaseAppSecret {
 
 export interface ICloudbaseConfig {
   env: string;
+  region?: string;
   timeout?: number;
   persistence?: Persistence;
   appSecret?: ICloudbaseAppSecret;
@@ -23,7 +24,7 @@ export interface ICloudbaseConfig {
   debug?:boolean;
 }
 // 可更新的配置字段
-export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence'|'debug'>;
+export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence'|'region'|'debug'>;
 
 export interface ICloudbaseExtension {
   name: string;

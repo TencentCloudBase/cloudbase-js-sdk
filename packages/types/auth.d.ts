@@ -1,6 +1,6 @@
 import { ICloudbaseConfig, KV, ICloudbase } from '.';
 
-export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig,'env'|'persistence'|'debug'>;
+export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig,'env'|'region'|'persistence'|'debug'>;
 
 export interface IAccessTokenInfo {
   accessToken: string;

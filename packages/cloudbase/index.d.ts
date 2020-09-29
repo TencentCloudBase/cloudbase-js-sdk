@@ -15,6 +15,7 @@ declare namespace cloudbase {
 
   interface ICloudbaseConfig {
     env: string;
+    region?: string;
     timeout?: number;
     persistence?: cloudbase.auth.Persistence;
     appSecret?: ICloudbaseAppSecret;
