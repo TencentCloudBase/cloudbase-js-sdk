@@ -2,13 +2,13 @@ const path = require('path');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
 const pkg = require('./package.json');
 
-const rootPath = path.resolve(__dirname,'../../');
-const distPath = process.env.BUILD_SRC==='wrapper'?rootPath:__dirname;
-const cdnJsDir = path.join(distPath,`cdnjs/${pkg.version}`);
+const rootPath = path.resolve(__dirname, '../../');
+const distPath = process.env.BUILD_SRC === 'wrapper' ? rootPath : __dirname;
+const cdnJsDir = path.join(distPath, `cdnjs/${pkg.version}`);
 
 const alias = {};
-Object.keys(pkg.dependencies || {}).forEach(dep=>{
-  alias[dep] = path.join(rootPath,`node_modules/${dep}`);
+Object.keys(pkg.dependencies || {}).forEach((dep) => {
+  alias[dep] = path.join(rootPath, `node_modules/${dep}`);
 });
 
 module.exports = {
@@ -22,24 +22,26 @@ module.exports = {
   },
   // target: 'web',
   module: {
-    rules: [{
-      test: /\.ts$/,
-      exclude: [/node_modules/],
-      use: ['babel-loader','awesome-typescript-loader']
-    },{
-      test: /\.js$/,
-      exclude: [/node_modules/],
-      use: ['babel-loader']
-    },{
-      test: /package\.json$/,
-      loader: 'package-json-cleanup-loader',
-      options: {
-        only: ['version']
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: [/node_modules/],
+        use: ['babel-loader', 'awesome-typescript-loader']
+      },
+      {
+        test: /\.js$/,
+        exclude: [/node_modules/],
+        use: ['babel-loader']
+      },
+      {
+        test: /package\.json$/,
+        loader: 'package-json-cleanup-loader',
+        options: {
+          only: ['version']
+        }
       }
-    }],
-    noParse: [
-      /sjcl\.js$/,
-    ]
+    ],
+    noParse: [/sjcl\.js$/]
   },
   resolve: {
     alias,
@@ -47,7 +49,7 @@ module.exports = {
   },
   plugins: [
     new TsConfigPathsPlugin({
-      configFileName: path.resolve(__dirname,'tsconfig.json')
+      configFileName: path.resolve(__dirname, 'tsconfig.json')
     })
   ]
-}
+};

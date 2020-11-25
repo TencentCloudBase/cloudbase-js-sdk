@@ -2,30 +2,34 @@ const path = require('path');
 const { TsConfigPathsPlugin } = require('awesome-typescript-loader');
 const pkg = require('./package.json');
 
-const rootPath = path.resolve(__dirname,'../../');
+const rootPath = path.resolve(__dirname, '../../');
 
 const alias = {};
-Object.keys(pkg.dependencies || {}).forEach(dep=>{
-  alias[dep] = path.join(rootPath,`node_modules/${dep}`);
+Object.keys(pkg.dependencies || {}).forEach((dep) => {
+  alias[dep] = path.join(rootPath, `node_modules/${dep}`);
 });
 
 module.exports = {
   target: 'web',
   module: {
-    rules: [{
-      test: /\.ts$/,
-      use: [{
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            ['@babel/preset-env', { modules: false }]
-          ]
-        }
-      },'awesome-typescript-loader']
-    },{
-      test: /\.js$/,
-      use: ['babel-loader']
-    }]
+    rules: [
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [['@babel/preset-env', { modules: false }]]
+            }
+          },
+          'awesome-typescript-loader'
+        ]
+      },
+      {
+        test: /\.js$/,
+        use: ['babel-loader']
+      }
+    ]
   },
   resolve: {
     alias,
@@ -33,10 +37,10 @@ module.exports = {
   },
   plugins: [
     new TsConfigPathsPlugin({
-      configFileName: path.resolve(__dirname,'tsconfig.json')
+      configFileName: path.resolve(__dirname, 'tsconfig.json')
     })
   ],
   optimization: {
     sideEffects: false
   }
-}
+};
