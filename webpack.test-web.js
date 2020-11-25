@@ -16,20 +16,20 @@ module.exports = {
   devtool: 'inline-source-map',
   mode: 'development',
   devServer: {
-      hot: true,
-      host: 'jimmytest-088bef.tcb.qcloud.la',
-      port: 8080,
-      open: false,
-      inline: true,
-      clientLogLevel: 'error',
-      disableHostCheck: true,
-      contentBase: './test/web',
-      watchContentBase: false,
-      index: 'index.html',
-      publicPath: '/'
+    hot: true,
+    host: 'jimmytest-088bef.tcb.qcloud.la',
+    port: 8080,
+    open: false,
+    inline: true,
+    clientLogLevel: 'error',
+    disableHostCheck: true,
+    contentBase: './test/web',
+    watchContentBase: false,
+    index: 'index.html',
+    publicPath: '/'
   },
   output: {
-    filename: `./test.js`,
+    filename: `./test.js`
     // library: modName,
     // libraryTarget: 'umd',
     // umdNamedDefine: true
@@ -49,7 +49,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  plugins: [new webpack.HotModuleReplacementPlugin()]
 };
