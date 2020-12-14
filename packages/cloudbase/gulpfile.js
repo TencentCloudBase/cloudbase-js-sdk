@@ -34,12 +34,12 @@ const tsconfigEsm = {
 
 const tscComponents = ['app', 'auth', 'functions', 'storage', 'database', 'realtime'];
 
-tscComponents.forEach((name) => {
+tscComponents.forEach(name => {
   const componentsDir = path.resolve(__dirname, name);
   const pattern = `${componentsDir}/src/index.ts`;
   const distDir = path.join(componentsDir, 'dist');
   const pkg = require(`${componentsDir}/package.json`);
-  const taskClean = function () {
+  const taskClean = function() {
     return gulp
       .src(distDir, {
         read: false,
@@ -49,17 +49,28 @@ tscComponents.forEach((name) => {
   };
   tscTaskList.push(taskClean);
   // const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
-  const taskCjs = function () {
-    const result = gulp.src(pattern).pipe(sourcemaps.init()).pipe(ts(tsconfigCjs));
+  const taskCjs = function() {
+    const result = gulp
+      .src(pattern)
+      .pipe(sourcemaps.init())
+      .pipe(ts(tsconfigCjs));
 
-    return merge(result, result.js).pipe(sourcemaps.write()).pipe(gulp.dest(distDir));
+    return merge(result, result.js)
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(distDir));
   };
   tscTaskList.push(taskCjs);
   if (pkg.module) {
     const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
-    const taskEsm = function () {
-      const result = gulp.src(pattern).pipe(sourcemaps.init()).pipe(ts(tsconfigEsm));
-      return result.js.pipe(rename(esmName)).pipe(sourcemaps.write()).pipe(gulp.dest(distDir));
+    const taskEsm = function() {
+      const result = gulp
+        .src(pattern)
+        .pipe(sourcemaps.init())
+        .pipe(ts(tsconfigEsm));
+      return result.js
+        .pipe(rename(esmName))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(distDir));
     };
     tscTaskList.push(taskEsm);
   }
@@ -68,7 +79,7 @@ tscComponents.forEach((name) => {
 const srcDir = path.join(__dirname, 'src');
 const distDir = path.join(__dirname, 'dist');
 const pattern = `${srcDir}/index.ts`;
-const taskCleanOfMain = function () {
+const taskCleanOfMain = function() {
   return gulp
     .src(distDir, {
       read: false,
@@ -78,16 +89,28 @@ const taskCleanOfMain = function () {
 };
 tscTaskList.push(taskCleanOfMain);
 const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
-const taskCjsOfMain = function () {
-  const result = gulp.src(pattern).pipe(sourcemaps.init()).pipe(ts(tsconfigCjs));
-  return result.js.pipe(rename(cjsName)).pipe(sourcemaps.write()).pipe(gulp.dest(distDir));
+const taskCjsOfMain = function() {
+  const result = gulp
+    .src(pattern)
+    .pipe(sourcemaps.init())
+    .pipe(ts(tsconfigCjs));
+  return result.js
+    .pipe(rename(cjsName))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(distDir));
 };
 tscTaskList.push(taskCjsOfMain);
 if (pkg.module) {
   const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
-  const taskEsmOfMain = function () {
-    const result = gulp.src(pattern).pipe(sourcemaps.init()).pipe(ts(tsconfigEsm));
-    return result.js.pipe(rename(esmName)).pipe(sourcemaps.write()).pipe(gulp.dest(distDir));
+  const taskEsmOfMain = function() {
+    const result = gulp
+      .src(pattern)
+      .pipe(sourcemaps.init())
+      .pipe(ts(tsconfigEsm));
+    return result.js
+      .pipe(rename(esmName))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(distDir));
   };
   tscTaskList.push(taskEsmOfMain);
 }
@@ -173,7 +196,7 @@ miniappTaskList.push(function taskOfBuildApp() {
 });
 
 cdnTaskList.push(
-  ...cdnComponents.map((comp) => {
+  ...cdnComponents.map(comp => {
     return function taskCompJs() {
       return gulp
         .src(`${rootPath}/${comp}/src/index.ts`)
@@ -206,7 +229,7 @@ cdnTaskList.push(
 );
 
 miniappTaskList.push(
-  ...cdnComponents.map((comp) => {
+  ...cdnComponents.map(comp => {
     return function taskComp() {
       return gulp
         .src(`${rootPath}/${comp}/src/index.ts`)
@@ -236,3 +259,5 @@ exports.build = gulp.parallel([tscTask, miniappTaskList]);
 // debug
 // exports.build = gulp.parallel([tscTask]);
 exports.cdn = gulp.parallel(cdnTaskList);
+
+exports.e2e = gulp.parallel([tscTask, miniappTaskList, cdnTaskList]);

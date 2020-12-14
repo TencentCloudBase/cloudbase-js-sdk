@@ -11,7 +11,7 @@
     "build": "rm -rf dist/ && gulp build",
     "build:cdn": "gulp cdn",
     "build:miniapp": "gulp miniapp",
-    "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp"
+    "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp e2e"
   },
   "publishConfig": {
     "access": "public"
