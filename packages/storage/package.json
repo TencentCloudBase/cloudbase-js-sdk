@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/storage",
-  "version": "1.2.3-alpha.0",
+  "version": "1.2.3-alpha.1",
   "description": "cloudbase js sdk storage module",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -26,8 +26,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cloudbase/types": "^1.1.2-alpha.0",
-    "@cloudbase/utilities": "^1.2.3-alpha.0"
+    "@cloudbase/types": "^1.1.2-alpha.1",
+    "@cloudbase/utilities": "^1.2.3-alpha.1"
   },
   "husky": {
     "hooks": {
