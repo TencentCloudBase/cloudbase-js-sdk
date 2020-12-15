@@ -1,8 +1,8 @@
 import { ICloudbase } from '@cloudbase/types';
-import { events,adapters,utils,constants, helpers } from  '@cloudbase/utilities';
+import { events,adapters,utils,constants,helpers } from '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
-import { ICloudbaseAuthConfig, ICredential, IUser, IUserInfo, IAuthProvider, ILoginState } from '@cloudbase/types/auth';
+import { ICloudbaseAuthConfig,ICredential,IUser,IUserInfo,IAuthProvider,ILoginState } from '@cloudbase/types/auth';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
 import { WeixinAuthProvider } from './providers/weixinAuthProvider';
 import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
@@ -16,8 +16,8 @@ declare const cloudbase: ICloudbase;
 
 const { CloudbaseEventEmitter } = events;
 const { RUNTIME } = adapters;
-const { printWarn, throwError } = utils;
-const { ERRORS, COMMUNITY_SITE_URL } = constants;
+const { printWarn,throwError } = utils;
+const { ERRORS,COMMUNITY_SITE_URL } = constants;
 const { catchErrorsDecorator } = helpers;
 
 const COMPONENT_NAME = 'auth';
@@ -36,12 +36,12 @@ interface UserInfo {
 
 const eventBus = new CloudbaseEventEmitter();
 
-interface IUserOptions{
+interface IUserOptions {
   cache: ICloudbaseCache;
   request: ICloudbaseRequest;
 }
 
-class User implements IUser{
+class User implements IUser {
   public uid: string;
   public loginType: string;
   public openid: string;
@@ -65,7 +65,7 @@ class User implements IUser{
   private _request: ICloudbaseRequest;
 
   constructor(options: IUserOptions) {
-    const { cache, request} = options;
+    const { cache,request } = options;
     this._cache = cache;
     this._request = request;
 
@@ -74,7 +74,7 @@ class User implements IUser{
   /**
    * 获取本地用户信息-同步
    */
-  public async checkLocalInfo(){
+  public async checkLocalInfo() {
     this.uid = this._getLocalUserInfo('uid');
     this.loginType = this._getLocalUserInfo('loginType');
     this.openid = this._getLocalUserInfo('wxOpenId');
@@ -97,7 +97,7 @@ class User implements IUser{
   /**
    * 获取本地用户信息-异步
    */
-  public async checkLocalInfoAsync(){
+  public async checkLocalInfoAsync() {
     this.uid = await this._getLocalUserInfoAsync('uid');
     this.loginType = await this._getLocalUserInfoAsync('loginType');
     this.openid = await this._getLocalUserInfoAsync('wxOpenId');
@@ -134,10 +134,10 @@ class User implements IUser{
     ]
   })
   public linkWithTicket(ticket: string): Promise<void> {
-    if (typeof ticket !== 'string') {
+    if(typeof ticket !== 'string') {
       throw new Error('ticket must be string');
     }
-    return this._request.send('auth.linkWithTicket', { ticket });
+    return this._request.send('auth.linkWithTicket',{ ticket });
   }
   /**
    * 将当前账户与第三方鉴权提供方，以重定向的形式，进行绑定，绑定之后便可以通过第三方鉴权提供方登录当前的云开发账户。
@@ -153,7 +153,7 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public linkWithRedirect(provider:IAuthProvider): void {
+  public linkWithRedirect(provider: IAuthProvider): void {
     provider.signInWithRedirect();
   }
   /**
@@ -168,11 +168,11 @@ class User implements IUser{
     ]
   })
   public async getLinkedUidList() {
-    const { data } = await this._request.send('auth.getLinkedUidList', {});
+    const { data } = await this._request.send('auth.getLinkedUidList',{});
     let hasPrimaryUid = false;
     const users = data.users as IUserInfo[];
-    for(const user of users){
-      if (user.wxOpenId && user.wxPublicId) {
+    for(const user of users) {
+      if(user.wxOpenId && user.wxPublicId) {
         hasPrimaryUid = true;
         break;
       }
@@ -185,7 +185,7 @@ class User implements IUser{
   /**
    * 设置微信主账号，通常搭配和 User.getLinkedUidList() 使用，用于在同个微信 UnionID 对应的多个云开发账号中，设置其中一个为主账号
    * 设置之后，通过 UnionID 登录便会登录至主账号之上。
-   * @param uid 
+   * @param uid
    */
   @catchErrorsDecorator({
     title: '设置微信主账号失败',
@@ -195,12 +195,12 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public setPrimaryUid(uid:string) {
-    return this._request.send('auth.setPrimaryUid', { uid });
+  public setPrimaryUid(uid: string) {
+    return this._request.send('auth.setPrimaryUid',{ uid });
   }
   /**
    * 解绑某个登录方式
-   * @param loginType 
+   * @param loginType
    */
   @catchErrorsDecorator({
     title: '接触绑定失败',
@@ -211,12 +211,12 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public unlink(loginType:'CUSTOM'|'WECHAT-OPEN'|'WECHAT-PUBLIC'|'WECHAT-UNION') {
-    return this._request.send('auth.unlink', { platform: loginType });
+  public unlink(loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION') {
+    return this._request.send('auth.unlink',{ platform: loginType });
   }
   /**
    * 更新用户信息
-   * @param userInfo 
+   * @param userInfo
    */
   @catchErrorsDecorator({
     title: '更新用户信息失败',
@@ -227,15 +227,15 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async update(userInfo:IUserInfo):Promise<void> {
-    const { nickName, gender, avatarUrl, province, country, city } = userInfo;
-    const { data: newUserInfo } = await this._request.send('auth.updateUserInfo', { nickName, gender, avatarUrl, province, country, city });
+  public async update(userInfo: IUserInfo): Promise<void> {
+    const { nickName,gender,avatarUrl,province,country,city } = userInfo;
+    const { data: newUserInfo } = await this._request.send('auth.updateUserInfo',{ nickName,gender,avatarUrl,province,country,city });
     this._setLocalUserInfo(newUserInfo);
   }
   /**
    * 更新密码
-   * @param newPassword 
-   * @param oldPassword 
+   * @param newPassword
+   * @param oldPassword
    */
   @catchErrorsDecorator({
     title: '更新密码失败',
@@ -246,15 +246,15 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public updatePassword(newPassword:string, oldPassword:string) {
-    return this._request.send('auth.updatePassword', {
+  public updatePassword(newPassword: string,oldPassword: string) {
+    return this._request.send('auth.updatePassword',{
       oldPassword,
       newPassword
     });
   }
   /**
    * 更新邮箱地址
-   * @param newEmail 
+   * @param newEmail
    */
   @catchErrorsDecorator({
     title: '更新邮箱地址失败',
@@ -265,14 +265,14 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public updateEmail(newEmail:string) {
-    return this._request.send('auth.updateEmail', {
+  public updateEmail(newEmail: string) {
+    return this._request.send('auth.updateEmail',{
       newEmail
     });
   }
   /**
    * 更新用户名
-   * @param username 
+   * @param username
    */
   @catchErrorsDecorator({
     title: '更新用户名失败',
@@ -284,11 +284,11 @@ class User implements IUser{
     ]
   })
   public updateUsername(username: string) {
-    if (typeof username !== 'string') {
+    if(typeof username !== 'string') {
       throwError(ERRORS.INVALID_PARAMS,'username must be a string');
     }
 
-    return this._request.send('auth.updateUsername', {
+    return this._request.send('auth.updateUsername',{
       username
     });
   }
@@ -303,26 +303,26 @@ class User implements IUser{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async refresh():Promise<IUserInfo> {
+  public async refresh(): Promise<IUserInfo> {
     const action = 'auth.getUserInfo';
-    const { data: userInfo } = await this._request.send(action, {});
+    const { data: userInfo } = await this._request.send(action,{});
     this._setLocalUserInfo(userInfo);
     return userInfo;
   }
 
-  private _getLocalUserInfo(key:string):string {
+  private _getLocalUserInfo(key: string): string {
     const { userInfoKey } = this._cache.keys;
     const userInfo = this._cache.getStore(userInfoKey);
     return userInfo[key];
   }
 
-  private async _getLocalUserInfoAsync(key:string): Promise<string> {
+  private async _getLocalUserInfoAsync(key: string): Promise<string> {
     const { userInfoKey } = this._cache.keys;
     const userInfo = await this._cache.getStoreAsync(userInfoKey);
     return userInfo[key];
   }
 
-  private _setUserInfo(){
+  private _setUserInfo() {
     const { userInfoKey } = this._cache.keys;
     const userInfo = this._cache.getStore(userInfoKey);
     [
@@ -350,26 +350,26 @@ class User implements IUser{
     };
   }
 
-  private _setLocalUserInfo(userInfo:any) {
+  private _setLocalUserInfo(userInfo: any) {
     const { userInfoKey } = this._cache.keys;
-    this._cache.setStore(userInfoKey, userInfo);
+    this._cache.setStore(userInfoKey,userInfo);
     this._setUserInfo();
   }
 }
 interface ILoginStateOptions extends IUserOptions {
   envId: string;
 }
-export class LoginState implements ILoginState{
+export class LoginState implements ILoginState {
   public credential: ICredential;
   public user: IUser;
 
   private _cache: ICloudbaseCache;
   private _loginType: string;
-  
-  constructor(options:ILoginStateOptions) {
-    const { envId, cache, request } = options;
-    if (!envId) {
-      throwError(ERRORS.INVALID_PARAMS, 'envId is not defined');
+
+  constructor(options: ILoginStateOptions) {
+    const { envId,cache,request } = options;
+    if(!envId) {
+      throwError(ERRORS.INVALID_PARAMS,'envId is not defined');
     }
     this._cache = cache;
 
@@ -379,8 +379,8 @@ export class LoginState implements ILoginState{
     });
   }
 
-  public async checkLocalState(){
-    const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
+  public async checkLocalState() {
+    const { refreshTokenKey,accessTokenKey,accessTokenExpireKey } = this._cache.keys;
     const refreshToken = this._cache.getStore(refreshTokenKey);
     const accessToken = this._cache.getStore(accessTokenKey);
     const accessTokenExpire = this._cache.getStore(accessTokenExpireKey);
@@ -395,8 +395,8 @@ export class LoginState implements ILoginState{
 
     this.user.checkLocalInfo();
   }
-  public async checkLocalStateAsync(){
-    const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
+  public async checkLocalStateAsync() {
+    const { refreshTokenKey,accessTokenKey,accessTokenExpireKey } = this._cache.keys;
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     const accessToken = await this._cache.getStoreAsync(accessTokenKey);
     const accessTokenExpire = await this._cache.getStoreAsync(accessTokenExpireKey);
@@ -424,7 +424,7 @@ export class LoginState implements ILoginState{
     return this.loginType === LOGINTYPE.WECHAT || this.loginType === LOGINTYPE.WECHAT_OPEN || this.loginType === LOGINTYPE.WECHAT_PUBLIC;
   }
 
-  get isUsernameAuth(){
+  get isUsernameAuth() {
     return this.loginType === LOGINTYPE.USERNAME;
   }
 
@@ -433,7 +433,7 @@ export class LoginState implements ILoginState{
   }
 }
 
-class Auth{
+class Auth {
   private readonly _config: ICloudbaseAuthConfig;
   private readonly _cache: ICloudbaseCache
   private readonly _request: ICloudbaseRequest;
@@ -444,25 +444,25 @@ class Auth{
   private _emailAuthProvider: EmailAuthProvider;
   private _usernameAuthProvider: UsernameAuthProvider;
 
-  constructor(config: ICloudbaseAuthConfig&{cache:ICloudbaseCache,request:ICloudbaseRequest,runtime?:string}) {
+  constructor(config: ICloudbaseAuthConfig & { cache: ICloudbaseCache,request: ICloudbaseRequest,runtime?: string }) {
     this._config = config;
     this._cache = config.cache;
     this._request = config.request;
-    this._runtime = config.runtime||RUNTIME.WEB
+    this._runtime = config.runtime || RUNTIME.WEB
 
-    eventBus.on(EVENTS.LOGIN_TYPE_CHANGED, this._onLoginTypeChanged.bind(this));
+    eventBus.on(EVENTS.LOGIN_TYPE_CHANGED,this._onLoginTypeChanged.bind(this));
   }
   /**
    * 获取当前登录的用户信息-同步
    */
   get currentUser() {
-    if(this._cache.mode==='async'){
+    if(this._cache.mode === 'async') {
       // async storage的平台调用此API提示
       printWarn(ERRORS.INVALID_OPERATION,'current platform\'s storage is asynchronous, please use getCurrenUser insteed');
       return;
     }
     const loginState = this.hasLoginState();
-    if (loginState) {
+    if(loginState) {
       return loginState.user || null;
     } else {
       return null;
@@ -485,9 +485,9 @@ class Auth{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async getCurrenUser(){
+  public async getCurrenUser() {
     const loginState = await this.getLoginState();
-    if (loginState) {
+    if(loginState) {
       await loginState.user.checkLocalInfoAsync();
       return loginState.user || null;
     } else {
@@ -506,19 +506,19 @@ class Auth{
       env: this._config.env
     };
   }
-  public weixinAuthProvider({ appid, scope, state }):WeixinAuthProvider {
-    if(!this._weixinAuthProvider){
+  public weixinAuthProvider({ appid,scope,state }): WeixinAuthProvider {
+    if(!this._weixinAuthProvider) {
       this._weixinAuthProvider = new WeixinAuthProvider({
         ...this._config,
         cache: this._cache,
         request: this._request,
         runtime: this._runtime
-      }, appid, scope, state);
+      },appid,scope,state);
     }
     return this._weixinAuthProvider;
   }
-  public anonymousAuthProvider():AnonymousAuthProvider {
-    if (!this._anonymousAuthProvider) {
+  public anonymousAuthProvider(): AnonymousAuthProvider {
+    if(!this._anonymousAuthProvider) {
       this._anonymousAuthProvider = new AnonymousAuthProvider({
         ...this._config,
         cache: this._cache,
@@ -527,8 +527,8 @@ class Auth{
     }
     return this._anonymousAuthProvider;
   }
-  public customAuthProvider():CustomAuthProvider {
-    if(!this._customAuthProvider){
+  public customAuthProvider(): CustomAuthProvider {
+    if(!this._customAuthProvider) {
       this._customAuthProvider = new CustomAuthProvider({
         ...this._config,
         cache: this._cache,
@@ -537,8 +537,8 @@ class Auth{
     }
     return this._customAuthProvider;
   }
-  public emailAuthProvider():EmailAuthProvider {
-    if(!this._emailAuthProvider){
+  public emailAuthProvider(): EmailAuthProvider {
+    if(!this._emailAuthProvider) {
       this._emailAuthProvider = new EmailAuthProvider({
         ...this._config,
         cache: this._cache,
@@ -547,8 +547,8 @@ class Auth{
     }
     return this._emailAuthProvider;
   }
-  public usernameAuthProvider():UsernameAuthProvider {
-    if(!this._usernameAuthProvider){
+  public usernameAuthProvider(): UsernameAuthProvider {
+    if(!this._usernameAuthProvider) {
       this._usernameAuthProvider = new UsernameAuthProvider({
         ...this._config,
         cache: this._cache,
@@ -559,15 +559,15 @@ class Auth{
   }
   /**
    * 用户名密码登录
-   * @param username 
-   * @param password 
+   * @param username
+   * @param password
    */
-  public async signInWithUsernameAndPassword(username: string, password: string) {
-    return this.usernameAuthProvider().signIn(username, password);
+  public async signInWithUsernameAndPassword(username: string,password: string) {
+    return this.usernameAuthProvider().signIn(username,password);
   }
   /**
    * 检测用户名是否已经占用
-   * @param username 
+   * @param username
    */
   @catchErrorsDecorator({
     title: '获取用户是否被占用失败',
@@ -578,36 +578,36 @@ class Auth{
     ]
   })
   public async isUsernameRegistered(username: string): Promise<boolean> {
-    if (typeof username !== 'string') {
+    if(typeof username !== 'string') {
       throwError(ERRORS.INVALID_PARAMS,'username must be a string');
     }
 
-    const { data } = await this._request.send('auth.isUsernameRegistered', {
+    const { data } = await this._request.send('auth.isUsernameRegistered',{
       username
     });
-    return data?.isRegistered;
+    return data ?.isRegistered;
   }
   /**
    * 邮箱密码登录
-   * @param email 
-   * @param password 
+   * @param email
+   * @param password
    */
-  public async signInWithEmailAndPassword(email: string, password: string) {
-    return this.emailAuthProvider().signIn(email, password);
+  public async signInWithEmailAndPassword(email: string,password: string) {
+    return this.emailAuthProvider().signIn(email,password);
   }
   /**
    * 邮箱密码注册
-   * @param email 
-   * @param password 
+   * @param email
+   * @param password
    */
-  public async signUpWithEmailAndPassword(email:string, password:string) {
+  public async signUpWithEmailAndPassword(email: string,password: string) {
     return this.emailAuthProvider().signUp(email,password);
   }
   /**
    * 重置邮箱密码
-   * @param email 
+   * @param email
    */
-  public async sendPasswordResetEmail(email:string) {
+  public async sendPasswordResetEmail(email: string) {
     return this.emailAuthProvider().resetPassword(email);
   }
   /**
@@ -624,27 +624,27 @@ class Auth{
   })
   public async signOut() {
     const loginType = await this.getLoginType();
-    if (loginType === LOGINTYPE.ANONYMOUS) {
+    if(loginType === LOGINTYPE.ANONYMOUS) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_OPERATION,
         msg: 'anonymous user doesn\'t support signOut action'
       }));
     }
-    const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
+    const { refreshTokenKey,accessTokenKey,accessTokenExpireKey } = this._cache.keys;
     const action = 'auth.logout';
 
     const refresh_token = await this._cache.getStoreAsync(refreshTokenKey);
-    if (!refresh_token) {
+    if(!refresh_token) {
       return;
     }
-    const res = await this._request.send(action, { refresh_token });
+    const res = await this._request.send(action,{ refresh_token });
 
     this._cache.removeStoreAsync(refreshTokenKey);
     this._cache.removeStoreAsync(accessTokenKey);
     this._cache.removeStoreAsync(accessTokenExpireKey);
 
     eventBus.fire(EVENTS.LOGIN_STATE_CHANGED);
-    eventBus.fire(EVENTS.LOGIN_TYPE_CHANGED, {
+    eventBus.fire(EVENTS.LOGIN_TYPE_CHANGED,{
       env: this._config.env,
       loginType: LOGINTYPE.NULL,
       persistence: this._config.persistence
@@ -653,41 +653,42 @@ class Auth{
     return res;
   }
   public async onLoginStateChanged(callback: Function) {
-    eventBus.on(EVENTS.LOGIN_STATE_CHANGED, async () => {
+    eventBus.on(EVENTS.LOGIN_STATE_CHANGED,async () => {
       const loginState = await this.getLoginState();
-      callback.call(this, loginState);
+      callback.call(this,loginState);
     });
     // 立刻执行一次回调
     const loginState = await this.getLoginState();
-    callback.call(this, loginState);
+    callback.call(this,loginState);
   }
   public onLoginStateExpired(callback: Function) {
-    eventBus.on(EVENTS.LOGIN_STATE_EXPIRED, callback.bind(this));
+    eventBus.on(EVENTS.LOGIN_STATE_EXPIRED,callback.bind(this));
   }
   public onAccessTokenRefreshed(callback: Function) {
-    eventBus.on(EVENTS.ACCESS_TOKEN_REFRESHD, callback.bind(this));
+    eventBus.on(EVENTS.ACCESS_TOKEN_REFRESHD,callback.bind(this));
   }
   public onAnonymousConverted(callback: Function) {
-    eventBus.on(EVENTS.ANONYMOUS_CONVERTED, callback.bind(this));
+    eventBus.on(EVENTS.ANONYMOUS_CONVERTED,callback.bind(this));
   }
   public onLoginTypeChanged(callback: Function) {
-    eventBus.on(EVENTS.LOGIN_TYPE_CHANGED, async () => {
+    eventBus.on(EVENTS.LOGIN_TYPE_CHANGED,async () => {
       const loginState = await this.getLoginState();
-      callback.call(this, loginState);
+      callback.call(this,loginState);
     });
   }
   /**
    * 获取本地登录态-同步
    */
-  public hasLoginState(): ILoginState|null {
-    if(this._cache.mode==='async'){
+  public hasLoginState(): ILoginState | null {
+    if(this._cache.mode === 'async') {
       // async storage的平台调用此API提示
       printWarn(ERRORS.INVALID_OPERATION,'current platform\'s storage is asynchronous, please use getLoginState insteed');
       return;
     }
     const { refreshTokenKey } = this._cache.keys;
     const refreshToken = this._cache.getStore(refreshTokenKey);
-    if (refreshToken) {
+
+    if(refreshToken) {
       const loginState = new LoginState({
         envId: this._config.env,
         cache: this._cache,
@@ -714,7 +715,7 @@ class Auth{
   public async getLoginState() {
     const { refreshTokenKey } = this._cache.keys;
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
-    if (refreshToken) {
+    if(refreshToken) {
       const loginState = new LoginState({
         envId: this._config.env,
         cache: this._cache,
@@ -743,8 +744,8 @@ class Auth{
   public async getUserInfo(): Promise<any> {
     const action = 'auth.getUserInfo';
 
-    const res = await this._request.send(action, {});
-    if (res.code) {
+    const res = await this._request.send(action,{});
+    if(res.code) {
       return res;
     } else {
       return {
@@ -757,7 +758,7 @@ class Auth{
    * 获取Http鉴权header，用于云接入 HTTP 访问云函数时的鉴权
    */
   public getAuthHeader() {
-    const { refreshTokenKey, accessTokenKey } = this._cache.keys;
+    const { refreshTokenKey,accessTokenKey } = this._cache.keys;
     const refreshToken = this._cache.getStore(refreshTokenKey);
     const accessToken = this._cache.getStore(accessTokenKey);
     return {
@@ -770,9 +771,9 @@ class Auth{
    */
   public async getAuthHeaderAsync() {
     await this._request.refreshAccessToken();
-    
-    const { refreshTokenKey, accessTokenKey } = this._cache.keys;
-    const refreshToken = await  this._cache.getStoreAsync(refreshTokenKey);
+
+    const { refreshTokenKey,accessTokenKey } = this._cache.keys;
+    const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     const accessToken = await this._cache.getStoreAsync(accessTokenKey);
     return {
       'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
@@ -780,30 +781,30 @@ class Auth{
   }
 
   private async _onLoginTypeChanged(ev) {
-    const { loginType, persistence, env } = ev.data;
-    if (env !== this._config.env) {
+    const { loginType,persistence,env } = ev.data;
+    if(env !== this._config.env) {
       return;
     }
     // 登录态转变后迁移cache，防止在匿名登录状态下cache混用
     await this._cache.updatePersistenceAsync(persistence);
-    await this._cache.setStoreAsync(this._cache.keys.loginTypeKey, loginType);
+    await this._cache.setStoreAsync(this._cache.keys.loginTypeKey,loginType);
   }
 }
 
 const EVENTS = {
   // 登录态改变后触发
-  LOGIN_STATE_CHANGED  : 'loginStateChanged',
+  LOGIN_STATE_CHANGED: 'loginStateChanged',
   // 登录态过期后触发
-  LOGIN_STATE_EXPIRED  : 'loginStateExpire',
+  LOGIN_STATE_EXPIRED: 'loginStateExpire',
   // 登录类型改变后触发
-  LOGIN_TYPE_CHANGED   : 'loginTypeChanged',
+  LOGIN_TYPE_CHANGED: 'loginTypeChanged',
   // 匿名账户被转正后触发
-  ANONYMOUS_CONVERTED  : 'anonymousConverted', 
+  ANONYMOUS_CONVERTED: 'anonymousConverted',
   // access token刷新后触发
   ACCESS_TOKEN_REFRESHD: 'refreshAccessToken'
 };
 
-const component:ICloudbaseComponent = {
+const component: ICloudbaseComponent = {
   name: COMPONENT_NAME,
   namespace: 'auth',
   injectEvents: {
@@ -816,23 +817,23 @@ const component:ICloudbaseComponent = {
       EVENTS.ANONYMOUS_CONVERTED
     ]
   },
-  entity: function(config:Pick<ICloudbaseAuthConfig,'region'|'persistence'>={region:'',persistence:'session'}){
-    if (this.authInstance) {
+  entity: function(config: Pick<ICloudbaseAuthConfig,'region' | 'persistence'> = { region: '',persistence: 'session' }) {
+    if(this.authInstance) {
       printWarn(ERRORS.INVALID_OPERATION,'every cloudbase instance should has only one auth object');
       return this.authInstance;
     }
     const { adapter,runtime } = this.platform;
     // 如不明确指定persistence则优先取各平台adapter首选，其次session
     const newPersistence = config.persistence || adapter.primaryStorage;
-    if (newPersistence&&(newPersistence !== this.config.persistence)) {
-      this.updateConfig({persistence: newPersistence})
+    if(newPersistence && (newPersistence !== this.config.persistence)) {
+      this.updateConfig({ persistence: newPersistence })
     }
 
-    const { env, persistence, debug } = this.config;
+    const { env,persistence,debug } = this.config;
     this.authInstance = new Auth({
       env,
       region: config.region,
-      persistence, 
+      persistence,
       debug,
       cache: this.cache,
       request: this.request,
@@ -842,11 +843,11 @@ const component:ICloudbaseComponent = {
   }
 }
 
-try{
+try {
   // 尝试自动注册至全局变量cloudbase
   // 此行为只在浏览器环境下有效
   cloudbase.registerComponent(component);
-}catch(e){}
+} catch(e) { }
 
 export {
   UserInfo,
@@ -858,20 +859,20 @@ export {
 /**
  * @api 手动注册至cloudbase app
  */
-export function registerAuth(app:Pick<ICloudbase, 'registerComponent'>){
-  try{
+export function registerAuth(app: Pick<ICloudbase,'registerComponent'>) {
+  try {
     app.registerComponent(component);
-  }catch(e){
+  } catch(e) {
     console.warn(e);
   }
 }
 
-type IProvider = new(...args:any[]) => any;
+type IProvider = new (...args: any[]) => any;
 /**
  * 注册provider，如果
- * @param name 
- * @param provider 
- * @example 
+ * @param name
+ * @param provider
+ * @example
  * // 注册
  * registerProvider('emailAuthProvider',function(){
  *   // ...
@@ -879,11 +880,11 @@ type IProvider = new(...args:any[]) => any;
  * // 使用新provider登录
  * cloudbase.auth().emailAuthProvider().signIn();
  */
-export function registerProvider(name:string,provider:IProvider){
+export function registerProvider(name: string,provider: IProvider) {
   const proto = Auth.prototype;
-  proto[name] = function(options:object){
+  proto[name] = function(options: object) {
     const privateName = `_${name}`;
-    if(!this[privateName]){
+    if(!this[privateName]) {
       this[privateName] = new provider({
         ...options,
         ...this._config

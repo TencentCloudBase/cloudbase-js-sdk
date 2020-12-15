@@ -10,9 +10,12 @@ const express = require('express');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
-module.exports = async function () {
+module.exports = async function() {
+  const browserFetcher = puppeteer.createBrowserFetcher();
+  const revisionInfo = await browserFetcher.download('686378');
   const browser = await puppeteer.launch({
     // headless: false
+    executablePath: revisionInfo.executablePath,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
   // store the browser instance so we can teardown it later
