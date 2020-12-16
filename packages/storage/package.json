@@ -47,5 +47,6 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.1.7",
     "typescript": "^3.8.3"
-  }
+  },
+  "gitHead": "19f928d7bba1104edcaf88e9cb7c1bf384129a65"
 }
