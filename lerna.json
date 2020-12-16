@@ -1,9 +1,7 @@
 {
   "npmClient": "yarn",
   "version": "independent",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "command": {
     "bootstrap": {
       "npmClientArgs": ["--ignore-engines"]
