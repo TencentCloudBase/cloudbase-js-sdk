@@ -18,7 +18,7 @@ module.exports = {
   devServer: {
     hot: true,
     host: 'jimmytest-088bef.tcb.qcloud.la',
-    port: 8080,
+    port: 80,
     open: false,
     inline: true,
     clientLogLevel: 'error',
