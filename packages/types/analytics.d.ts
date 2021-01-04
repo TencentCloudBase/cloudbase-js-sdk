@@ -2,7 +2,7 @@
 export interface IReportData {
     report_type: string, // 上报场景  如电商 mall，游戏 game
     report_data: {
-        action_time: number, // 必填  行为发生时，客户端的时间点，单位s
+        action_time?: number, // 非必填  行为发生时，客户端的时间点，单位s
         action_type: string, // 必填 行为类型 如 访问 visit_store，分享 share，加入购物车 add_to_cart等
         click_id?: string, // 非必填  广告平台会在URL增加click_id
         action_param?: { // 非必填

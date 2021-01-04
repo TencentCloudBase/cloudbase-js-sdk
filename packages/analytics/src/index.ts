@@ -27,7 +27,7 @@ function validateAnalyticsData(data: IReportData): boolean {
     return false
   }
 
-  if(!Number.isInteger(report_data.action_time)) {
+  if(report_data.action_time !== undefined && !Number.isInteger(report_data.action_time)) {
     return false
   }
 
@@ -38,18 +38,18 @@ function validateAnalyticsData(data: IReportData): boolean {
 }
 
 class CloudbaseAnalytics {
-    @catchErrorsDecorator({
-      customInfo: {
-        className: 'Cloudbase',
-        methodName: 'analytics'
-      },
-      title: '上报调用失败',
-      messages: [
-        '请确认以下各项：',
-        '  1 - 调用 analytics() 的语法或参数是否正确',
-        `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
-      ]
-    })
+  @catchErrorsDecorator({
+    customInfo: {
+      className: 'Cloudbase',
+      methodName: 'analytics'
+    },
+    title: '上报调用失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 analytics() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async analytics(requestData: IReportData) {
     if(!validateAnalyticsData(requestData)) {
       throw new Error(JSON.stringify({
@@ -60,9 +60,12 @@ class CloudbaseAnalytics {
 
     const action = 'analytics.report';
 
+    const action_time = requestData.report_data.action_time === undefined ? Math.floor(Date.now() / 1000) : requestData.report_data.action_time
     const transformData: IAnalyticsDataItem = {
       analytics_scene: requestData.report_type,
-      analytics_data: Object.assign({},requestData.report_data)
+      analytics_data: Object.assign({},requestData.report_data,{
+        action_time
+      })
     }
 
     const params = {
