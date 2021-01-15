@@ -3,30 +3,33 @@ import { registerAuth } from '@cloudbase/auth';
 import { registerFunctions } from '@cloudbase/functions';
 import { registerStorage } from '@cloudbase/storage';
 import { registerRealtime } from '@cloudbase/realtime';
+import { registerAnalytics } from '@cloudbase/analytics'
 // @ts-ignore
 import { registerDatabase } from './../database';
 import * as pkg from '../package.json';
 import { ICloudbase } from '@cloudbase/types';
 
+
 const { version } = pkg;
 cloudbase.registerVersion(version);
 
-try{
+try {
   registerAuth(cloudbase);
   registerFunctions(cloudbase);
   registerStorage(cloudbase);
   registerDatabase(cloudbase);
   registerRealtime(cloudbase);
-}catch(e){}
+  registerAnalytics(cloudbase)
+} catch(e) { }
 
 declare global {
   interface Window {
     cloudbase: ICloudbase;
   }
 }
-try{
+try {
   (window as Window).cloudbase = cloudbase;
-}catch(e){}
+} catch(e) { }
 // @ts-ignore
 export = cloudbase;
 export default cloudbase;

@@ -1,0 +1,26 @@
+{
+  "name": "@cloudbase/analytics",
+  "version": "1.0.0",
+  "description": "cloudbase javascript sdk functions componets",
+  "author": "",
+  "homepage": "",
+  "license": "ISC",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.code.oa.com:QBase/client-side-sdk/cloudbase-js-sdk.git"
+  },
+  "scripts": {
+    "tsc": "rm -rf dist/ && tsc -p tsconfig.esm.json && tsc -p tsconfig.json",
+    "lint": "eslint --fix \"./src/**/*.ts\"",
+    "build": "npm run lint && npm run tsc"
+  },
+  "dependencies": {
+    "@cloudbase/functions": "^1.2.4-alpha.0",
+    "@cloudbase/types": "^1.1.2-alpha.1"
+  }
+}
