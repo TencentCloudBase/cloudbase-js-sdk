@@ -34,7 +34,7 @@ module.exports = {
   // 环境id
   env: '',
   // 微信公众号appid，仅当需要测试微信登录时配置
-  appid: '', 
+  appid: '',
   // 获取自定义登录ticket的函数http访问地址，仅当需要测试自定义登录时配置
   authFnUrl: '',
   // 用户名密码登录-用户名，仅当需要测试用户名登录时配置
@@ -66,3 +66,6 @@ npm run publish
 ```
 
 发布过程中需要为每个包选择版本号。
+
+#### 添加新包
+项目下新增包时，需要lerna add 新包名 --scope=@cloudbase/js-sdk
