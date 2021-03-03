@@ -125,7 +125,9 @@ class Cloudbase implements ICloudbase{
     if (config.region) {
       setRegionLevelEndpoint(env, config.region || '')
     }
-    return new Cloudbase(this._config);
+    const app = new Cloudbase(this._config);
+    app.requestClient = this.requestClient;
+    return app;
   }
 
   public updateConfig(config: ICloudbaseUpgradedConfig){
