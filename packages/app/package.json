@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/app",
-  "version": "1.2.6-alpha.0",
+  "version": "1.2.6",
   "description": "cloudbase javascript sdk core",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
