@@ -460,8 +460,9 @@ class Auth {
    */
   private refreshUserAndLoginType() {
     const loginState = this.hasLoginState();
-    this.currentUser = loginState.user;
 
+    if (!loginState) this.currentUser = null;
+    else this.currentUser = loginState.user;
     this.loginType = this._cache.getStore(this._cache.keys.loginTypeKey);
   }
 
