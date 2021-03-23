@@ -325,7 +325,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
   }
 
   // 调用接口刷新access token，并且返回
-  private async _refreshAccessToken(retryNum: number = 1): Promise<IGetAccessTokenResult> {
+  private async _refreshAccessToken(retryNum = 1): Promise<IGetAccessTokenResult> {
     const { accessTokenKey,accessTokenExpireKey,refreshTokenKey,loginTypeKey,anonymousUuidKey } = this._cache.keys;
     await this._cache.removeStoreAsync(accessTokenKey);
     await this._cache.removeStoreAsync(accessTokenExpireKey);
