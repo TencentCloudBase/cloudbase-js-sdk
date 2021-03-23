@@ -6,5 +6,6 @@ export declare enum LOGINTYPE {
     CUSTOM = "CUSTOM",
     EMAIL = "EMAIL",
     USERNAME = "USERNAME",
-    NULL = "NULL"
+    NULL = "NULL",
+    PHONE = "PHONE"
 }

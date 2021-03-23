@@ -10,6 +10,7 @@ import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
 import { UsernameAuthProvider } from './providers/usernameAuthProvider';
+import { PhoneAuthProvider } from './providers/phoneAuthProvider';
 interface UserInfo {
     openid: string;
     nickname?: string;
@@ -36,6 +37,10 @@ export declare class LoginState implements ILoginState {
     isCustomAuth: boolean;
     isWeixinAuth: boolean;
     isUsernameAuth: boolean;
+<<<<<<< HEAD
+=======
+    isPhoneAuth: boolean;
+>>>>>>> feat: support sms login
     loginType: string;
     private _cache;
     private _loginType;
@@ -54,6 +59,10 @@ declare class Auth {
     private _weixinAuthProvider;
     private _emailAuthProvider;
     private _usernameAuthProvider;
+<<<<<<< HEAD
+=======
+    private _phoneAuthProvider;
+>>>>>>> feat: support sms login
     loginType: LOGINTYPE;
     currentUser: IUser;
     constructor(config: ICloudbaseAuthConfig & {
@@ -77,6 +86,7 @@ declare class Auth {
     customAuthProvider(): CustomAuthProvider;
     emailAuthProvider(): EmailAuthProvider;
     usernameAuthProvider(): UsernameAuthProvider;
+    phoneAuthProvider(): PhoneAuthProvider;
     signInWithUsernameAndPassword(username: string, password: string): Promise<ILoginState>;
     isUsernameRegistered(username: string): Promise<boolean>;
     signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
@@ -98,6 +108,14 @@ declare class Auth {
     getAuthHeaderAsync(): Promise<{
         'x-cloudbase-credentials': string;
     }>;
+    sendPhoneCode(phoneNumber: string): Promise<boolean>;
+    signUpWithPhoneCode(phoneNumber: string, phoneCode: string, password: string): Promise<ILoginState>;
+    signInWithPhoneCodeOrPassword(param: {
+        phoneNumber: string;
+        phoneCode?: string;
+        password?: string;
+        signMethod?: string;
+    }): Promise<ILoginState>;
     private _onLoginTypeChanged;
 }
 declare const EVENTS: {

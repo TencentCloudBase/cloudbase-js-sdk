@@ -11,12 +11,13 @@ import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
 import { UsernameAuthProvider } from './providers/usernameAuthProvider';
+import { PhoneAuthProvider } from './providers/phoneAuthProvider'
 
 declare const cloudbase: ICloudbase;
 
 const { CloudbaseEventEmitter } = events;
 const { RUNTIME } = adapters;
-const { printWarn,throwError } = utils;
+const { printWarn,throwError,transformPhone } = utils;
 const { ERRORS,COMMUNITY_SITE_URL } = constants;
 const { catchErrorsDecorator } = helpers;
 
@@ -211,7 +212,7 @@ class User implements IUser {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public unlink(loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION') {
+  public unlink(loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION' | 'PHONE') {
     return this._request.send('auth.unlink',{ platform: loginType });
   }
   /**
@@ -310,6 +311,47 @@ class User implements IUser {
     return userInfo;
   }
 
+  /**
+ * 绑定手机号
+ * @param phoneNumber
+ * @param phoneCode
+ */
+  @catchErrorsDecorator({
+    title: '绑定手机号失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用 auth().linkWithPhoneNumber() 的语法或参数是否正确',
+      '  2 - 当前环境是否开通了短信验证码登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
+  public async linkWithPhoneNumber(phoneNumber: string,phoneCode: string) {
+    return this._request.send('auth.linkOrUpdatePhoneNumber',{
+      phoneNumber: transformPhone(phoneNumber),
+      phoneCode
+    });
+  }
+  /**
+   * 更新手机号
+   * @param phoneNumber
+   * @param phoneCode
+   */
+  @catchErrorsDecorator({
+    title: '更新手机号失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用语法或参数是否正确',
+      '  2 - 当前环境是否开通了短信验证码登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
+  public async updatePhoneNumber(phoneNumber: string,phoneCode: string) {
+    return this._request.send('auth.linkOrUpdatePhoneNumber',{
+      phoneNumber: transformPhone(phoneNumber),
+      phoneCode
+    });
+  }
+
   private _getLocalUserInfo(key: string): string {
     const { userInfoKey } = this._cache.keys;
     const userInfo = this._cache.getStore(userInfoKey);
@@ -367,6 +409,7 @@ export class LoginState implements ILoginState {
   public isCustomAuth: boolean;
   public isWeixinAuth: boolean;
   public isUsernameAuth: boolean;
+  public isPhoneAuth: boolean;
   public loginType: string;
 
 
@@ -392,6 +435,7 @@ export class LoginState implements ILoginState {
     this.isCustomAuth = this.loginType === LOGINTYPE.CUSTOM;
     this.isWeixinAuth = this.loginType === LOGINTYPE.WECHAT || this.loginType === LOGINTYPE.WECHAT_OPEN || this.loginType === LOGINTYPE.WECHAT_PUBLIC;
     this.isUsernameAuth = this.loginType === LOGINTYPE.USERNAME;
+    this.isPhoneAuth = this.loginType === LOGINTYPE.PHONE
   }
 
   public async checkLocalState() {
@@ -442,6 +486,7 @@ class Auth {
   private _weixinAuthProvider: WeixinAuthProvider;
   private _emailAuthProvider: EmailAuthProvider;
   private _usernameAuthProvider: UsernameAuthProvider;
+  private _phoneAuthProvider: PhoneAuthProvider;
 
   public loginType: LOGINTYPE;
   public currentUser: IUser;
@@ -461,7 +506,7 @@ class Auth {
   private refreshUserAndLoginType() {
     const loginState = this.hasLoginState();
 
-    if (!loginState) this.currentUser = null;
+    if(!loginState) this.currentUser = null;
     else this.currentUser = loginState.user;
     this.loginType = this._cache.getStore(this._cache.keys.loginTypeKey);
   }
@@ -548,6 +593,17 @@ class Auth {
       });
     }
     return this._usernameAuthProvider;
+  }
+
+  public phoneAuthProvider(): PhoneAuthProvider {
+    if(!this._phoneAuthProvider) {
+      this._phoneAuthProvider = new PhoneAuthProvider({
+        ...this._config,
+        cache: this._cache,
+        request: this._request
+      });
+    }
+    return this._phoneAuthProvider;
   }
   /**
    * 用户名密码登录
@@ -778,6 +834,54 @@ class Auth {
     return {
       'x-cloudbase-credentials': accessToken + '/@@/' + refreshToken
     };
+  }
+
+  /**
+ * 发送验证码
+ * @param phoneNumber
+ * @param phoneCode
+ */
+  @catchErrorsDecorator({
+    title: '发送短信验证码失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 调用语法或参数是否正确',
+      '  2 - 当前环境是否开通了短信验证码登录',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
+  public async sendPhoneCode(phoneNumber: string): Promise<boolean> {
+    const { data } = await this._request.send('auth.sendPhoneCode',{
+      phoneNumber: transformPhone(phoneNumber)
+    });
+    return data.SendStatus === 'OK'
+  }
+
+  /**
+   * 手机短信注册
+   * @param email
+   * @param password
+   */
+  public async signUpWithPhoneCode(phoneNumber: string,phoneCode: string,password: string) {
+    let res = this.phoneAuthProvider().signUp(phoneNumber,phoneCode,password);
+    this.refreshUserAndLoginType();
+    return res;
+  }
+
+  /**
+   * 手机验证码 or 密码登录
+   * @param email
+   * @param password
+   */
+  public async signInWithPhoneCodeOrPassword(param: {
+    phoneNumber: string
+    phoneCode?: string
+    password?: string
+    signMethod?: string
+  }) {
+    let res = this.phoneAuthProvider().signIn(param);
+    this.refreshUserAndLoginType();
+    return res;
   }
 
   private async _onLoginTypeChanged(ev) {

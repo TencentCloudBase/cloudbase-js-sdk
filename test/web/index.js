@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { env, appid, authUsername, authPassword } from '../../test.config.js';
-import { signInWeixin, signInCustom, signInAnonymous, signInWithUsername, registerAuthCases } from './cases/auth';
+import { signInWeixin, signInCustom, signInAnonymous, signInWithUsername, registerAuthCases, signInByPhone } from './cases/auth';
 import { registerFunctionCases } from './cases/function';
 import { registerStorageCases } from './cases/storage';
 import { registerDatabaseCases } from './cases/database';
@@ -18,8 +18,8 @@ import cloudbase from '../../packages/cloudbase';
 let app;
 let auth;
 let loginState;
-cloudbase.registerEndPoint('//tcb-pre.tencentcloudapi.com/web');
-// cloudbase.registerEndPoint('//127.0.0.1:8002/web');
+// cloudbase.registerEndPoint('//tcb-pre.tencentcloudapi.com/web');
+cloudbase.registerEndPoint('//127.0.0.1:8002/web');
 
 async function init() {
   printInfo('web test starting init');
@@ -34,7 +34,7 @@ async function init() {
   });
 
   // 公众号微信登录
-  await signInWeixin(auth, appid);
+  // await signInWeixin(auth, appid);
 
   // 匿名登录
   // await signInAnonymous(auth);
@@ -47,6 +47,11 @@ async function init() {
   //   username: authUsername,
   //   password: authPassword
   // });
+
+  // 短信验证码登录
+  // await signInByPhone(auth, '13024748409')
+  await signInByPhone(auth, '18202741638')
+
 
   registerFunctionCases(app);
   registerStorageCases(app);
@@ -74,12 +79,12 @@ export function initTestCasesIndex() {
   const $el_run_all = document.getElementById('runAllTestCases');
   const $el_include_auth = document.getElementById('include_auth');
 
-  $el_run_selected.onclick = async function() {
+  $el_run_selected.onclick = async function () {
     const mod = $el_select.options[$el_select.selectedIndex].value;
     runSelectedTestCase(mod);
   };
 
-  $el_run_all.onclick = async function() {
+  $el_run_all.onclick = async function () {
     if ($el_include_auth.checked) {
       !window.testCaseList.auth && (await registerAuthCases(auth));
     } else {
