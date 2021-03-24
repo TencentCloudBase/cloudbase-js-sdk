@@ -13,6 +13,12 @@
 - `Fixed` 对bug的修复
 - `Security` 对安全的改进
 
+## [1.4.1] 2021-03-08
+- [Fixed] 修复上传文件进度获取异常 bug
+
+## [1.4.0] 2020-12-16
+- [Added] 新增 analytics 接口
+
 ## [1.3.3] 2020-09-25
 - [Changed] 优化 TypeScript 语法提示
 - [Fixed] 修复未登录调用数据库报错问题
@@ -37,7 +43,7 @@
 - [Changed] 优化开发环境的错误信息
 
 ## [1.2.1] 2020-08-26
-- [Added] 新增 `Auth.getAuthHeaderAsync` API 
+- [Added] 新增 `Auth.getAuthHeaderAsync` API
 
 ## [1.1.4] 2020-08-25
 - [Fixed] 修复微信公众号登录 Bug
