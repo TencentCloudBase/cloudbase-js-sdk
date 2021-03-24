@@ -39,7 +39,7 @@ tscComponents.forEach(name => {
   const pattern = `${componentsDir}/src/index.ts`;
   const distDir = path.join(componentsDir, 'dist');
   const pkg = require(`${componentsDir}/package.json`);
-  const taskClean = function() {
+  const taskClean = function () {
     return gulp
       .src(distDir, {
         read: false,
@@ -49,7 +49,7 @@ tscComponents.forEach(name => {
   };
   tscTaskList.push(taskClean);
   // const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
-  const taskCjs = function() {
+  const taskCjs = function () {
     const result = gulp
       .src(pattern)
       .pipe(sourcemaps.init())
@@ -62,7 +62,7 @@ tscComponents.forEach(name => {
   tscTaskList.push(taskCjs);
   if (pkg.module) {
     const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
-    const taskEsm = function() {
+    const taskEsm = function () {
       const result = gulp
         .src(pattern)
         .pipe(sourcemaps.init())
@@ -79,7 +79,7 @@ tscComponents.forEach(name => {
 const srcDir = path.join(__dirname, 'src');
 const distDir = path.join(__dirname, 'dist');
 const pattern = `${srcDir}/index.ts`;
-const taskCleanOfMain = function() {
+const taskCleanOfMain = function () {
   return gulp
     .src(distDir, {
       read: false,
@@ -89,7 +89,7 @@ const taskCleanOfMain = function() {
 };
 tscTaskList.push(taskCleanOfMain);
 const cjsName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.main)[1]}.js`;
-const taskCjsOfMain = function() {
+const taskCjsOfMain = function () {
   const result = gulp
     .src(pattern)
     .pipe(sourcemaps.init())
@@ -102,7 +102,7 @@ const taskCjsOfMain = function() {
 tscTaskList.push(taskCjsOfMain);
 if (pkg.module) {
   const esmName = `${/dist\/([\w\.]+)\.js$/.exec(pkg.module)[1]}.js`;
-  const taskEsmOfMain = function() {
+  const taskEsmOfMain = function () {
     const result = gulp
       .src(pattern)
       .pipe(sourcemaps.init())
@@ -135,9 +135,9 @@ cdnTaskList.push(function taskOfBuildFullJs() {
         mode: 'production',
         plugins: [
           ...webpackConfOfApp.plugins,
-          new Visualizer({
-            filename: `./statistics-full.html`
-          })
+          // new Visualizer({
+          //   filename: `./statistics-full.html`
+          // })
         ]
       })
     )
@@ -171,9 +171,9 @@ cdnTaskList.push(function taskOfBuildAppJs() {
         mode: 'production',
         plugins: [
           ...webpackConfOfApp.plugins,
-          new Visualizer({
-            filename: `./statistics-app.html`
-          })
+          // new Visualizer({
+          //   filename: `./statistics-app.html`
+          // })
         ]
       })
     )
@@ -217,9 +217,9 @@ cdnTaskList.push(
             mode: 'production',
             plugins: [
               ...webpackConfOfApp.plugins,
-              new Visualizer({
-                filename: `./statistics-${comp}.html`
-              })
+              // new Visualizer({
+              //   filename: `./statistics-${comp}.html`
+              // })
             ]
           })
         )
