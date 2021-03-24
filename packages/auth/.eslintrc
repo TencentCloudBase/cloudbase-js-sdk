@@ -17,7 +17,8 @@
         "@typescript-eslint/explicit-member-accessibility": 0,
         "@typescript-eslint/no-loss-of-precision": 0,
         "@typescript-eslint/no-invalid-this": 0,
-        "@typescript-eslint/no-duplicate-imports": 0
+        "@typescript-eslint/no-duplicate-imports": 0,
+        "@typescript-eslint/member-ordering": 0
     },
     "parserOptions": {
         "ecmaVersion": 6,

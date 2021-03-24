@@ -32,16 +32,17 @@ interface ILoginStateOptions extends IUserOptions {
 export declare class LoginState implements ILoginState {
     credential: ICredential;
     user: IUser;
+    isAnonymousAuth: boolean;
+    isCustomAuth: boolean;
+    isWeixinAuth: boolean;
+    isUsernameAuth: boolean;
+    loginType: string;
     private _cache;
     private _loginType;
     constructor(options: ILoginStateOptions);
+    private refreshAuthType;
     checkLocalState(): Promise<void>;
     checkLocalStateAsync(): Promise<void>;
-    get isAnonymousAuth(): boolean;
-    get isCustomAuth(): boolean;
-    get isWeixinAuth(): boolean;
-    get isUsernameAuth(): boolean;
-    get loginType(): string;
 }
 declare class Auth {
     private readonly _config;
@@ -53,13 +54,14 @@ declare class Auth {
     private _weixinAuthProvider;
     private _emailAuthProvider;
     private _usernameAuthProvider;
+    loginType: LOGINTYPE;
+    currentUser: IUser;
     constructor(config: ICloudbaseAuthConfig & {
         cache: ICloudbaseCache;
         request: ICloudbaseRequest;
         runtime?: string;
     });
-    get currentUser(): IUser;
-    get loginType(): LOGINTYPE;
+    private refreshUserAndLoginType;
     getCurrenUser(): Promise<IUser>;
     getLoginType(): Promise<LOGINTYPE>;
     getAccessToken(): Promise<{
