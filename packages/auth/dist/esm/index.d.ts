@@ -33,6 +33,7 @@ interface ILoginStateOptions extends IUserOptions {
 export declare class LoginState implements ILoginState {
     credential: ICredential;
     user: IUser;
+<<<<<<< HEAD
     isAnonymousAuth: boolean;
     isCustomAuth: boolean;
     isWeixinAuth: boolean;
@@ -42,12 +43,19 @@ export declare class LoginState implements ILoginState {
     isPhoneAuth: boolean;
 >>>>>>> feat: support sms login
     loginType: string;
+=======
+>>>>>>> fix: restore remove_getset code
     private _cache;
     private _loginType;
     constructor(options: ILoginStateOptions);
-    private refreshAuthType;
     checkLocalState(): Promise<void>;
     checkLocalStateAsync(): Promise<void>;
+    get isAnonymousAuth(): boolean;
+    get isCustomAuth(): boolean;
+    get isWeixinAuth(): boolean;
+    get isUsernameAuth(): boolean;
+    get loginType(): string;
+    get isPhoneAuth(): boolean;
 }
 declare class Auth {
     private readonly _config;
@@ -62,15 +70,19 @@ declare class Auth {
 <<<<<<< HEAD
 =======
     private _phoneAuthProvider;
+<<<<<<< HEAD
 >>>>>>> feat: support sms login
     loginType: LOGINTYPE;
     currentUser: IUser;
+=======
+>>>>>>> fix: restore remove_getset code
     constructor(config: ICloudbaseAuthConfig & {
         cache: ICloudbaseCache;
         request: ICloudbaseRequest;
         runtime?: string;
     });
-    private refreshUserAndLoginType;
+    get currentUser(): IUser;
+    get loginType(): LOGINTYPE;
     getCurrenUser(): Promise<IUser>;
     getLoginType(): Promise<LOGINTYPE>;
     getAccessToken(): Promise<{

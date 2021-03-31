@@ -409,14 +409,6 @@ export class LoginState implements ILoginState {
   public credential: ICredential;
   public user: IUser;
 
-  public isAnonymousAuth: boolean;
-  public isCustomAuth: boolean;
-  public isWeixinAuth: boolean;
-  public isUsernameAuth: boolean;
-  public isPhoneAuth: boolean;
-  public loginType: string;
-
-
   private _cache: ICloudbaseCache;
   private _loginType: string;
 
@@ -433,14 +425,6 @@ export class LoginState implements ILoginState {
     });
   }
 
-  private refreshAuthType() {
-    this.loginType = this._loginType;
-    this.isAnonymousAuth = this.loginType === LOGINTYPE.ANONYMOUS;
-    this.isCustomAuth = this.loginType === LOGINTYPE.CUSTOM;
-    this.isWeixinAuth = this.loginType === LOGINTYPE.WECHAT || this.loginType === LOGINTYPE.WECHAT_OPEN || this.loginType === LOGINTYPE.WECHAT_PUBLIC;
-    this.isUsernameAuth = this.loginType === LOGINTYPE.USERNAME;
-    this.isPhoneAuth = this.loginType === LOGINTYPE.PHONE
-  }
 
   public async checkLocalState() {
     const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
@@ -455,8 +439,6 @@ export class LoginState implements ILoginState {
     };
 
     this._loginType = this._cache.getStore(this._cache.keys.loginTypeKey);
-
-    this.refreshAuthType();
 
     this.user.checkLocalInfo();
   }
@@ -474,9 +456,32 @@ export class LoginState implements ILoginState {
 
     this._loginType = await this._cache.getStoreAsync(this._cache.keys.loginTypeKey);
 
-    this.refreshAuthType();
 
     await this.user.checkLocalInfoAsync();
+  }
+
+  get isAnonymousAuth() {
+    return this.loginType === LOGINTYPE.ANONYMOUS;
+  }
+
+  get isCustomAuth() {
+    return this.loginType === LOGINTYPE.CUSTOM;
+  }
+
+  get isWeixinAuth() {
+    return this.loginType === LOGINTYPE.WECHAT || this.loginType === LOGINTYPE.WECHAT_OPEN || this.loginType === LOGINTYPE.WECHAT_PUBLIC;
+  }
+
+  get isUsernameAuth() {
+    return this.loginType === LOGINTYPE.USERNAME;
+  }
+
+  get loginType() {
+    return this._loginType
+  }
+
+  get isPhoneAuth() {
+    return this.loginType === LOGINTYPE.PHONE
   }
 }
 
@@ -492,9 +497,6 @@ class Auth {
   private _usernameAuthProvider: UsernameAuthProvider;
   private _phoneAuthProvider: PhoneAuthProvider;
 
-  public loginType: LOGINTYPE;
-  public currentUser: IUser;
-
   constructor(config: ICloudbaseAuthConfig & { cache: ICloudbaseCache, request: ICloudbaseRequest, runtime?: string }) {
     this._config = config;
     this._cache = config.cache;
@@ -505,14 +507,29 @@ class Auth {
   }
 
   /**
-   * 刷新当前用户信息和登陆状态
+   * 获取当前登录的用户信息-同步
    */
-  private refreshUserAndLoginType() {
+  get currentUser() {
+    if (this._cache.mode === 'async') {
+      // async storage的平台调用此API提示
+      printWarn(ERRORS.INVALID_OPERATION, 'current platform\'s storage is asynchronous, please use getCurrenUser insteed');
+      return;
+    }
+
     const loginState = this.hasLoginState();
 
-    if (!loginState) this.currentUser = null;
-    else this.currentUser = loginState.user;
-    this.loginType = this._cache.getStore(this._cache.keys.loginTypeKey);
+    if (loginState) {
+      return loginState.user || null;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+ * 获取当前登录类型-同步
+ */
+  get loginType(): LOGINTYPE {
+    return this._cache.getStore(this._cache.keys.loginTypeKey);
   }
 
   /**
@@ -615,9 +632,7 @@ class Auth {
    * @param password
    */
   public async signInWithUsernameAndPassword(username: string, password: string) {
-    let res = this.usernameAuthProvider().signIn(username, password);
-    this.refreshUserAndLoginType();
-    return res;
+    return this.usernameAuthProvider().signIn(username, password);
   }
   /**
    * 检测用户名是否已经占用
@@ -647,9 +662,7 @@ class Auth {
    * @param password
    */
   public async signInWithEmailAndPassword(email: string, password: string) {
-    let res = this.emailAuthProvider().signIn(email, password);
-    this.refreshUserAndLoginType();
-    return res;
+    return this.emailAuthProvider().signIn(email, password);
   }
   /**
    * 邮箱密码注册
@@ -657,9 +670,7 @@ class Auth {
    * @param password
    */
   public async signUpWithEmailAndPassword(email: string, password: string) {
-    let res = this.emailAuthProvider().signUp(email, password);
-    this.refreshUserAndLoginType();
-    return res;
+    return this.emailAuthProvider().signUp(email, password);
   }
   /**
    * 重置邮箱密码
@@ -708,7 +719,6 @@ class Auth {
       persistence: this._config.persistence
     });
 
-    this.refreshUserAndLoginType();
 
     return res;
   }
@@ -867,9 +877,7 @@ class Auth {
    * @param password
    */
   public async signUpWithPhoneCode(phoneNumber: string, phoneCode: string, password: string) {
-    let res = this.phoneAuthProvider().signUp(phoneNumber, phoneCode, password);
-    this.refreshUserAndLoginType();
-    return res;
+    return this.phoneAuthProvider().signUp(phoneNumber, phoneCode, password);
   }
 
   /**
@@ -883,9 +891,7 @@ class Auth {
     password?: string
     signMethod?: string
   }) {
-    let res = this.phoneAuthProvider().signIn(param);
-    this.refreshUserAndLoginType();
-    return res;
+    return this.phoneAuthProvider().signIn(param);
   }
 
   private async _onLoginTypeChanged(ev) {
