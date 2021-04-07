@@ -31,4 +31,5 @@ interface IPrintGroupLogOptions {
 }
 export declare function printGroupLog(options: IPrintGroupLogOptions): void;
 export declare const sleep: (ms?: number) => Promise<unknown>;
+export declare function transformPhone(phoneNumber: string): string;
 export {};
