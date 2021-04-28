@@ -10,7 +10,7 @@ export interface ICloudbaseUploadFileResult {
 }
 
 export interface ICloudbaseUploadFile {
-  (params:ICloudbaseUploadFileParams,callback?: Function):Promise<ICloudbaseUploadFileResult>;
+  (params: ICloudbaseUploadFileParams, callback?: Function): Promise<ICloudbaseUploadFileResult>;
 }
 
 export interface ICloudbaseGetUploadMetadataParams {
@@ -18,7 +18,7 @@ export interface ICloudbaseGetUploadMetadataParams {
 }
 
 export interface ICloudbaseGetUploadMetadata {
-  (params:ICloudbaseGetUploadMetadataParams,callback?: Function):Promise<any>;
+  (params: ICloudbaseGetUploadMetadataParams, callback?: Function): Promise<any>;
 }
 
 export interface ICloudbaseDeleteFileParams {
@@ -26,7 +26,7 @@ export interface ICloudbaseDeleteFileParams {
 }
 
 export interface ICloudbaseDeleteFile {
-  (params:ICloudbaseDeleteFileParams,callback?: Function):Promise<ICloudbaseDeleteFileResult>;
+  (params: ICloudbaseDeleteFileParams, callback?: Function): Promise<ICloudbaseDeleteFileResult>;
 }
 
 export interface ICloudbaseDeleteFileResult {
@@ -44,8 +44,8 @@ export interface ICloudbaseFileInfo {
   maxAge: number;
 }
 
-export interface ICloudbaseGetTempFileURLParams{
-  fileList: string[]|ICloudbaseFileInfo[];
+export interface ICloudbaseGetTempFileURLParams {
+  fileList: string[] | ICloudbaseFileInfo[];
 }
 
 export interface ICloudbaseGetTempFileURLResult {
@@ -62,7 +62,7 @@ export interface ICloudbaseGetTempFileURLResult {
 }
 
 export interface ICloudbaseGetTempFileURL {
-  (params:ICloudbaseGetTempFileURLParams,callback?: Function):Promise<ICloudbaseGetTempFileURLResult>;
+  (params: ICloudbaseGetTempFileURLParams, callback?: Function): Promise<ICloudbaseGetTempFileURLResult>;
 }
 
 export interface ICloudbaseDownloadFileParams {
@@ -78,7 +78,7 @@ export interface ICloudbaseDownloadFileResult {
 }
 
 export interface ICloudbaseDownloadFile {
-  (params:ICloudbaseDownloadFileParams,callback?:Function):Promise<ICloudbaseDownloadFileResult>;
+  (params: ICloudbaseDownloadFileParams, callback?: Function): Promise<ICloudbaseDownloadFileResult>;
 }
 
 export interface ICloudbaseFileMetaData {
@@ -87,6 +87,7 @@ export interface ICloudbaseFileMetaData {
   authorization: string;
   fileId: string;
   cosFileId: string;
+  download_url: string
 }
 
 export interface ICloudbaseFileMetaDataRes {

@@ -25,8 +25,8 @@ import cloudbase from "../../packages/cloudbase"
 let app
 let auth
 let loginState
-// cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
-cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
+cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
+// cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint('//127.0.0.1:8002/web');
 
 async function init() {
@@ -45,7 +45,7 @@ async function init() {
   // await signInWeixin(auth, appid);
 
   // 匿名登录
-  // await signInAnonymous(auth);
+  await signInAnonymous(auth)
 
   // 自定义登录
   // await signInCustom(auth);
@@ -58,7 +58,7 @@ async function init() {
 
   // 短信验证码登录
   // await signInByPhone(auth, '13024748409')
-  await signInByPhone(auth, "18202741638")
+  // await signInByPhone(auth, "18202741638")
 
   registerFunctionCases(app)
   registerStorageCases(app)
@@ -68,13 +68,13 @@ async function init() {
   initTestCasesIndex()
 
   // 广告上报
-  app.analytics({
-    report_type: "mall",
-    report_data: {
-      action_time: new Date().getTime(),
-      action_type: "visit_store"
-    }
-  })
+  // app.analytics({
+  //   report_type: "mall",
+  //   report_data: {
+  //     action_time: new Date().getTime(),
+  //     action_type: "visit_store"
+  //   }
+  // })
 }
 
 /**
