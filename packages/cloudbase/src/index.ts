@@ -20,7 +20,7 @@ try {
   registerDatabase(cloudbase);
   registerRealtime(cloudbase);
   registerAnalytics(cloudbase)
-} catch(e) { }
+} catch (e) { }
 
 declare global {
   interface Window {
@@ -29,7 +29,7 @@ declare global {
 }
 try {
   (window as Window).cloudbase = cloudbase;
-} catch(e) { }
+} catch (e) { }
 // @ts-ignore
 export = cloudbase;
 export default cloudbase;

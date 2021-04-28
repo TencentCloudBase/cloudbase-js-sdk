@@ -20,7 +20,7 @@ const { catchErrorsDecorator } = helpers;
 /**
  * @constant 默认配置
  */
-const DEFAULT_INIT_CONFIG:Partial<ICloudbaseConfig> = {
+const DEFAULT_INIT_CONFIG: Partial<ICloudbaseConfig> = {
   timeout: 15000,
   persistence: 'session'
 };
@@ -30,9 +30,9 @@ const MAX_TIMEOUT = 1000 * 60 * 10;
 // timeout下限100ms
 const MIN_TIMEOUT = 100;
 
-const extensionMap:KV<ICloudbaseExtension> = {};
+const extensionMap: KV<ICloudbaseExtension> = {};
 
-class Cloudbase implements ICloudbase{
+class Cloudbase implements ICloudbase {
   public authInstance: ICloudbaseAuth;
   public requestClient: any;
   private _config: ICloudbaseConfig;
@@ -42,25 +42,26 @@ class Cloudbase implements ICloudbase{
     this.authInstance = null;
   }
 
-  get config(){
+  get config() {
     return this._config;
   }
 
-  get platform():ICloudbasePlatformInfo{
+  get platform(): ICloudbasePlatformInfo {
     return Platform;
   }
 
-  get cache():ICloudbaseCache{
+  get cache(): ICloudbaseCache {
     return getCacheByEnvId(this._config.env);
   }
 
-  get localCache():ICloudbaseCache{
+  get localCache(): ICloudbaseCache {
     return getLocalCache(this._config.env);
   }
 
-  get request():ICloudbaseRequest{
+  get request(): ICloudbaseRequest {
     return getRequestByEnvId(this._config.env);
   }
+
   @catchErrorsDecorator({
     mode: 'sync',
     title: 'Cloudbase 初始化失败',
@@ -71,8 +72,8 @@ class Cloudbase implements ICloudbase{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public init(config: ICloudbaseConfig):Cloudbase {
-    if(!config.env){
+  public init(config: ICloudbaseConfig): Cloudbase {
+    if (!config.env) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: 'env must not be specified'
@@ -118,9 +119,9 @@ class Cloudbase implements ICloudbase{
     // 修正timeout取值
     this._config.timeout = this._formatTimeout(this._config.timeout);
     // 初始化cache和request
-    const { env, persistence, debug, timeout, appSecret, appSign} = this._config;
-    initCache({ env, persistence, debug, platformInfo:this.platform});
-    initRequest({ env, region:config.region || '', timeout, appSecret, appSign});
+    const { env, persistence, debug, timeout, appSecret, appSign } = this._config;
+    initCache({ env, persistence, debug, platformInfo: this.platform });
+    initRequest({ env, region: config.region || '', timeout, appSecret, appSign });
 
     if (config.region) {
       setRegionLevelEndpoint(env, config.region || '')
@@ -130,15 +131,15 @@ class Cloudbase implements ICloudbase{
     return app;
   }
 
-  public updateConfig(config: ICloudbaseUpgradedConfig){
+  public updateConfig(config: ICloudbaseUpgradedConfig) {
     const { persistence, debug } = config;
     this._config.persistence = persistence;
     this._config.debug = debug;
     // persistence改动影响cache
-    initCache({ env:this._config.env, persistence, debug, platformInfo:this.platform});
+    initCache({ env: this._config.env, persistence, debug, platformInfo: this.platform });
   }
 
-  public registerExtension(ext:ICloudbaseExtension) {
+  public registerExtension(ext: ICloudbaseExtension) {
     extensionMap[ext.name] = ext;
   }
   @catchErrorsDecorator({
@@ -150,7 +151,7 @@ class Cloudbase implements ICloudbase{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async invokeExtension(name:string, opts:any) {
+  public async invokeExtension(name: string, opts: any) {
     const ext = extensionMap[name];
     if (!ext) {
       throw new Error(JSON.stringify({
@@ -162,30 +163,30 @@ class Cloudbase implements ICloudbase{
     return await ext.invoke(opts, this);
   }
 
-  public useAdapters(adapters: CloudbaseAdapter|CloudbaseAdapter[]) {
+  public useAdapters(adapters: CloudbaseAdapter | CloudbaseAdapter[]) {
     const { adapter, runtime } = useAdapters(adapters) || {};
     adapter && (Platform.adapter = adapter as SDKAdapterInterface);
     runtime && (Platform.runtime = runtime as string);
   }
 
-  public registerHook(hook:ICloudbaseHook){
-    registerHook(Cloudbase,hook)
+  public registerHook(hook: ICloudbaseHook) {
+    registerHook(Cloudbase, hook)
   }
 
-  public registerComponent(component:ICloudbaseComponent){
-    registerComponent(Cloudbase,component);
+  public registerComponent(component: ICloudbaseComponent) {
+    registerComponent(Cloudbase, component);
   }
 
-  public registerVersion(version:string){
+  public registerVersion(version: string) {
     setSdkVersion(version);
   }
 
-  public registerSdkName(name:string){
+  public registerSdkName(name: string) {
     setSdkName(name);
   }
 
-  public registerEndPoint(url:string,protocol?:'http'|'https'){
-    setEndPoint(url,protocol)
+  public registerEndPoint(url: string, protocol?: 'http' | 'https') {
+    setEndPoint(url, protocol)
   }
 
   private _useDefaultAdapter() {
@@ -194,13 +195,13 @@ class Cloudbase implements ICloudbase{
     Platform.runtime = runtime as string;
   }
 
-  private _formatTimeout(timeout:number){
+  private _formatTimeout(timeout: number) {
     switch (true) {
       case timeout > MAX_TIMEOUT:
-        printWarn(ERRORS.INVALID_PARAMS,'timeout is greater than maximum value[10min]');
+        printWarn(ERRORS.INVALID_PARAMS, 'timeout is greater than maximum value[10min]');
         return MAX_TIMEOUT;
       case timeout < MIN_TIMEOUT:
-        printWarn(ERRORS.INVALID_PARAMS,'timeout is less than maximum value[100ms]');
+        printWarn(ERRORS.INVALID_PARAMS, 'timeout is less than maximum value[100ms]');
         return MIN_TIMEOUT;
       default:
         return timeout;
@@ -208,7 +209,7 @@ class Cloudbase implements ICloudbase{
   }
 }
 
-export const cloudbase:ICloudbase = new Cloudbase();
+export const cloudbase: ICloudbase = new Cloudbase();
 cloudbase.useAdapters(adapterForWxMp);
 
 export default cloudbase;

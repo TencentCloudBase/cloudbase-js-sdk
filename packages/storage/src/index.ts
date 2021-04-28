@@ -1,7 +1,7 @@
 import { constants, utils, helpers } from '@cloudbase/utilities';
 import { ICloudbase } from '@cloudbase/types';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
-import { 
+import {
   ICloudbaseFileMetaDataRes,
   ICloudbaseFileInfo,
   ICloudbaseUploadFileParams,
@@ -18,12 +18,12 @@ import {
 declare const cloudbase: ICloudbase;
 
 const { getSdkName, ERRORS, COMMUNITY_SITE_URL } = constants;
-const { isArray, isString, isPalinObject,execCallback } = utils;
+const { isArray, isString, isPalinObject, execCallback } = utils;
 const { catchErrorsDecorator } = helpers;
 
 const COMPONENT_NAME = 'storage';
 
-class CloudbaseStorage{
+class CloudbaseStorage {
   @catchErrorsDecorator({
     customInfo: {
       className: 'Cloudbase',
@@ -38,12 +38,12 @@ class CloudbaseStorage{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async uploadFile (
-    params:ICloudbaseUploadFileParams,
-    callback?:Function
-  ):Promise<ICloudbaseUploadFileResult> {
+  public async uploadFile(
+    params: ICloudbaseUploadFileParams,
+    callback?: Function
+  ): Promise<ICloudbaseUploadFileResult> {
     const { cloudPath, filePath, onUploadProgress } = params;
-    if(!isString(cloudPath)||!filePath){
+    if (!isString(cloudPath) || !filePath) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: `[${COMPONENT_NAME}.uploadFile] invalid params`
@@ -52,15 +52,16 @@ class CloudbaseStorage{
     const action = 'storage.getUploadMetadata';
     // @ts-ignore
     const request = this.request;
-    const metaData:ICloudbaseFileMetaDataRes = await request.send(action, {
+    const metaData: ICloudbaseFileMetaDataRes = await request.send(action, {
       path: cloudPath
     });
-  
+
     const {
-      data: { url, authorization, token, fileId, cosFileId },
+      data: { url, authorization, token, fileId, cosFileId, download_url },
       requestId
     } = metaData;
-    
+
+
     // 使用临时密匙上传文件
     // @see https://cloud.tencent.com/document/product/436/14048
     const data = {
@@ -77,14 +78,15 @@ class CloudbaseStorage{
       name: cloudPath,
       onUploadProgress
     });
-  
+
     if (res.statusCode === 201) {
-      return execCallback(callback,null,{
+      return execCallback(callback, null, {
         fileID: fileId,
+        download_url,
         requestId
       });
-    }else{
-      return execCallback(callback,new Error(`[${getSdkName()}][${ERRORS.OPERATION_FAIL}][${COMPONENT_NAME}]:${res.data}`));
+    } else {
+      return execCallback(callback, new Error(`[${getSdkName()}][${ERRORS.OPERATION_FAIL}][${COMPONENT_NAME}]:${res.data}`));
     }
   }
   @catchErrorsDecorator({
@@ -101,12 +103,12 @@ class CloudbaseStorage{
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async getUploadMetadata (
-    params:ICloudbaseGetUploadMetadataParams,
+  public async getUploadMetadata(
+    params: ICloudbaseGetUploadMetadataParams,
     callback?: Function
-  ):Promise<any> {
+  ): Promise<any> {
     const { cloudPath } = params;
-    if(!isString(cloudPath)){
+    if (!isString(cloudPath)) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: `[${COMPONENT_NAME}.getUploadMetadata] invalid cloudPath`
@@ -115,14 +117,14 @@ class CloudbaseStorage{
     // @ts-ignore
     const request = this.request;
     const action = 'storage.getUploadMetadata';
-  
-    try{
+
+    try {
       const metaData = await request.send(action, {
         path: cloudPath
       });
-      return execCallback(callback,null,metaData);
-    }catch(err){
-      return execCallback(callback,err);
+      return execCallback(callback, null, metaData);
+    } catch (err) {
+      return execCallback(callback, err);
     }
   }
   @catchErrorsDecorator({
@@ -140,18 +142,18 @@ class CloudbaseStorage{
     ]
   })
   public async deleteFile(
-    params:ICloudbaseDeleteFileParams,
+    params: ICloudbaseDeleteFileParams,
     callback?: Function
-  ):Promise<ICloudbaseDeleteFileResult>{
+  ): Promise<ICloudbaseDeleteFileResult> {
     const { fileList } = params;
-  
+
     if (!fileList || !isArray(fileList) || fileList.length === 0) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: `[${COMPONENT_NAME}.deleteFile] fileList must not be empty`
       }));
     }
-  
+
     for (const fileId of fileList) {
       if (!fileId || !isString(fileId)) {
         throw new Error(JSON.stringify({
@@ -160,22 +162,22 @@ class CloudbaseStorage{
         }));
       }
     }
-  
+
     const action = 'storage.batchDeleteFile';
     // @ts-ignore
     const request = this.request;
     const res = await request.send(action, {
       fileid_list: fileList
     });
-  
-    if (res.code){
-      return execCallback(callback,null,res);
+
+    if (res.code) {
+      return execCallback(callback, null, res);
     }
     const data = {
       fileList: res.data.delete_list,
       requestId: res.requestId
     };
-    return execCallback(callback,null,data);;
+    return execCallback(callback, null, data);;
   }
   @catchErrorsDecorator({
     customInfo: {
@@ -192,18 +194,18 @@ class CloudbaseStorage{
     ]
   })
   public async getTempFileURL(
-    params:ICloudbaseGetTempFileURLParams,
+    params: ICloudbaseGetTempFileURLParams,
     callback?: Function
-  ):Promise<ICloudbaseGetTempFileURLResult>{
+  ): Promise<ICloudbaseGetTempFileURLResult> {
     const { fileList } = params;
-  
+
     if (!fileList || !isArray(fileList) || fileList.length === 0) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: `[${COMPONENT_NAME}.getTempFileURL] fileList must not be empty`
       }));
     }
-  
+
     const file_list = [];
     for (const file of fileList) {
       if (isPalinObject(file)) {
@@ -213,7 +215,7 @@ class CloudbaseStorage{
             msg: `[${COMPONENT_NAME}.getTempFileURL] file info must include fileID and maxAge`
           }));
         }
-  
+
         file_list.push({
           fileid: (file as ICloudbaseFileInfo).fileID,
           max_age: (file as ICloudbaseFileInfo).maxAge
@@ -229,18 +231,18 @@ class CloudbaseStorage{
         }));
       }
     }
-  
+
     const action = 'storage.batchGetDownloadUrl';
     // @ts-ignore
     const request = this.request;
-  
+
     const res = await request.send(action, { file_list });
-  
+
     if (res.code) {
-      return execCallback(callback,null,res);
+      return execCallback(callback, null, res);
     }
-  
-    return execCallback(callback,null,{
+
+    return execCallback(callback, null, {
       fileList: res.data.download_list,
       requestId: res.requestId
     });
@@ -260,41 +262,41 @@ class CloudbaseStorage{
     ]
   })
   public async downloadFile(
-    params:ICloudbaseDownloadFileParams,
-    callback?:Function
-  ):Promise<ICloudbaseDownloadFileResult>{
+    params: ICloudbaseDownloadFileParams,
+    callback?: Function
+  ): Promise<ICloudbaseDownloadFileResult> {
     const { fileID } = params;
-    if(!isString(fileID)){
+    if (!isString(fileID)) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_PARAMS,
         msg: `[${COMPONENT_NAME}.getTempFileURL] fileID must be string`
       }));
     }
-    
+
     const tmpUrlRes = await this.getTempFileURL.call(this, {
       fileList: [{
         fileID,
         maxAge: 600
       }]
     });
-  
+
     const res = tmpUrlRes.fileList[0];
-  
+
     if (res.code !== 'SUCCESS') {
-      return execCallback(callback,res);
+      return execCallback(callback, res);
     }
     // @ts-ignore
     const request = this.request;
-  
+
     const tmpUrl = encodeURI(res.download_url);
-  
+
     const result = await request.download({ url: tmpUrl });
-    return execCallback(callback,null,result);
+    return execCallback(callback, null, result);
   }
 }
 
 const cloudbaseStorage = new CloudbaseStorage();
-const component:ICloudbaseComponent = {
+const component: ICloudbaseComponent = {
   name: COMPONENT_NAME,
   entity: {
     uploadFile: cloudbaseStorage.uploadFile,
@@ -305,14 +307,14 @@ const component:ICloudbaseComponent = {
   }
 }
 
-try{
+try {
   cloudbase.registerComponent(component);
-}catch(e){}
+} catch (e) { }
 
-export function registerStorage(app:Pick<ICloudbase, 'registerComponent'>){
-  try{
+export function registerStorage(app: Pick<ICloudbase, 'registerComponent'>) {
+  try {
     app.registerComponent(component);
-  }catch(e){
+  } catch (e) {
     console.warn(e);
   }
 }
