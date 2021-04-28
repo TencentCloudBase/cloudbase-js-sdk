@@ -4,7 +4,7 @@
   "packages": ["packages/*"],
   "command": {
     "bootstrap": {
-      "npmClientArgs": ["--ignore-engines"]
+      "npmClientArgs": ["--ignore-engines", "--no-package-lock"]
     }
   },
   "useWorkspaces": true
