@@ -2,7 +2,7 @@ type KV<T> = {
   [key: string]: T;
 };
 
-type ExcludeOf<T,K extends keyof T> = Pick<T,Exclude<keyof T,K>>;
+type ExcludeOf<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 /**
  * module
@@ -25,7 +25,7 @@ declare namespace cloudbase {
 
   interface ICloudbaseExtension {
     name: string;
-    invoke(opts: any,app: cloudbase.app.App): Promise<any>;
+    invoke(opts: any, app: cloudbase.app.App): Promise<any>;
   }
 
   interface Listeners {
@@ -39,9 +39,9 @@ declare namespace cloudbase {
   }
 
   interface ICloudbaseEventEmitter {
-    on(name: string,listener: Function): this;
-    off(name: string,listener: Function): this;
-    fire(event: string | ICloudbaseEvent,data?: any): this;
+    on(name: string, listener: Function): this;
+    off(name: string, listener: Function): this;
+    fire(event: string | ICloudbaseEvent, data?: any): this;
   }
 
   interface ICloudbaseComponent {
@@ -143,7 +143,7 @@ declare namespace cloudbase {
    * @param url 服务地址
    * @param protocol 【可选】强制使用某种协议，默认与主站协议一致
    */
-  function registerEndPoint(url: string,protocol?: 'http' | 'https'): void;
+  function registerEndPoint(url: string, protocol?: 'http' | 'https'): void;
   /**
    * 【谨慎操作】注册功能模块
    *
@@ -360,7 +360,10 @@ declare namespace cloudbase.app {
      *
      * @return Promise-扩展能力插件执行结果
      */
-    invokeExtension(name: string,opts: any): Promise<any>;
+    invokeExtension(name: string, opts: any): Promise<any>;
+
+    eventBus: any;
+
   }
 }
 /**
@@ -731,7 +734,7 @@ declare namespace cloudbase.auth {
      *
      * @return Promise-已绑定的用户信息
      */
-    getLinkedUidList(): Promise<{ hasPrimaryUid: boolean,users: IUserInfo[] }>;
+    getLinkedUidList(): Promise<{ hasPrimaryUid: boolean, users: IUserInfo[] }>;
     /**
      * 设置微信主账号，通常搭配和 User.getLinkedUidList() 使用，用于在同个微信 UnionID 对应的多个云开发账号中，设置其中一个为主账号
      *
@@ -836,7 +839,7 @@ declare namespace cloudbase.auth {
      *
      * @return Promise
      */
-    updatePassword(newPassword: string,oldPassword?: string): Promise<void>;
+    updatePassword(newPassword: string, oldPassword?: string): Promise<void>;
     /**
      * 修改登录邮箱
      *
@@ -881,6 +884,13 @@ declare namespace cloudbase.auth {
      * @return Promise
      */
     updateUsername(username: string): Promise<void>;
+  }
+
+  interface signInWithPhoneParams {
+    phoneNumber: string
+    phoneCode?: string
+    password?: string
+    signMethod?: string
   }
 
   interface App {
@@ -1189,7 +1199,7 @@ declare namespace cloudbase.auth {
      *
      * @return Promise-登录态信息
      */
-    signInWithEmailAndPassword(email: string,password: string): Promise<ILoginState>;
+    signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
     /**
      * 使用邮箱和密码注册一个云开发账户，调用后，会自动向注册邮箱发送邮箱验证邮件
      *
@@ -1213,7 +1223,7 @@ declare namespace cloudbase.auth {
      *
      * @return Promise
      */
-    signUpWithEmailAndPassword(email: string,password: string): Promise<void>;
+    signUpWithEmailAndPassword(email: string, password: string): Promise<void>;
     /**
      * 发送重置密码的邮件
      *
@@ -1259,7 +1269,7 @@ declare namespace cloudbase.auth {
      *
      * @return Promise-登录态信息
      */
-    signInWithUsernameAndPassword(username: string,password: string): Promise<ILoginState>;
+    signInWithUsernameAndPassword(username: string, password: string): Promise<ILoginState>;
     /**
      * 检查用户名是否被绑定过
      *
@@ -1282,6 +1292,13 @@ declare namespace cloudbase.auth {
      * @return Promise-用户是否被绑定
      */
     isUsernameRegistered(username: string): Promise<boolean>;
+
+    sendPhoneCode(phoneNumber: string): Promise<boolean>;
+
+    signUpWithPhoneCode(phoneNumber: string, phoneCode: string, password: string): Promise<void>;
+
+    signInWithPhoneCodeOrPassword(params: signInWithPhoneParams): Promise<ILoginState>;
+
   }
 }
 /**
@@ -1414,7 +1431,7 @@ declare namespace cloudbase.database {
   interface ISnapshot {
     id: number
     docChanges: ISingleDBEvent[]
-    docs: Record<string,any>
+    docs: Record<string, any>
     type?: SnapshotType
   }
 
@@ -1423,7 +1440,7 @@ declare namespace cloudbase.database {
     dataType: DataType
     queueType: QueueType
     docId: string
-    doc: Record<string,any>
+    doc: Record<string, any>
     updatedFields?: any
     removedFields?: any
   }
@@ -1467,7 +1484,7 @@ declare namespace cloudbase.database {
      *
      * @param data 文档数据
      */
-    add(data: object): Promise<Pick<SetRes,'code' | 'message'>>;
+    add(data: object): Promise<Pick<SetRes, 'code' | 'message'>>;
     /**
      * 获取一条文档的引用
      *
@@ -2007,7 +2024,7 @@ declare namespace cloudbase.database {
      * @param query 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档
      *
      */
-    where(query: object): ExcludeOf<IQuery,'where'>;
+    where(query: object): ExcludeOf<IQuery, 'where'>;
     /**
      * 指定查询结果集数量上限
      *
@@ -2022,7 +2039,7 @@ declare namespace cloudbase.database {
      *
      * @param limit 查询结果数量上限
      */
-    limit(limit: number): ExcludeOf<IQuery,'where'>;
+    limit(limit: number): ExcludeOf<IQuery, 'where'>;
     /**
      * 指定查询返回结果时从指定序列后的结果开始返回，常用于分页
      *
@@ -2037,7 +2054,7 @@ declare namespace cloudbase.database {
      *
      * @param offset 跳过的条目数量
      */
-    skip(offset: number): ExcludeOf<IQuery,'where'>;
+    skip(offset: number): ExcludeOf<IQuery, 'where'>;
     /**
      * 指定查询排序条件
      *
@@ -2053,7 +2070,7 @@ declare namespace cloudbase.database {
      * @param field 排序的字段
      * @param orderType 排序的顺序，升序(asc) 或 降序(desc)
      */
-    orderBy(field: string,orderType: string): ExcludeOf<IQuery,'where'>;
+    orderBy(field: string, orderType: string): ExcludeOf<IQuery, 'where'>;
     /**
      * 指定返回结果中文档需返回的字段
      *
@@ -2068,7 +2085,7 @@ declare namespace cloudbase.database {
      *
      * @param projection 要过滤的字段集合，不返回传 false，返回传 true
      */
-    field(projection: object): ExcludeOf<IQuery,'where'>;
+    field(projection: object): ExcludeOf<IQuery, 'where'>;
     /**
      * 删除查询到的结果
      *
@@ -2109,7 +2126,7 @@ declare namespace cloudbase.database {
      * @return Point
      */
     Point: {
-      new(longitude: number,latitude: number): IPoint;
+      new(longitude: number, latitude: number): IPoint;
     };
     /**
      * 用于表示地理路径，是由两个或者更多的 Point 组成的线段

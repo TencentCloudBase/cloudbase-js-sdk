@@ -218,7 +218,8 @@ export async function signInByPhone(auth, phoneNumber) {
 export async function signInWeixin(auth, appid) {
   const provider = auth.weixinAuthProvider({
     appid,
-    scope: "snsapi_base"
+    // scope: "snsapi_userinfo"
+    scope: "snsapi_login"
   })
   const result = await provider.getRedirectResult()
   if (result) {

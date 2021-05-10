@@ -57,6 +57,7 @@ class User implements IUser {
   public email: string;
   public hasPassword: boolean;
   public phone?: string;
+  public username?: string;
   public location?: {
     country?: string;
     province?: string;
@@ -91,6 +92,7 @@ class User implements IUser {
     this.email = this._getLocalUserInfo('email');
     this.hasPassword = Boolean(this._getLocalUserInfo('hasPassword'));
     this.phone = this._getLocalUserInfo('phone')
+    this.username = this._getLocalUserInfo('username')
     this.location = {
       country: this._getLocalUserInfo('country'),
       province: this._getLocalUserInfo('province'),
@@ -115,6 +117,7 @@ class User implements IUser {
     this.email = await this._getLocalUserInfoAsync('email');
     this.hasPassword = Boolean(await this._getLocalUserInfoAsync('hasPassword'));
     this.phone = await this._getLocalUserInfoAsync('phone')
+    this.username = await this._getLocalUserInfoAsync('username')
     this.location = {
       country: await this._getLocalUserInfoAsync('country'),
       province: await this._getLocalUserInfoAsync('province'),
@@ -385,7 +388,8 @@ class User implements IUser {
       'nickName',
       'gender',
       'avatarUrl',
-      'phone'
+      'phone',
+      'username'
     ].forEach(infoKey => {
       this[infoKey] = userInfo[infoKey];
     });
@@ -693,13 +697,13 @@ class Auth {
     ]
   })
   public async signOut() {
-    const loginType = await this.getLoginType();
-    if (loginType === LOGINTYPE.ANONYMOUS) {
-      throw new Error(JSON.stringify({
-        code: ERRORS.INVALID_OPERATION,
-        msg: 'anonymous user doesn\'t support signOut action'
-      }));
-    }
+    // const loginType = await this.getLoginType();
+    // if (loginType === LOGINTYPE.ANONYMOUS) {
+    //   throw new Error(JSON.stringify({
+    //     code: ERRORS.INVALID_OPERATION,
+    //     msg: 'anonymous user doesn\'t support signOut action'
+    //   }));
+    // }
     const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
     const action = 'auth.logout';
 
