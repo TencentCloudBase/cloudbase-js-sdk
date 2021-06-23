@@ -250,9 +250,10 @@ var User = (function () {
             newPassword: newPassword
         });
     };
-    User.prototype.updateEmail = function (newEmail) {
+    User.prototype.updateEmail = function (newEmail, password) {
         return this._request.send('auth.updateEmail', {
-            newEmail: newEmail
+            newEmail: newEmail,
+            password: password
         });
     };
     User.prototype.updateUsername = function (username) {
@@ -462,7 +463,7 @@ var User = (function () {
             ]
         }),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [String]),
+        __metadata("design:paramtypes", [String, String]),
         __metadata("design:returntype", void 0)
     ], User.prototype, "updateEmail", null);
     __decorate([
@@ -1006,6 +1007,13 @@ var Auth = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 return [2, this.phoneAuthProvider().signIn(param)];
+            });
+        });
+    };
+    Auth.prototype.forceResetPwdByPhoneCode = function (param) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.phoneAuthProvider().signIn(__assign(__assign({}, param), { signMethod: phoneAuthProvider_1.SIGN_METHOD.FORCERESETPWD }))];
             });
         });
     };

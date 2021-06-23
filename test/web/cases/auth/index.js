@@ -139,6 +139,20 @@ export async function signInAnonymous(auth) {
     return
   }
   await auth.anonymousAuthProvider().signIn()
+
+  // // 匿名登录后，再updateEmail测试
+  // const updateEmailRes = await auth.currentUser.updateEmail(
+  //   "2420367792@qq.com",
+  //   "123456789aaaa"
+  // )
+  // console.log("updateEmailRes", updateEmailRes)
+
+  // // 邮箱登录
+  // const loginByEmailRes = await auth.signInWithEmailAndPassword(
+  //   "2420367792@qq.com",
+  //   "123456789aaaa"
+  // )
+  // console.log("loginByEmailRes", loginByEmailRes)
 }
 
 export async function signInByPhone(auth, phoneNumber) {
@@ -151,34 +165,35 @@ export async function signInByPhone(auth, phoneNumber) {
 
   console.log("auth", auth)
 
-  // 1. 发送验证码
+  // // 1. 发送验证码
   // const getCodeRes = await auth.sendPhoneCode(phoneNumber)
   // console.log("getCodeRes", getCodeRes)
   // 2. 验证码+密码注册
   // const signUpRes = await auth.signUpWithPhoneCode(
   //   phoneNumber,
-  //   "383240",
+  //   "293791",
   //   "33333333ll"
   // )
   // console.log("signInRes", signUpRes)
   // 3. 验证码登录
   // const signInRes1 = await auth.phoneAuthProvider().signIn({
   //   phoneNumber,
-  //   phoneCode: "383240"
+  //   phoneCode: "293791"
   // })
+
   // 4. 密码登录
-  const signInRes2 = await auth.phoneAuthProvider().signIn({
-    phoneNumber,
-    password: "33333333ll"
-  })
-  console.log("signInRes2", signInRes2)
+  // const signInRes2 = await auth.phoneAuthProvider().signIn({
+  //   phoneNumber,
+  //   password: "abc123456"
+  // })
+  // console.log("signInRes2", signInRes2)
   // console.log("signInRes1", signInRes1)
 
   // 5. 更新手机号
   // const user = await auth.getCurrenUser()
-  const user = auth.currentUser
+  // const user = auth.currentUser
   // console.log('auth', auth)
-  console.log("user", user)
+  // console.log("user", user)
   // const updatePhoneRes1 = await user.updatePhoneNumber(18202741638, '892693')
   // console.log('updatePhoneRes1', updatePhoneRes1)
   // const updateUseInfo1 = await auth.getUserInfo()
@@ -187,6 +202,17 @@ export async function signInByPhone(auth, phoneNumber) {
   // 6. 解绑手机号
   // const unlinkRes = await user.unlink("PHONE")
   // console.log("unlinkRes", unlinkRes)
+
+  // 强制重置手机号密码
+  // const forceUpdateRes = await auth.forceResetPwdByPhoneCode({
+  //   phoneNumber,
+  //   phoneCode: "581307",
+  //   password: "abc123456"
+  // })
+
+  // console.log("forceUpdateRes", forceUpdateRes)
+  // const user = await auth.getCurrenUser()
+  // console.log("user", user)
 }
 
 export async function signInWeixin(auth, appid) {

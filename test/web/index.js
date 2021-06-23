@@ -27,7 +27,7 @@ let auth
 let loginState
 cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
-// cloudbase.registerEndPoint('//127.0.0.1:8002/web');
+// cloudbase.registerEndPoint("//127.0.0.1:8002/web")
 
 async function init() {
   printInfo("web test starting init")

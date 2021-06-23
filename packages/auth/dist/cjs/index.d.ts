@@ -108,6 +108,11 @@ declare class Auth {
         password?: string;
         signMethod?: string;
     }): Promise<ILoginState>;
+    forceResetPwdByPhoneCode(param: {
+        phoneNumber: string;
+        phoneCode: string;
+        password: string;
+    }): Promise<ILoginState>;
     private _onLoginTypeChanged;
 }
 declare const EVENTS: {
