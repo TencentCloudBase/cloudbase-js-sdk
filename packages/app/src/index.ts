@@ -22,7 +22,7 @@ const { catchErrorsDecorator } = helpers;
  */
 const DEFAULT_INIT_CONFIG: Partial<ICloudbaseConfig> = {
   timeout: 15000,
-  persistence: 'session'
+  persistence: 'local'
 };
 
 // timeout上限10分钟
