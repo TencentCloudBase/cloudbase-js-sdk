@@ -11,7 +11,7 @@ import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
 import { UsernameAuthProvider } from './providers/usernameAuthProvider';
-import { PhoneAuthProvider } from './providers/phoneAuthProvider'
+import { PhoneAuthProvider, SIGN_METHOD } from './providers/phoneAuthProvider'
 
 declare const cloudbase: ICloudbase;
 
@@ -269,9 +269,10 @@ class User implements IUser {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public updateEmail(newEmail: string) {
+  public updateEmail(newEmail: string, password?: string) {
     return this._request.send('auth.updateEmail', {
-      newEmail
+      newEmail,
+      password
     });
   }
   /**
@@ -892,6 +893,17 @@ class Auth {
     signMethod?: string
   }) {
     return this.phoneAuthProvider().signIn(param);
+  }
+
+  public async forceResetPwdByPhoneCode(param: {
+    phoneNumber: string
+    phoneCode: string
+    password: string
+  }) {
+    return this.phoneAuthProvider().signIn({
+      ...param,
+      signMethod: SIGN_METHOD.FORCERESETPWD
+    });
   }
 
   private async _onLoginTypeChanged(ev) {
