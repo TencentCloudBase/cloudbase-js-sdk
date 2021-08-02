@@ -49,8 +49,15 @@ export function getEndPoint(){
 }
 
 export enum LOGINTYPE {
+  NULL = 'NULL',
   ANONYMOUS = 'ANONYMOUS',
   WECHAT = 'WECHAT',
+  WECHAT_PUBLIC = 'WECHAT-PUBLIC',
+  WECHAT_OPEN = 'WECHAT-OPEN',
   CUSTOM = 'CUSTOM',
-  NULL = 'NULL' // 保留字，代表未登录
+  EMAIL = 'EMAIL',
+  USERNAME = 'USERNAME',
+  PHONE = 'PHONE'
 }
+
+export const OAUTH2_LOGINTYPE_PREFIX = 'OAUTH2'

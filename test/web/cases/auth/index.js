@@ -247,6 +247,21 @@ export async function signInWithUsername(auth, { username, password }) {
   }
 }
 
+export async function signWithOAuth2(auth) {
+  const loginState = await auth.getLoginState()
+  if (loginState && !loginState.isAnonymousAuth) {
+    alert("当前已有其他登录类型的登录态，请清空localstorage后重新发起测试")
+    return
+  }
+  // 检查用户名是否绑定过
+  await auth.oAuth2AuthProvider({
+    providerId: 'google',
+    scope: 'openid+email+profile',
+    redirectUri: 'https://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com'
+  })
+  await auth.signWithOAuth2Popup({})
+}
+
 export async function clearLoginState() {
   try {
     await auth.signOut()

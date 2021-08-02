@@ -2,7 +2,8 @@ import {
   DATA_VERSION,
   LOGINTYPE,
   getSdkVersion,
-  getEndPoint
+  getEndPoint,
+  OAUTH2_LOGINTYPE_PREFIX
 } from '../constants/common';
 import {
   IRequestOptions,
@@ -11,7 +12,7 @@ import {
   IUploadRequestOptions,
   IRequestConfig
 } from '@cloudbase/adapter-interface';
-import { utils, adapters, constants } from '@cloudbase/utilities';
+import { utils,jwt,adapters,constants } from '@cloudbase/utilities';
 import { KV } from '@cloudbase/types';
 import { IGetAccessTokenResult, ICloudbaseRequestConfig, IAppendedRequestInfo, IRequestBeforeHook } from '@cloudbase/types/request';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
@@ -19,10 +20,13 @@ import { cloudbase } from '..';
 import { getCacheByEnvId, getLocalCache } from './cache';
 import { EVENTS } from '../constants/events';
 import { Platform } from './adapter';
-
-const { ERRORS } = constants;
-const { genSeqId, isFormData, formatUrl, createSign } = utils;
+const { getSdkName, ERRORS } = constants;
+const { genSeqId,isFormData,formatUrl,createSign } = utils;
 const { RUNTIME } = adapters;
+
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
+
+const fpPromise = FingerprintJS.load()
 
 // 下面几种 action 不需要 access token
 const ACTIONS_WITHOUT_ACCESSTOKEN = [
@@ -82,6 +86,7 @@ function beforeEach(): IAppendedRequestInfo {
   };
 }
 export interface ICloudbaseRequest {
+  fetch: (urlOrPath: string, init?: RequestInit) => Promise<Response>;
   post: (options: IRequestOptions) => Promise<ResponseObject>;
   upload: (options: IUploadRequestOptions) => Promise<ResponseObject>;
   download: (options: IRequestOptions) => Promise<ResponseObject>;
@@ -123,6 +128,50 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     bindHooks(this._reqClass, 'upload', [beforeEach]);
     bindHooks(this._reqClass, 'download', [beforeEach]);
   }
+
+  /**
+   * 套一层 fetch，方便处理请求地址
+   * @param {string}      urlOrPath
+   * @param {RequestInit} init
+   * @returns 
+   */
+  public async fetch(urlOrPath: string, init?: RequestInit): Promise<Response> {
+    const fp = await fpPromise
+    const result = await fp.get()
+    const visitorId = result.visitorId
+    const headers = {
+      'X-Project-Id': 'production-fv979',
+      'X-SDK-Version': `@cloudbase/js-sdk/${getSdkVersion()}`,
+      'X-Request-Id': genSeqId(),
+      'X-Request-Timestamp': Date.now(),
+      'X-Device-Id': visitorId
+    }
+    // 非web平台使用凭证检验有效性
+    if(Platform.runtime !== RUNTIME.WEB) {
+      const { appSign,appSecret } = this.config
+      const timestamp = Date.now()
+      const { appAccessKey, appAccessKeyId } = appSecret
+      const sign = createSign({
+        // data: init.body,
+        data: {},
+        timestamp,
+        appAccessKeyId,
+        appSign
+      },appAccessKey)
+
+      headers['X-TCB-App-Source'] = `timestamp=${timestamp};appAccessKeyId=${appAccessKeyId};appSign=${appSign};sign=${sign}`
+    }
+
+    init.headers = Object.assign({}, init.headers, headers)
+
+    const { PROTOCOL, BASE_URL } = getEndPoint()
+    const webEndpoint = `${PROTOCOL}${BASE_URL}`
+    const url = urlOrPath.startsWith('http')
+      ? urlOrPath
+      :`${new URL(webEndpoint).origin}${urlOrPath}`
+    return await fetch(url, init)
+  }
+
   public async post(options: IRequestOptions): Promise<ResponseObject> {
     const res = await this._reqClass.post(options);
     return res;
@@ -158,9 +207,32 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     return result;
   }
 
-  // 获取access token
+  public async refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult> {
+    // 可能会同时调用多次刷新 access token，这里把它们合并成一个
+    if(!this._refreshAccessTokenPromise) {
+      // 没有正在刷新，那么正常执行刷新逻辑
+      this._refreshAccessTokenPromise = this._refreshAccessTokenFromOauthServer(clientId);
+    }
+
+    let result;
+    let err;
+    try {
+      result = await this._refreshAccessTokenPromise;
+    } catch(e) {
+      err = e;
+    }
+    this._refreshAccessTokenPromise = null;
+    this._shouldRefreshAccessTokenHook = null;
+    if(err) {
+      throw err;
+    }
+    return result;
+  }
+
+  // 获取 access token
   public async getAccessToken(): Promise<IGetAccessTokenResult> {
-    const { accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
+    const { loginTypeKey,accessTokenKey,accessTokenExpireKey,refreshTokenKey } = this._cache.keys;
+    const loginType = await this._cache.getStoreAsync(loginTypeKey);
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refreshToken) {
       // 不该出现的状态：有 access token 却没有 refresh token
@@ -179,9 +251,32 @@ export class CloudbaseRequest implements ICloudbaseRequest {
       shouldRefreshAccessToken = false;
     }
 
-    if ((!accessToken || !accessTokenExpire || accessTokenExpire < Date.now()) && shouldRefreshAccessToken) {
-      // 返回新的access tolen
-      return await this.refreshAccessToken();
+    if((!accessToken || !accessTokenExpire || accessTokenExpire < Date.now()) && shouldRefreshAccessToken) {
+      if (loginType.startsWith(OAUTH2_LOGINTYPE_PREFIX)) {
+        // NOTE: 这里需要从 accessToken 解出来部分信息，用于刷新 accessToken
+        // 所以过期的 accessToken 不能删除，而是用新 accessToken 覆盖
+        if (accessToken) {
+          let header = null
+          let payload = null
+          try {
+            header = jwt.decode(accessToken, {header: true})
+            payload = jwt.decode(accessToken)
+          }
+          catch (e) {
+            throw new Error(`[DECODE_ACCESS_TOKEN_ERROR] ${e.message}, accesstoken: ${accessToken}`)
+          }
+          if (header?.kid && payload?.project_id) {
+            return await this.refreshAccessTokenFromOauthServer(payload?.project_id)
+          }
+        }
+        else {
+          // 这里用 env 试一下
+          return await this.refreshAccessTokenFromOauthServer(this.config.env)
+        }
+      }
+      else {
+        return await this.refreshAccessToken();
+      }
     } else {
       // 返回本地的access token
       return {
@@ -396,9 +491,82 @@ export class CloudbaseRequest implements ICloudbaseRequest {
       await this._refreshAccessToken();
     }
   }
+
+  private async _fetchAccessTokenFromOauthServer(refreshToken: string, clientId: string) {
+    const resp = await this.fetch('/auth/v1/token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        grant_type: 'refresh_token',
+        client_id: clientId,
+        refresh_token: refreshToken
+      })
+    })
+    // Resp:
+    // {
+    //   "token_type": "Bearer",
+    //   "access_token": "",
+    //   "refresh_token":"",
+    //   "expires_in": 259200,
+    //   "sub": ""
+    // }
+    // 以下代码重复
+    const seqIdFromHeader = resp.headers.get('SeqId') || resp.headers.get('RequestId')
+    if (resp.status >= 400 && resp.status < 500) {
+      const body: any = await resp.json()
+      const seqId = body.request_id || seqIdFromHeader
+      throw new Error(`[${getSdkName()}/${getSdkVersion()}][OAuth2AuthProvider][status:${resp.status}][${body.error}(${body.error_code})] ${body.error_description} (${seqId})`)
+    }
+    else if (resp.status >= 500) {
+      const body: any = await resp.json()
+      const seqId = body.request_id || seqIdFromHeader
+      throw new Error(`[${getSdkName()}/${getSdkVersion()}][OAuth2AuthProvider][status:${resp.status}][${body.error}(${body.error_code})] ${body.error_description} (${seqId})`)
+    }
+    return resp.json()
+  }
+
+  // 调用接口刷新access token，并且返回
+  private async _refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult> {
+    const { accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
+    const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
+    if(!refreshToken) {
+      throw new Error(JSON.stringify({
+        code: ERRORS.INVALID_OPERATION,
+        msg: 'not login'
+      }));
+    }
+
+    const token = await this._fetchAccessTokenFromOauthServer(refreshToken, clientId);
+    const { refresh_token: newRefreshToken, access_token: accessToken, expires_in: accessTokenExpire } = token
+
+    // 错误处理
+    if(!accessToken || !accessTokenExpire) {
+      throw new Error(JSON.stringify({
+        code: ERRORS.NETWORK_ERROR,
+        msg: 'refresh access_token failed'
+      }));
+    }
+    if(accessToken && accessTokenExpire) {
+      if(newRefreshToken === refreshToken) {
+        await this._cache.setStoreAsync(refreshTokenKey, newRefreshToken);
+      }
+      await this._cache.setStoreAsync(accessTokenKey, accessToken);
+      await this._cache.setStoreAsync(accessTokenExpireKey, accessTokenExpire * 1000 + Date.now());
+      cloudbase.fire(EVENTS.ACCESS_TOKEN_REFRESHD);
+      return {
+        accessToken: accessToken,
+        accessTokenExpire: accessTokenExpire
+      };
+    }
+  }
+
   private async _setRefreshToken(refreshToken: string) {
     const { accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
     // refresh token设置前，先清掉 access token
+    // 设置是直接拉取新 access token 覆盖，而不是 remove
     await this._cache.removeStoreAsync(accessTokenKey);
     await this._cache.removeStoreAsync(accessTokenExpireKey);
     await this._cache.setStoreAsync(refreshTokenKey, refreshToken);

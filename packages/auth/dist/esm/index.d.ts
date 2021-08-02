@@ -3,14 +3,15 @@ import { events } from '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig, ICredential, IUser, ILoginState } from '@cloudbase/types/auth';
-import { WeixinAuthProvider } from './providers/weixinAuthProvider';
-import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
-import { CustomAuthProvider } from './providers/customAuthProvider';
 import { LOGINTYPE } from './constants';
 import { AuthProvider } from './providers/base';
+import { OAuth2AuthProvider, IOAuth2AuthProviderOptions } from './providers/oauth2AuthProvider';
+import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
+import { CustomAuthProvider } from './providers/customAuthProvider';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
-import { UsernameAuthProvider } from './providers/usernameAuthProvider';
 import { PhoneAuthProvider } from './providers/phoneAuthProvider';
+import { UsernameAuthProvider } from './providers/usernameAuthProvider';
+import { WeixinAuthProvider } from './providers/weixinAuthProvider';
 interface UserInfo {
     openid: string;
     nickname?: string;
@@ -56,6 +57,7 @@ declare class Auth {
     private _emailAuthProvider;
     private _usernameAuthProvider;
     private _phoneAuthProvider;
+    private _oAuth2AuthProvider;
     constructor(config: ICloudbaseAuthConfig & {
         cache: ICloudbaseCache;
         request: ICloudbaseRequest;
@@ -79,12 +81,15 @@ declare class Auth {
     emailAuthProvider(): EmailAuthProvider;
     usernameAuthProvider(): UsernameAuthProvider;
     phoneAuthProvider(): PhoneAuthProvider;
+    oAuth2AuthProvider(options?: IOAuth2AuthProviderOptions): OAuth2AuthProvider;
+    signWithOAuth2Popup(): void;
+    signInWithOAuth2Modal(elemId: string): void;
     signInWithUsernameAndPassword(username: string, password: string): Promise<ILoginState>;
     isUsernameRegistered(username: string): Promise<boolean>;
     signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
     signUpWithEmailAndPassword(email: string, password: string): Promise<any>;
     sendPasswordResetEmail(email: string): Promise<any>;
-    signOut(): Promise<any>;
+    signOut(): Promise<boolean>;
     onLoginStateChanged(callback: Function): Promise<void>;
     onLoginStateExpired(callback: Function): void;
     onAccessTokenRefreshed(callback: Function): void;

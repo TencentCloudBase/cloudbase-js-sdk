@@ -4,14 +4,19 @@ import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig, ICredential, IUser, IUserInfo, IAuthProvider, ILoginState } from '@cloudbase/types/auth';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
-import { WeixinAuthProvider } from './providers/weixinAuthProvider';
+
+import { LOGINTYPE, OAUTH2_LOGINTYPE_PREFIX } from './constants';
+
+import { AuthProvider } from './providers/base';
+
+import { OAuth2AuthProvider, IOAuth2AuthProviderOptions } from './providers/oauth2AuthProvider';
+
 import { AnonymousAuthProvider } from './providers/anonymousAuthProvider';
 import { CustomAuthProvider } from './providers/customAuthProvider';
-import { LOGINTYPE } from './constants';
-import { AuthProvider } from './providers/base';
 import { EmailAuthProvider } from './providers/emailAuthProvider';
-import { UsernameAuthProvider } from './providers/usernameAuthProvider';
 import { PhoneAuthProvider, SIGN_METHOD } from './providers/phoneAuthProvider'
+import { UsernameAuthProvider } from './providers/usernameAuthProvider';
+import { WeixinAuthProvider } from './providers/weixinAuthProvider';
 
 declare const cloudbase: ICloudbase;
 
@@ -502,6 +507,8 @@ class Auth {
   private _usernameAuthProvider: UsernameAuthProvider;
   private _phoneAuthProvider: PhoneAuthProvider;
 
+  private _oAuth2AuthProvider: OAuth2AuthProvider;
+
   constructor(config: ICloudbaseAuthConfig & { cache: ICloudbaseCache, request: ICloudbaseRequest, runtime?: string }) {
     this._config = config;
     this._cache = config.cache;
@@ -631,6 +638,48 @@ class Auth {
     }
     return this._phoneAuthProvider;
   }
+
+  /**
+   * oAuth2AuthProvider
+   * options
+   * {
+   *   providerId: 'google',
+   *   scope: 'openid+email+profile',
+   *   redirectUri: 'https://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com'
+   * }
+   * @param {Object}  options 
+   * @param {string}  options.providerId            - 供应商Id，如 WeChat、Google、Github 等
+   * @param {string}  options.clientId              - 客户端Id，平台提供的客户端标识Id
+   * @param {string}  [options.responseType=token]  - 响应类型：token、code
+   * @param {string}  options.scope                 - 权限范围
+   * @param {string}  options.redirectUri           - 授权成功回调地址
+   * @param {boolean} options.syncProfile           - 是否同步用户 Profile 信息
+   * @param {boolean} options.forceDisableSignUp    - 是否强制关闭用户注册
+   * @returns 
+   */
+  public oAuth2AuthProvider(options: IOAuth2AuthProviderOptions = {}): OAuth2AuthProvider {
+    if (!this._oAuth2AuthProvider) {
+      this._oAuth2AuthProvider = new OAuth2AuthProvider({
+        ...this._config,
+        cache: this._cache,
+        request: this._request,
+        runtime: this._runtime
+      }, options)
+    }
+    return this._oAuth2AuthProvider
+  }
+
+  /**
+   * signWithOAuth2Popup - OAuth2弹窗登录
+   */
+  public signWithOAuth2Popup() {
+    this._oAuth2AuthProvider.signInWithPopup()
+  }
+
+  public signInWithOAuth2Modal(elemId: string) {
+    this._oAuth2AuthProvider.signInWithModal(elemId)
+  }
+
   /**
    * 用户名密码登录
    * @param username
@@ -697,35 +746,71 @@ class Auth {
     ]
   })
   public async signOut() {
-    // const loginType = await this.getLoginType();
+    const loginType = await this.getLoginType()
     // if (loginType === LOGINTYPE.ANONYMOUS) {
     //   throw new Error(JSON.stringify({
     //     code: ERRORS.INVALID_OPERATION,
     //     msg: 'anonymous user doesn\'t support signOut action'
-    //   }));
+    //   }))
     // }
-    const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys;
-    const action = 'auth.logout';
+    const { refreshTokenKey, accessTokenKey, accessTokenExpireKey } = this._cache.keys
 
     const refresh_token = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refresh_token) {
-      return;
+      return
     }
-    const res = await this._request.send(action, { refresh_token });
 
-    this._cache.removeStoreAsync(refreshTokenKey);
-    this._cache.removeStoreAsync(accessTokenKey);
-    this._cache.removeStoreAsync(accessTokenExpireKey);
+    if (loginType.startsWith(OAUTH2_LOGINTYPE_PREFIX)) {
+      const accessToken = await this._cache.getStoreAsync(accessTokenKey)
+      const accessTokenExpire = Number(await this._cache.getStoreAsync(accessTokenExpireKey))
+      if (accessToken) {
+        if (Date.now() < accessTokenExpire) {
+          const resp = await this._request.fetch('/auth/v1/revoke', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              token: accessToken
+            })
+          })
+          const seqIdFromHeader = resp.headers.get('SeqId') || resp.headers.get('RequestId')
+          if (resp.status >= 400 && resp.status < 500) {
+            const body: any = await resp.json()
+            const seqId = body.request_id || seqIdFromHeader
+            throw new Error(`[OAuth2AuthProvider][status:${resp.status}][${body.error}(${body.error_code})] ${body.error_description} (${seqId})`)
+          }
+          else if (resp.status >= 500) {
+            const body: any = await resp.json()
+            const seqId = body.request_id || seqIdFromHeader
+            throw new Error(`[OAuth2AuthProvider][status:${resp.status}][${body.error}(${body.error_code})] ${body.error_description} (${seqId})`)
+          }
+        }
+        else {
+          // console.warn(`[SignOut] accesstoken expired`)
+        }
+      }
+      else {
+        // console.warn(`[SignOut] accesstoken not exists`)
+      }
+    }
+    else {
+      await this._request.send('auth.logout', { refresh_token })
+    }
 
-    eventBus.fire(EVENTS.LOGIN_STATE_CHANGED);
+    this._cache.removeStoreAsync(refreshTokenKey)
+    this._cache.removeStoreAsync(accessTokenKey)
+    this._cache.removeStoreAsync(accessTokenExpireKey)
+
+    eventBus.fire(EVENTS.LOGIN_STATE_CHANGED)
     eventBus.fire(EVENTS.LOGIN_TYPE_CHANGED, {
       env: this._config.env,
       loginType: LOGINTYPE.NULL,
       persistence: this._config.persistence
-    });
+    })
 
-
-    return res;
+    return true
   }
   public async onLoginStateChanged(callback: Function) {
     eventBus.on(EVENTS.LOGIN_STATE_CHANGED, async () => {

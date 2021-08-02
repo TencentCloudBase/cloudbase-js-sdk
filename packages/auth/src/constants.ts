@@ -9,3 +9,5 @@ export enum LOGINTYPE {
   NULL = 'NULL',
   PHONE = 'PHONE'
 }
+
+export const OAUTH2_LOGINTYPE_PREFIX = 'OAUTH2'

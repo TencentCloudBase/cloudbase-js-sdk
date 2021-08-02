@@ -1,12 +1,13 @@
 import axios from "axios"
 import { env, appid, authUsername, authPassword } from "../../test.config.js"
 import {
+  registerAuthCases,
   signInWeixin,
   signInCustom,
   signInAnonymous,
   signInWithUsername,
-  registerAuthCases,
-  signInByPhone
+  signInByPhone,
+  signWithOAuth2
 } from "./cases/auth"
 import { registerFunctionCases } from "./cases/function"
 import { registerStorageCases } from "./cases/storage"
@@ -25,40 +26,31 @@ import cloudbase from "../../packages/cloudbase"
 let app
 let auth
 let loginState
-cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
+
+// cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//127.0.0.1:8002/web")
+cloudbase.registerEndPoint("https://production-fv979.ap-shanghai.tcb-api.tencentcloudapi.com")
+
+if (window.opener) {
+  console.log('this is a popup window', window)
+  const params = window.location.search
+  window.opener.postMessage(params, '')
+  window.close()
+}
 
 async function init() {
   printInfo("web test starting init")
   // 初始化
   app = cloudbase.init({
-    env
+    env,
+    region: 'ap-shanghai'
     // timeout: 150000
   })
 
   auth = app.auth({
     persistence: "local"
   })
-
-  // 公众号微信登录
-  // await signInWeixin(auth, appid);
-
-  // 匿名登录
-  await signInAnonymous(auth)
-
-  // 自定义登录
-  // await signInCustom(auth);
-
-  // 用户名登录
-  // await signInWithUsername(auth,{
-  //   username: authUsername,
-  //   password: authPassword
-  // });
-
-  // 短信验证码登录
-  // await signInByPhone(auth, '13024748409')
-  // await signInByPhone(auth, "18202741638")
 
   registerFunctionCases(app)
   registerStorageCases(app)
@@ -75,6 +67,46 @@ async function init() {
   //     action_type: "visit_store"
   //   }
   // })
+
+  await auth.getCurrenUser()
+  if (auth.currentUser) {
+    document.querySelector('#userInfoName').textContent = auth.currentUser.uid
+  }
+  document.querySelector('#signout').onclick = async function dologin() {
+    auth.signOut()
+  }
+  document.querySelector('#signin').onclick = async function dologin() {
+    console.log('dologin ...', auth.currentUser)
+    if (!auth.hasLoginState()) {
+      console.log('login start ...')
+      // 公众号微信登录
+      // await signInWeixin(auth, appid);
+    
+      // 匿名登录
+      // await signInAnonymous(auth)
+    
+      await signWithOAuth2(auth)
+    
+    
+      console.log('login end...')
+    
+      // 自定义登录
+      // await signInCustom(auth);
+    
+      // 用户名登录
+      // await signInWithUsername(auth,{
+      //   username: authUsername,
+      //   password: authPassword
+      // });
+    
+      // 短信验证码登录
+      // await signInByPhone(auth, '13024748409')
+      // await signInByPhone(auth, "18202741638")
+    }
+    else {
+      console.log('already login ...')
+    }
+  }
 }
 
 /**

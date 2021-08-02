@@ -35,8 +35,8 @@ export abstract class AuthProvider {
         return loginState;
       } else {
         // access token存在但是过期了，那么删除掉重新拉
-        await this._cache.removeStoreAsync(accessTokenKey);
-        await this._cache.removeStoreAsync(accessTokenExpireKey);
+        // await this._cache.removeStoreAsync(accessTokenKey);
+        // await this._cache.removeStoreAsync(accessTokenExpireKey);
       }
     }
   }
