@@ -1,5 +1,5 @@
 import { isString, isInstanceOf } from './util';
-import { Listeners,ICloudbaseEventEmitter } from '@cloudbase/types/events';
+import { Listeners, ICloudbaseEventEmitter } from '@cloudbase/types/events';
 
 
 /**
@@ -29,9 +29,9 @@ function _removeEventListener(name: string, listener: Function, listeners: Liste
   }
 }
 interface IEvent {
-  name:string;
+  name: string;
   target: any;
-  data:any;
+  data: any;
 }
 /**
  * 自定义事件
@@ -39,7 +39,7 @@ interface IEvent {
  * @param {string} name - 类型
  * @param {any} data - 数据
  */
-export class CloudbaseEvent implements IEvent{
+export class CloudbaseEvent implements IEvent {
   public readonly name: string;
   public target: any;
   public data: any;
@@ -67,7 +67,7 @@ export class IErrorEvent extends CloudbaseEvent {
 /**
  * @class CloudbaseEventEmitter
  */
-export class CloudbaseEventEmitter implements ICloudbaseEventEmitter{
+export class CloudbaseEventEmitter implements ICloudbaseEventEmitter {
   /**
    * @private
    * @readonly

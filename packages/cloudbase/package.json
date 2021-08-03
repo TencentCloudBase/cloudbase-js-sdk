@@ -49,11 +49,11 @@
     "@cloudbase/app": "^1.4.0-alpha.0",
     "@cloudbase/auth": "^1.6.0-alpha.0",
     "@cloudbase/database": "0.9.18-next",
-    "@cloudbase/functions": "^1.3.1-alpha.0",
+    "@cloudbase/functions": "^1.3.4-alpha.0",
     "@cloudbase/realtime": "^1.1.4-alpha.0",
-    "@cloudbase/storage": "^1.3.1-alpha.0",
+    "@cloudbase/storage": "^1.3.4-alpha.0",
     "@cloudbase/types": "^1.1.3-alpha.0",
-    "@cloudbase/utilities": "^1.3.1-alpha.0"
+    "@cloudbase/utilities": "^1.3.4-alpha.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
