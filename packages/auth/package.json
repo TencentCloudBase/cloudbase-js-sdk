@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/auth",
-  "version": "1.5.0",
+  "version": "1.6.0-alpha.0",
   "description": "cloudbase javascript sdk auth componets",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,7 +28,7 @@
   "license": "ISC",
   "dependencies": {
     "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/app": "^1.3.1",
+    "@cloudbase/app": "^1.4.0-alpha.0",
     "@cloudbase/types": "^1.1.3-alpha.0",
     "@cloudbase/utilities": "^1.3.1-alpha.0",
     "sourcemapped-stacktrace": "^1.1.11"
