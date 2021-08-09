@@ -11,8 +11,6 @@ import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { initRequest, getRequestByEnvId } from './libs/request';
 import { getSdkName, setSdkVersion, setEndPoint, setRegionLevelEndpoint, setSdkName } from './constants/common';
-import { eventBus } from "@cloudbase/auth"
-
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { printWarn } = utils;
@@ -63,9 +61,6 @@ class Cloudbase implements ICloudbase {
     return getRequestByEnvId(this._config.env);
   }
 
-  get eventBus() {
-    return eventBus
-  }
 
   @catchErrorsDecorator({
     mode: 'sync',

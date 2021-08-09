@@ -17,9 +17,9 @@ module.exports = {
   mode: "development",
   devServer: {
     hot: true,
-    // host: 'jimmytest-088bef.tcb.qcloud.la',
+    host: 'jimmytest-088bef.tcb.qcloud.la',
     // host: "leenzhang1.elementtest.org",
-    host: "www.wilsonsliu.cn",
+    // host: "www.wilsonsliu.cn",
     port: 80,
     open: false,
     inline: true,

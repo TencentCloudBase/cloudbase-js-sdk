@@ -8,7 +8,6 @@ const components:KV<ICloudbaseComponent> = {};
 
 export function registerComponent(app:any,component:ICloudbaseComponent){
   const { name, namespace, entity, injectEvents, IIFE=false } = component;
-  
   // 不允许重复注册或命名空间重名
   if(components[name]||(namespace&&app[namespace])){
     throw new Error(JSON.stringify({
@@ -26,7 +25,6 @@ export function registerComponent(app:any,component:ICloudbaseComponent){
     }
     entity.call(app);
   }
-  
 
   components[name] = component;
 
