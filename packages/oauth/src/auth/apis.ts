@@ -1,11 +1,3 @@
-/**
- * @license
- * Copyright 2019 Xbase labs
- *
- * @description
- * The auth service of xbase.
- */
-
 'use strict';
 
 import {ErrorType} from '../oauth2client/consts';
