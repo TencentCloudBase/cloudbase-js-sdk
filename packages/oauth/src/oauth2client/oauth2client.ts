@@ -320,10 +320,8 @@ export class OAuth2Client implements AuthClient {
         ...options.headers,
       };
     }
-    if (this._devMode) {
-      if (!options.headers[RequestIdHeaderName]) {
-        options.headers[RequestIdHeaderName] = generateRequestId();
-      }
+    if (!options.headers[RequestIdHeaderName]) {
+      options.headers[RequestIdHeaderName] = generateRequestId();
     }
     if (options && options.withCredentials) {
       const credentials = await this._getCredentials();
