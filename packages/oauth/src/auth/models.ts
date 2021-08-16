@@ -57,6 +57,8 @@ export interface GrantProviderTokenRequest extends BaseRequest {
   provider_id: string;
   provider_redirect_uri?: string;
   provider_code?: string;
+  provider_access_token?: string;
+  provider_id_token?: string;
 }
 
 export interface GrantProviderTokenResponse {
