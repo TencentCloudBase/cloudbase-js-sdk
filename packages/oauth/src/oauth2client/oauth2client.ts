@@ -237,7 +237,7 @@ export class OAuth2Client implements AuthClient {
   private static _maxRetry: number = 5;
   private static _retryInterval: number = 1000;
 
-  private _devMode: boolean;
+  // private _devMode: boolean;
   private _apiOrigin: string;
   private _clientId: string;
   private _retry: number;
@@ -258,7 +258,7 @@ export class OAuth2Client implements AuthClient {
    * @param {OAuth2ClientOptions} options
    */
   constructor(options: OAuth2ClientOptions) {
-    this._devMode = options.devMode;
+    // this._devMode = options.devMode;
     this._apiOrigin = options.apiOrigin;
     this._clientId = options.clientId;
     this._retry = this._formatRetry(options.retry, OAuth2Client._defaultRetry);
