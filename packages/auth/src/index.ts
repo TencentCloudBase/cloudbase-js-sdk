@@ -645,7 +645,7 @@ class Auth {
    * {
    *   providerId: 'google',
    *   scope: 'openid+email+profile',
-   *   redirectUri: 'https://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com'
+   *   redirectUri: 'https://'
    * }
    * @param {Object}  options 
    * @param {string}  options.providerId            - 供应商Id，如 WeChat、Google、Github 等

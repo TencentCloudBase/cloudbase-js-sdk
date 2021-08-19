@@ -140,7 +140,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     const deviceId = await this.getDeviceId();
 
     const headers = {
-      'X-Project-Id': 'production-fv979',
+      'X-Project-Id': this.config.env,
       'X-SDK-Version': `@cloudbase/js-sdk/${getSdkVersion()}`,
       'X-Request-Id': genSeqId(),
       'X-Request-Timestamp': Date.now(),

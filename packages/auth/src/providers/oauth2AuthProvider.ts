@@ -325,7 +325,7 @@ export class OAuth2AuthProvider extends AuthProvider {
     //     authuser: '0',
     //     prompt: 'none'
     //   }
-    // }, 'http://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com/')
+    // }, 'http:///')
 
     // function postMessageToOpener() {
     //   // 需要支持不同的参数形式
@@ -342,7 +342,7 @@ export class OAuth2AuthProvider extends AuthProvider {
     //     //     authuser: '0',
     //     //     prompt: 'none'
     //     //   }
-    //     // }, 'http://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com/')
+    //     // }, 'http:///')
     //     const params = window.location.search
     //     window.opener.postMessage(params, '')
     //     window.close()
@@ -357,7 +357,7 @@ export class OAuth2AuthProvider extends AuthProvider {
    */
   private recvMessageFromPopup(event: MessageEvent) {
     // console.log('recv event:', event)
-    // origin: "http://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com"
+    // origin: "http:///"
     if (!event.isTrusted) {
       // console.log('!event.isTrusted')
       return
