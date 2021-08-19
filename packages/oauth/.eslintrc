@@ -5,18 +5,16 @@
     "rules": {
         "indent": [
             "error",
-            2,
-            {
-                "SwitchCase": 1,
-                "flatTernaryExpressions": true
-            }
+            2
         ],
         "guard-for-in": 0,
         "no-param-reassign": 0,
         "no-undefined": 0,
         "@typescript-eslint/explicit-member-accessibility": 0,
         "@typescript-eslint/no-loss-of-precision": 0,
-        "@typescript-eslint/no-duplicate-imports": 0
+        "@typescript-eslint/no-duplicate-imports": 0,
+        "@typescript-eslint/consistent-type-assertions": 0,
+        "@typescript-eslint/member-ordering": 0
     },
     "parserOptions": {
         "ecmaVersion": 6,

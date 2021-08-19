@@ -25,8 +25,13 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": ["node"],
-    "lib": ["es2015", "dom"]
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "es2015",
+      "dom"
+    ]
   },
   "include": [
     "src/**/*.ts",

@@ -1,8 +1,12 @@
 {
   "name": "@cloudbase/oauth",
-  "version": "1.6.0-alpha.0",
+  "version": "0.0.1-alpha.0",
   "description": "cloudbase javascript sdk auth componets",
   "main": "./dist/index.js",
+  "module": "dist/esm/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "eslint": "eslint \"{src,__tests__}/**/*.ts\"",
     "eslint:fix": "eslint --fix \"{src,__tests__}/**/*.ts\"",

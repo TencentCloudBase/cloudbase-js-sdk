@@ -1,6 +1,6 @@
-import {ErrorType} from './consts';
+import { ErrorType } from './consts';
 
-import {AuthClient, SimpleStorage} from './interface';
+import { AuthClient, SimpleStorage } from './interface';
 
 import {
     Credentials,
@@ -11,13 +11,13 @@ import {
     AuthClientRequestOptions,
 } from './models';
 
-import {uuidv4} from '../utils/uuid';
+import { uuidv4 } from '../utils/uuid';
 
-import {SinglePromise} from '../utils/function/single-promise';
+import { SinglePromise } from '../utils/function/single-promise';
 
-const RequestIdHeaderName: string = 'x-request-id';
-const DeviceIdHeaderName: string = 'x-device-id';
-const DeviceIdSectionName: string = 'device_id';
+const RequestIdHeaderName = 'x-request-id';
+const DeviceIdHeaderName = 'x-device-id';
+const DeviceIdSectionName = 'device_id';
 
 export interface ToResponseErrorOptions {
     error?: ErrorType;
@@ -43,7 +43,7 @@ export const defaultRequest: RequestFunction = async <T>(
         }
         const responseResult: Response = await fetch(url, copyOptions);
         const jsonResponse = await responseResult.json();
-        if (jsonResponse && jsonResponse.error) {
+        if (jsonResponse?.error) {
             responseError = jsonResponse as ResponseError;
             responseError.error_uri = new URL(url).pathname;
         } else {
@@ -141,8 +141,8 @@ interface LocalCredentialsOptions {
  * @return {boolean}
  */
 function isCredentialsExpired(credentials: Credentials): boolean {
-    let isExpired: boolean = true;
-    if (credentials && credentials.expires_at && credentials.access_token) {
+    let isExpired = true;
+    if (credentials?.expires_at && credentials.access_token) {
         isExpired = credentials.expires_at < new Date();
     }
     return isExpired;
@@ -176,7 +176,7 @@ export class LocalCredentials {
      * @param {Credentials} credentials
      */
     public async setCredentials(credentials?: Credentials): Promise<void> {
-        if (credentials && credentials.expires_in) {
+        if (credentials?.expires_in) {
             credentials.expires_at = new Date(
                 Date.now() + (credentials.expires_in - 30) * 1000,
             );
@@ -218,7 +218,7 @@ export class LocalCredentials {
             if (tokenStr !== undefined && tokenStr !== null) {
                 try {
                     credentials = JSON.parse(tokenStr);
-                    if (credentials && credentials.expires_at) {
+                    if (credentials?.expires_at) {
                         credentials.expires_at = new Date(credentials.expires_at);
                     }
                 } catch (error) {
@@ -235,10 +235,10 @@ export class LocalCredentials {
  * OAuth2Client
  */
 export class OAuth2Client implements AuthClient {
-    private static _defaultRetry: number = 1;
-    private static _minRetry: number = 0;
-    private static _maxRetry: number = 5;
-    private static _retryInterval: number = 1000;
+    private static _defaultRetry = 1;
+    private static _minRetry = 0;
+    private static _maxRetry = 5;
+    private static _retryInterval = 1000;
 
     private _apiOrigin: string;
     private _clientId: string;
@@ -296,10 +296,10 @@ export class OAuth2Client implements AuthClient {
      */
     public async getAccessToken(): Promise<string> {
         const credentials: Credentials = await this._getCredentials();
-        if (credentials && credentials.access_token) {
+        if (credentials?.access_token) {
             return Promise.resolve(credentials.access_token);
         }
-        return Promise.reject({error: ErrorType.UNAUTHENTICATED} as ResponseError);
+        return Promise.reject({ error: ErrorType.UNAUTHENTICATED } as ResponseError);
     }
 
     /**
@@ -328,7 +328,7 @@ export class OAuth2Client implements AuthClient {
         if (!options.headers[DeviceIdHeaderName]) {
             options.headers[DeviceIdHeaderName] = this._getDeviceId();
         }
-        if (options && options.withCredentials) {
+        if (options?.withCredentials) {
             const credentials = await this._getCredentials();
             if (credentials) {
                 if (this._tokenInURL) {
@@ -353,7 +353,7 @@ export class OAuth2Client implements AuthClient {
         let response: T | null = null;
         const maxRequestTimes: number = retry + 1;
         for (
-            let requestTime: number = 0;
+            let requestTime = 0;
             requestTime < maxRequestTimes;
             requestTime++
         ) {
