@@ -24,9 +24,10 @@ const { getSdkName, ERRORS } = constants;
 const { genSeqId,isFormData,formatUrl,createSign } = utils;
 const { RUNTIME } = adapters;
 
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import { v4 as uuidv4 } from 'uuid'
 
-const fpPromise = FingerprintJS.load()
+// import FingerprintJS from '@fingerprintjs/fingerprintjs'
+// const fpPromise = FingerprintJS.load()
 
 // 下面几种 action 不需要 access token
 const ACTIONS_WITHOUT_ACCESSTOKEN = [
@@ -136,15 +137,14 @@ export class CloudbaseRequest implements ICloudbaseRequest {
    * @returns 
    */
   public async fetch(urlOrPath: string, init?: RequestInit): Promise<Response> {
-    const fp = await fpPromise
-    const result = await fp.get()
-    const visitorId = result.visitorId
+    const deviceId = await this.getDeviceId();
+
     const headers = {
       'X-Project-Id': 'production-fv979',
       'X-SDK-Version': `@cloudbase/js-sdk/${getSdkVersion()}`,
       'X-Request-Id': genSeqId(),
       'X-Request-Timestamp': Date.now(),
-      'X-Device-Id': visitorId
+      'X-Device-Id': deviceId
     }
     // 非web平台使用凭证检验有效性
     if(Platform.runtime !== RUNTIME.WEB) {
@@ -570,6 +570,23 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     await this._cache.removeStoreAsync(accessTokenKey);
     await this._cache.removeStoreAsync(accessTokenExpireKey);
     await this._cache.setStoreAsync(refreshTokenKey, refreshToken);
+  }
+
+  private async getDeviceId(): Promise<string> {
+    const { deviceIdKey } = this._cache.keys
+    const deviceId = await this._cache.getStoreAsync(deviceIdKey)
+
+    if (!deviceId) {
+      // const fp = await fpPromise
+      // const result = await fp.get()
+      // const deviceId = result.visitorId
+      const newDeviceId = uuidv4()
+      this._cache.setStoreAsync(deviceIdKey, newDeviceId)
+      return newDeviceId
+    }
+    else {
+      return deviceId
+    }
   }
 }
 

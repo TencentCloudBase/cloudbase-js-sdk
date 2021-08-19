@@ -35,6 +35,7 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     private _fetchAccessTokenFromOauthServer;
     private _refreshAccessTokenFromOauthServer;
     private _setRefreshToken;
+    private getDeviceId;
 }
 export declare function initRequest(config: ICloudbaseRequestConfig): void;
 export declare function getRequestByEnvId(env: string): CloudbaseRequest;

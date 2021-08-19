@@ -8,6 +8,7 @@ const KEY_REFRESH_TOKEN = 'refresh_token';
 const KEY_ANONYMOUS_UUID = 'anonymous_uuid';
 const KEY_LOGIN_TYPE = 'login_type';
 const USER_INFO_KEY = 'user_info';
+const DEVICE_INFO = 'device_id';
 
 const { CloudbaseCache } = cache;
 
@@ -24,6 +25,7 @@ export function initCache(config: ICacheConfig&{env:string}) {
   const anonymousUuidKey     = `${KEY_ANONYMOUS_UUID}_${env}`;
   const loginTypeKey         = `${KEY_LOGIN_TYPE}_${env}`;
   const userInfoKey          = `${USER_INFO_KEY}_${env}`;
+  const deviceIdKey          = `${DEVICE_INFO}`; // 非环境级别
 
   const keys = {
     accessTokenKey,
@@ -31,7 +33,8 @@ export function initCache(config: ICacheConfig&{env:string}) {
     refreshTokenKey,
     anonymousUuidKey,
     loginTypeKey,
-    userInfoKey
+    userInfoKey,
+    deviceIdKey
   };
   // 若指定env已存在cache则尝试更新persistence
   cacheMap[env]?cacheMap[env].updatePersistence(persistence):(cacheMap[env] = new CloudbaseCache({

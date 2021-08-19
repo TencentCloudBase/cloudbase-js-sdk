@@ -27,17 +27,10 @@ let app
 let auth
 let loginState
 
-// cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
+cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//127.0.0.1:8002/web")
-cloudbase.registerEndPoint("https://production-fv979.ap-shanghai.tcb-api.tencentcloudapi.com")
-
-if (window.opener) {
-  console.log('this is a popup window', window)
-  const params = window.location.search
-  window.opener.postMessage(params, '')
-  window.close()
-}
+// cloudbase.registerEndPoint("https://production-fv979.ap-shanghai.tcb-api.tencentcloudapi.com")
 
 async function init() {
   printInfo("web test starting init")
