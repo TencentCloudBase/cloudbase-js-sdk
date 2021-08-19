@@ -21,7 +21,7 @@ export enum Syntax {
 export enum ErrorType {
   UNREACHABLE = 'unreachable',
   LOCAL = 'local',
-  // https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+  // Reuse grpc status codes
   CANCELLED = 'cancelled',
   UNKNOWN = 'unknown',
   INVALID_ARGUMENT = 'invalid_argument',
@@ -38,7 +38,6 @@ export enum ErrorType {
   INTERNAL = 'internal',
   UNAVAILABLE = 'unavailable',
   DATA_LOSS = 'data_loss',
-  // https://gitlab.xunlei.cn/xbase/apis/blob/master/core/common/common.proto#L132
   // CommonError
   CAPTCHA_REQUIRED = 'captcha_required',
   CAPTCHA_INVALID = 'captcha_invalid',
