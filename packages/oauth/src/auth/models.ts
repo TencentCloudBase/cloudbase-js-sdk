@@ -168,8 +168,7 @@ export interface ChangeBindedProviderRequest extends BaseRequest {
   provider_id: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ChangeBindedProviderResponse extends BaseRequest { }
+export type ChangeBindedProviderResponse = BaseRequest
 
 export interface QueryUserProfileReq extends BaseRequest {
   appended_params: string;

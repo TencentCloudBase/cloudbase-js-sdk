@@ -3,11 +3,11 @@
  */
 export class SinglePromise {
   /**
- * Run single promise.
- * @param {string} key
- * @param {Function} fn
- * @return {Promise<T>}
- */
+   * Run single promise.
+   * @param {string} key
+   * @param {Function} fn
+   * @return {Promise<T>}
+   */
   async run<T>(key: string, fn: () => Promise<T>): Promise<T> {
     let result: Promise<any> = this._fnPromiseMap.get(key);
     if (!result) {
@@ -29,9 +29,9 @@ export class SinglePromise {
     return result;
   }
   /**
- * Run idle promise.
- * @return {Promise<void>}
- */
+   * Run idle promise.
+   * @return {Promise<void>}
+   */
   private _runIdlePromise(): Promise<void> {
     return Promise.resolve();
   }

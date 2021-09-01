@@ -1,5 +1,6 @@
 export enum ApiUrls {
   AUTH_SIGN_IN_URL = '/auth/v1/signin',
+  AUTH_SIGN_IN_ANONYMOUSLY_URL = '/auth/v1/signin/anonymously',
   AUTH_SIGN_IN_WITH_PROVIDER_URL = '/auth/v1/signin/with/provider',
   AUTH_SIGN_UP_URL = '/auth/v1/signup',
   AUTH_TOKEN_URL = '/auth/v1/token',

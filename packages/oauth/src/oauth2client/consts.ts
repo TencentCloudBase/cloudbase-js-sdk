@@ -21,7 +21,6 @@ export enum Syntax {
 export enum ErrorType {
   UNREACHABLE = 'unreachable',
   LOCAL = 'local',
-  // Reuse grpc status codes
   CANCELLED = 'cancelled',
   UNKNOWN = 'unknown',
   INVALID_ARGUMENT = 'invalid_argument',

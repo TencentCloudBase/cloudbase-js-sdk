@@ -1,6 +1,6 @@
-import { ErrorType } from './consts';
+import {ErrorType} from './consts';
 
-import { AuthClient, SimpleStorage } from './interface';
+import {AuthClient, SimpleStorage} from './interface';
 
 import {
     Credentials,
@@ -11,9 +11,9 @@ import {
     AuthClientRequestOptions,
 } from './models';
 
-import { uuidv4 } from '../utils/uuid';
+import {uuidv4} from '../utils/uuid';
 
-import { SinglePromise } from '../utils/function/single-promise';
+import {SinglePromise} from '../utils/function/single-promise';
 
 const RequestIdHeaderName = 'x-request-id';
 const DeviceIdHeaderName = 'x-device-id';
@@ -43,7 +43,7 @@ export const defaultRequest: RequestFunction = async <T>(
         }
         const responseResult: Response = await fetch(url, copyOptions);
         const jsonResponse = await responseResult.json();
-        if (jsonResponse?.error) {
+        if (jsonResponse && jsonResponse.error) {
             responseError = jsonResponse as ResponseError;
             responseError.error_uri = new URL(url).pathname;
         } else {
@@ -142,7 +142,7 @@ interface LocalCredentialsOptions {
  */
 function isCredentialsExpired(credentials: Credentials): boolean {
     let isExpired = true;
-    if (credentials?.expires_at && credentials.access_token) {
+    if (credentials && credentials.expires_at && credentials.access_token) {
         isExpired = credentials.expires_at < new Date();
     }
     return isExpired;
@@ -176,7 +176,7 @@ export class LocalCredentials {
      * @param {Credentials} credentials
      */
     public async setCredentials(credentials?: Credentials): Promise<void> {
-        if (credentials?.expires_in) {
+        if (credentials && credentials.expires_in) {
             credentials.expires_at = new Date(
                 Date.now() + (credentials.expires_in - 30) * 1000,
             );
@@ -218,7 +218,7 @@ export class LocalCredentials {
             if (tokenStr !== undefined && tokenStr !== null) {
                 try {
                     credentials = JSON.parse(tokenStr);
-                    if (credentials?.expires_at) {
+                    if (credentials && credentials.expires_at) {
                         credentials.expires_at = new Date(credentials.expires_at);
                     }
                 } catch (error) {
@@ -235,7 +235,7 @@ export class LocalCredentials {
  * OAuth2Client
  */
 export class OAuth2Client implements AuthClient {
-    private static _defaultRetry = 1;
+    private static _defaultRetry = 2;
     private static _minRetry = 0;
     private static _maxRetry = 5;
     private static _retryInterval = 1000;
@@ -296,10 +296,10 @@ export class OAuth2Client implements AuthClient {
      */
     public async getAccessToken(): Promise<string> {
         const credentials: Credentials = await this._getCredentials();
-        if (credentials?.access_token) {
+        if (credentials && credentials.access_token) {
             return Promise.resolve(credentials.access_token);
         }
-        return Promise.reject({ error: ErrorType.UNAUTHENTICATED } as ResponseError);
+        return Promise.reject({error: ErrorType.UNAUTHENTICATED} as ResponseError);
     }
 
     /**
@@ -326,9 +326,10 @@ export class OAuth2Client implements AuthClient {
             options.headers[RequestIdHeaderName] = generateRequestId();
         }
         if (!options.headers[DeviceIdHeaderName]) {
-            options.headers[DeviceIdHeaderName] = this._getDeviceId();
+             const deviceId = await this._getDeviceId();
+             options.headers[DeviceIdHeaderName] = deviceId;
         }
-        if (options?.withCredentials) {
+        if (options && options.withCredentials) {
             const credentials = await this._getCredentials();
             if (credentials) {
                 if (this._tokenInURL) {
@@ -432,13 +433,14 @@ export class OAuth2Client implements AuthClient {
     private async _refreshToken(credentials: Credentials): Promise<Credentials> {
         return this._singlePromise.run('_refreshToken', async () => {
             if (!credentials || !credentials.refresh_token) {
-                return this._unAuthenticatedError('no refresh token found');
+                return this._unAuthenticatedError('no refresh token found in credentials');
             }
             try {
                 const newCredentials: Credentials = await this._refreshTokenFunc(
                     credentials.refresh_token,
                 );
                 await this._localCredentials.setCredentials(newCredentials);
+                return newCredentials
             } catch (error) {
                 if (error.error === ErrorType.INVALID_GRANT) {
                     await this._localCredentials.setCredentials(null);
@@ -446,7 +448,36 @@ export class OAuth2Client implements AuthClient {
                 }
                 return Promise.reject(error);
             }
-            return this._localCredentials.getCredentials();
+        });
+    }
+
+    /**
+     * anonymous signIn
+     * @param {Credentials} credentials
+     * @return {Promise<Credentials>}
+     */
+    private async _anonymousSignIn(credentials: Credentials): Promise<Credentials> {
+        return this._singlePromise.run('_anonymous', async () => {
+            if (!credentials || credentials.scope !== 'anonymous') {
+                return this._unAuthenticatedError('no anonymous in credentials');
+            }
+            try {
+                const newCredentials: Credentials = await this.request('/auth/v1/signin/anonymously', {
+                    method: 'POST',
+                    body: {
+                        client_id: this._clientId,
+                        client_secret: this._clientSecret,
+                    },
+                });
+                await this._localCredentials.setCredentials(newCredentials);
+                return newCredentials
+            } catch (error) {
+                if (error.error === ErrorType.INVALID_GRANT) {
+                    await this._localCredentials.setCredentials(null);
+                    return this._unAuthenticatedError(error.error_description);
+                }
+                return Promise.reject(error);
+            }
         });
     }
 
@@ -478,7 +509,11 @@ export class OAuth2Client implements AuthClient {
     private async _getCredentials(): Promise<Credentials | null> {
         let credentials: Credentials = await this._localCredentials.getCredentials();
         if (isCredentialsExpired(credentials)) {
-            credentials = await this._refreshToken(credentials);
+            if (credentials && credentials.scope === 'anonymous') {
+                credentials = await this. _anonymousSignIn(credentials)
+            } else {
+                credentials = await this._refreshToken(credentials);
+            }
         }
         return credentials;
     }

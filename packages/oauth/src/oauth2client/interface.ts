@@ -1,4 +1,4 @@
-import { Credentials, AuthClientRequestOptions } from './models';
+import {Credentials, AuthClientRequestOptions} from './models';
 
 /**
  * the interface for the Oauth2Client
@@ -15,10 +15,7 @@ export abstract class AuthClient {
    *     - unreachable, the network error or response is not json
    *     - unauthenticated: has no validate access token
    */
-  abstract request<T>(
-    url: string,
-    options?: AuthClientRequestOptions,
-  ): Promise<T>;
+  abstract request: RequestFunction;
 
   /**
    * get the current accessToken from AuthClient, you can use this to detect login status
@@ -28,18 +25,20 @@ export abstract class AuthClient {
   abstract getAccessToken(): Promise<string>;
 }
 
+export type RequestFunction = <T>(url: string,options?: AuthClientRequestOptions) => Promise<T>;
+
 /** An interface of the Simple  Web Storage API  */
 export interface SimpleStorage {
   /**
    * value = storage[key]
    */
-  getItem: (key: string) => Promise<string | null>;
+  getItem(key: string): Promise<string | null>;
   /**
    * delete storage[key]
    */
-  removeItem: (key: string) => Promise<void>;
+  removeItem(key: string): Promise<void>;
   /**
    * storage[key] = value
    */
-  setItem: (key: string, value: string) => Promise<void>;
+  setItem(key: string, value: string): Promise<void>;
 }
