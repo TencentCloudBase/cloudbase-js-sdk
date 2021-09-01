@@ -218,8 +218,7 @@ export async function signInByPhone(auth, phoneNumber) {
 export async function signInWeixin(auth, appid) {
   const provider = auth.weixinAuthProvider({
     appid,
-    // scope: "snsapi_userinfo"
-    scope: "snsapi_login"
+    scope: "snsapi_base"
   })
   const result = await provider.getRedirectResult()
   if (result) {
@@ -260,6 +259,7 @@ export async function signWithOAuth2(auth) {
     redirectUri: 'https://production-fv979-1258964769.ap-shanghai.app.tcloudbase.com'
   })
   await auth.signWithOAuth2Popup({})
+  // await auth.signInWithOAuth2Modal('signmodal')
 }
 
 export async function clearLoginState() {
