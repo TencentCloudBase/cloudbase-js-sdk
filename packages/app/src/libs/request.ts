@@ -12,7 +12,7 @@ import {
   IUploadRequestOptions,
   IRequestConfig
 } from '@cloudbase/adapter-interface';
-import { utils,jwt,adapters,constants } from '@cloudbase/utilities';
+import { utils, jwt, adapters, constants } from '@cloudbase/utilities';
 import { KV } from '@cloudbase/types';
 import { IGetAccessTokenResult, ICloudbaseRequestConfig, IAppendedRequestInfo, IRequestBeforeHook } from '@cloudbase/types/request';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
@@ -21,7 +21,7 @@ import { getCacheByEnvId, getLocalCache } from './cache';
 import { EVENTS } from '../constants/events';
 import { Platform } from './adapter';
 const { getSdkName, ERRORS } = constants;
-const { genSeqId,isFormData,formatUrl,createSign } = utils;
+const { genSeqId, isFormData, formatUrl, createSign } = utils;
 const { RUNTIME } = adapters;
 
 import { v4 as uuidv4 } from 'uuid'
@@ -134,7 +134,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
    * 套一层 fetch，方便处理请求地址
    * @param {string}      urlOrPath
    * @param {RequestInit} init
-   * @returns 
+   * @returns
    */
   public async fetch(urlOrPath: string, init?: RequestInit): Promise<Response> {
     const deviceId = await this.getDeviceId();
@@ -147,8 +147,8 @@ export class CloudbaseRequest implements ICloudbaseRequest {
       'X-Device-Id': deviceId
     }
     // 非web平台使用凭证检验有效性
-    if(Platform.runtime !== RUNTIME.WEB) {
-      const { appSign,appSecret } = this.config
+    if (Platform.runtime !== RUNTIME.WEB) {
+      const { appSign, appSecret } = this.config
       const timestamp = Date.now()
       const { appAccessKey, appAccessKeyId } = appSecret
       const sign = createSign({
@@ -157,7 +157,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
         timestamp,
         appAccessKeyId,
         appSign
-      },appAccessKey)
+      }, appAccessKey)
 
       headers['X-TCB-App-Source'] = `timestamp=${timestamp};appAccessKeyId=${appAccessKeyId};appSign=${appSign};sign=${sign}`
     }
@@ -168,7 +168,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     const webEndpoint = `${PROTOCOL}${BASE_URL}`
     const url = urlOrPath.startsWith('http')
       ? urlOrPath
-      :`${new URL(webEndpoint).origin}${urlOrPath}`
+      : `${new URL(webEndpoint).origin}${urlOrPath}`
     return await fetch(url, init)
   }
 
@@ -209,7 +209,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
 
   public async refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult> {
     // 可能会同时调用多次刷新 access token，这里把它们合并成一个
-    if(!this._refreshAccessTokenPromise) {
+    if (!this._refreshAccessTokenPromise) {
       // 没有正在刷新，那么正常执行刷新逻辑
       this._refreshAccessTokenPromise = this._refreshAccessTokenFromOauthServer(clientId);
     }
@@ -218,20 +218,33 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     let err;
     try {
       result = await this._refreshAccessTokenPromise;
-    } catch(e) {
+    } catch (e) {
       err = e;
     }
     this._refreshAccessTokenPromise = null;
     this._shouldRefreshAccessTokenHook = null;
-    if(err) {
+    if (err) {
       throw err;
     }
     return result;
   }
 
+  // 获取 OAuth accesstoken
+  public async getOauthAccessToken(): Promise<IGetAccessTokenResult> {
+    const { oauthClient } = this.config
+    if (oauthClient) {
+      const validAccessToken = await oauthClient.getAccessToken()
+      const credentials = await oauthClient._getCredentials()
+      return {
+        accessToken: validAccessToken,
+        accessTokenExpire: new Date(credentials.expires_at).getTime()
+      }
+    }
+  }
+
   // 获取 access token
   public async getAccessToken(): Promise<IGetAccessTokenResult> {
-    const { loginTypeKey,accessTokenKey,accessTokenExpireKey,refreshTokenKey } = this._cache.keys;
+    const { loginTypeKey, accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
     const loginType = await this._cache.getStoreAsync(loginTypeKey);
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (!refreshToken) {
@@ -251,7 +264,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
       shouldRefreshAccessToken = false;
     }
 
-    if((!accessToken || !accessTokenExpire || accessTokenExpire < Date.now()) && shouldRefreshAccessToken) {
+    if ((!accessToken || !accessTokenExpire || accessTokenExpire < Date.now()) && shouldRefreshAccessToken) {
       if (loginType.startsWith(OAUTH2_LOGINTYPE_PREFIX)) {
         // NOTE: 这里需要从 accessToken 解出来部分信息，用于刷新 accessToken
         // 所以过期的 accessToken 不能删除，而是用新 accessToken 覆盖
@@ -259,7 +272,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
           let header = null
           let payload = null
           try {
-            header = jwt.decode(accessToken, {header: true})
+            header = jwt.decode(accessToken, { header: true })
             payload = jwt.decode(accessToken)
           }
           catch (e) {
@@ -288,6 +301,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
 
   /* eslint-disable complexity */
   public async request(action: string, params: KV<any>, options?: KV<any>): Promise<ResponseObject> {
+    const { oauthClient } = this.config
     const tcbTraceKey = `x-tcb-trace_${this.config.env}`;
     let contentType = 'application/x-www-form-urlencoded';
     // const webDeviceId = await getTcbFingerprintId();
@@ -299,6 +313,10 @@ export class CloudbaseRequest implements ICloudbaseRequest {
       ...params
     };
 
+    // 若识别到注册了 Oauth 模块，则使用oauth getAccessToken
+    if (oauthClient) {
+      tmpObj.access_token = (await this.getOauthAccessToken()).accessToken
+    }
 
     if (ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1) {
       const { refreshTokenKey } = this._cache.keys;
@@ -532,7 +550,7 @@ export class CloudbaseRequest implements ICloudbaseRequest {
   private async _refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult> {
     const { accessTokenKey, accessTokenExpireKey, refreshTokenKey } = this._cache.keys;
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
-    if(!refreshToken) {
+    if (!refreshToken) {
       throw new Error(JSON.stringify({
         code: ERRORS.INVALID_OPERATION,
         msg: 'not login'
@@ -543,14 +561,14 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     const { refresh_token: newRefreshToken, access_token: accessToken, expires_in: accessTokenExpire } = token
 
     // 错误处理
-    if(!accessToken || !accessTokenExpire) {
+    if (!accessToken || !accessTokenExpire) {
       throw new Error(JSON.stringify({
         code: ERRORS.NETWORK_ERROR,
         msg: 'refresh access_token failed'
       }));
     }
-    if(accessToken && accessTokenExpire) {
-      if(newRefreshToken === refreshToken) {
+    if (accessToken && accessTokenExpire) {
+      if (newRefreshToken === refreshToken) {
         await this._cache.setStoreAsync(refreshTokenKey, newRefreshToken);
       }
       await this._cache.setStoreAsync(accessTokenKey, accessToken);

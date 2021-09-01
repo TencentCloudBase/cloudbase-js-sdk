@@ -15,6 +15,8 @@ import { registerDatabaseCases } from "./cases/database"
 import { runAllTestCases, runSelectedTestCase, printInfo } from "./util"
 
 import cloudbase from "../../packages/cloudbase"
+
+import {OAuth2Client, Auth} from '../../packages/oauth'
 // import cloudbase from '../../packages/cloudbase/app';
 // import '../../packages/cloudbase/auth';
 // import '../../packages/cloudbase/database';
@@ -66,7 +68,7 @@ async function init() {
     document.querySelector('#userInfoName').textContent = auth.currentUser.uid
   }
   document.querySelector('#signout').onclick = async function dologin() {
-    auth.signOut()
+    // auth.signOut()
   }
   document.querySelector('#signin').onclick = async function dologin() {
     console.log('dologin ...', auth.currentUser)
@@ -74,24 +76,24 @@ async function init() {
       console.log('login start ...')
       // 公众号微信登录
       // await signInWeixin(auth, appid);
-    
+
       // 匿名登录
       // await signInAnonymous(auth)
-    
+
       await signWithOAuth2(auth)
-    
-    
+
+
       console.log('login end...')
-    
+
       // 自定义登录
       // await signInCustom(auth);
-    
+
       // 用户名登录
       // await signInWithUsername(auth,{
       //   username: authUsername,
       //   password: authPassword
       // });
-    
+
       // 短信验证码登录
       // await signInByPhone(auth, '13024748409')
       // await signInByPhone(auth, "18202741638")
@@ -99,6 +101,55 @@ async function init() {
     else {
       console.log('already login ...')
     }
+  }
+
+
+
+  document.querySelector('#oauth2signin').onclick = async function dologin() {
+    const config = {
+      apiOrigin: "https://xbase-4gh5dh6nf62145a9.ap-shanghai.tcb-api.tencentcloudapi.com",
+      clientId: "xbase-4gh5dh6nf62145a9",
+    };
+
+    const oAuth2Client = new OAuth2Client(config);
+
+    const auth = new Auth({credentialsClient: oAuth2Client, ...config});
+
+    const loginState = await auth.hasLoginState()
+
+    // 初始化tcb
+    const app = cloudbase.init({
+      env: 'xbase-4gh5dh6nf62145a9',
+      region: 'ap-shanghai',
+      oauthClient: oAuth2Client
+    })
+
+    // 设置oauthclient
+    // app.setOAuthClient(oAuth2Client)
+
+    console.log("test", loginState)
+
+    if (!loginState) {
+        const crd = await  auth.signInAnonymously()
+        console.log(crd)
+
+        // 调用函数
+        try{
+
+          const callRes = await app.callFunction({
+            name: 'test',
+            data: {}
+          })
+          console.log('callRes', callRes)
+        }catch(e) {
+          console.log('e', e)
+        }
+    }
+
+    setTimeout(async ()=> {
+      console.log('登出')
+      await auth.signOut()
+    }, 3000)
   }
 }
 

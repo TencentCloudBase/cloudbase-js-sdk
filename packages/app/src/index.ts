@@ -34,6 +34,7 @@ const extensionMap: KV<ICloudbaseExtension> = {};
 class Cloudbase implements ICloudbase {
   public authInstance: ICloudbaseAuth;
   public requestClient: any;
+  public oauthClient: any
   private _config: ICloudbaseConfig;
 
   constructor(config?: ICloudbaseConfig) {
@@ -119,9 +120,9 @@ class Cloudbase implements ICloudbase {
     // 修正timeout取值
     this._config.timeout = this._formatTimeout(this._config.timeout);
     // 初始化cache和request
-    const { env, persistence, debug, timeout, appSecret, appSign } = this._config;
+    const { env, persistence, debug, timeout, appSecret, appSign, oauthClient } = this._config;
     initCache({ env, persistence, debug, platformInfo: this.platform });
-    initRequest({ env, region: config.region || '', timeout, appSecret, appSign });
+    initRequest({ env, region: config.region || '', timeout, appSecret, appSign, oauthClient });
 
     if (config.region) {
       setRegionLevelEndpoint(env, config.region || '')

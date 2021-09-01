@@ -28,6 +28,7 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     download(options: IRequestOptions): Promise<ResponseObject>;
     refreshAccessToken(): Promise<IGetAccessTokenResult>;
     refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult>;
+    getOauthAccessToken(): Promise<IGetAccessTokenResult>;
     getAccessToken(): Promise<IGetAccessTokenResult>;
     request(action: string, params: KV<any>, options?: KV<any>): Promise<ResponseObject>;
     send(action: string, data?: KV<any>): Promise<any>;

@@ -20,32 +20,34 @@ export interface ICloudbaseConfig {
   timeout?: number;
   persistence?: Persistence;
   appSecret?: ICloudbaseAppSecret;
+  oauthClient?: any
   appSign?: string;
-  debug?:boolean;
+  debug?: boolean;
 }
 // 可更新的配置字段
-export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence'|'region'|'debug'>;
+export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence' | 'region' | 'debug'>;
 
 export interface ICloudbaseExtension {
   name: string;
-  invoke(opts:any,app:ICloudbase):Promise<any>;
+  invoke(opts: any, app: ICloudbase): Promise<any>;
 }
 
-export interface ICloudbase{
-  config:ICloudbaseConfig;
-  platform:ICloudbasePlatformInfo;
-  cache:ICloudbaseCache;
-  request:ICloudbaseRequest;
-  localCache:ICloudbaseCache;
-  init(config: ICloudbaseConfig):ICloudbase;
-  updateConfig(config: ICloudbaseUpgradedConfig):void;
-  registerExtension(ext:ICloudbaseExtension):void;
-  invokeExtension(name:string,opts:any):Promise<any>;
-  useAdapters(adapters: CloudbaseAdapter|CloudbaseAdapter[]):void;
-  registerComponent(component:ICloudbaseComponent):void;
-  registerHook(hook:ICloudbaseHook):void;
-  registerVersion(version:string):void;
-  fire?(...args:any[]):void;
+export interface ICloudbase {
+  config: ICloudbaseConfig;
+  platform: ICloudbasePlatformInfo;
+  cache: ICloudbaseCache;
+  request: ICloudbaseRequest;
+  oauthClient: any;
+  localCache: ICloudbaseCache;
+  init(config: ICloudbaseConfig): ICloudbase;
+  updateConfig(config: ICloudbaseUpgradedConfig): void;
+  registerExtension(ext: ICloudbaseExtension): void;
+  invokeExtension(name: string, opts: any): Promise<any>;
+  useAdapters(adapters: CloudbaseAdapter | CloudbaseAdapter[]): void;
+  registerComponent(component: ICloudbaseComponent): void;
+  registerHook(hook: ICloudbaseHook): void;
+  registerVersion(version: string): void;
+  fire?(...args: any[]): void;
 }
 
 export interface ICloudbasePlatformInfo {
