@@ -25,5 +25,6 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
     "typescript": "^3.8.3"
-  }
+  },
+  "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }

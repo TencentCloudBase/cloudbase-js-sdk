@@ -44,5 +44,6 @@
     "eslint": "^7.7.0",
     "eslint-config-alloy": "^3.8.0",
     "typescript": "^4.0.2"
-  }
+  },
+  "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }
