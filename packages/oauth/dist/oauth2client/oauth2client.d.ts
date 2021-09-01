@@ -55,6 +55,7 @@ export declare class OAuth2Client implements AuthClient {
     private _formatRetry;
     private _sleep;
     private _refreshToken;
+    private _anonymousSignIn;
     private _defaultRefreshTokenFunc;
     private _getCredentials;
     private _getDeviceId;

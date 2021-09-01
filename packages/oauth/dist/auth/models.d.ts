@@ -138,8 +138,7 @@ export interface ChangeBindedProviderRequest extends BaseRequest {
     trans_token: string;
     provider_id: string;
 }
-export interface ChangeBindedProviderResponse extends BaseRequest {
-}
+export declare type ChangeBindedProviderResponse = BaseRequest;
 export interface QueryUserProfileReq extends BaseRequest {
     appended_params: string;
 }

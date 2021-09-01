@@ -1,18 +1,19 @@
 import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo, SignInRequest, SignUpRequest, VerifyRequest, VerifyResponse, GenProviderRedirectUriRequest, GenProviderRedirectUriResponse, GrantProviderTokenRequest, GrantProviderTokenResponse, PatchProviderTokenRequest, PatchProviderTokenResponse, SignInWithProviderRequest, BindWithProviderRequest, TransByProviderRequest, GrantTokenRequest, UserProfileProvider, UnbindProviderRequest, CheckPasswordrRequest, BindPhoneRequest, SetPasswordRequest, ChangeBindedProviderRequest, ChangeBindedProviderResponse, QueryUserProfileReq } from './models';
-import { SimpleStorage } from '../oauth2client/interface';
+import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client } from '../oauth2client/oauth2client';
 import { Credentials } from '../oauth2client/models';
 export interface AuthOptions {
     apiOrigin: string;
     clientId: string;
     credentialsClient?: OAuth2Client;
-    request?: <T>(url: string, options?: any) => Promise<T>;
+    request?: RequestFunction;
     storage?: SimpleStorage;
 }
 export declare class Auth {
     private _config;
     constructor(opts: AuthOptions);
     signIn(params: SignInRequest): Promise<Credentials>;
+    signInAnonymously(): Promise<Credentials>;
     protected signUp(params: SignUpRequest): Promise<Credentials>;
     signOut(): Promise<void>;
     getVerification(params: GetVerificationRequest): Promise<GetVerificationResponse>;
@@ -24,6 +25,7 @@ export declare class Auth {
     bindWithProvider(params: BindWithProviderRequest): Promise<void>;
     getUserProfile(): Promise<UserProfile>;
     getUserInfo(): Promise<UserInfo>;
+    hasLoginState(): Promise<boolean>;
     transByProvider(params: TransByProviderRequest): Promise<Credentials>;
     grantToken(params: GrantTokenRequest): Promise<Credentials>;
     getProviders(): Promise<UserProfileProvider>;

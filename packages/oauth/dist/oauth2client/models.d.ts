@@ -4,9 +4,10 @@ export interface Credentials {
     token_type?: string | null;
     access_token?: string | null;
     refresh_token?: string | null;
+    scope?: string | null;
     expires_in?: number | null;
     expires_at?: Date | null;
-    user_id?: string | null;
+    sub?: string | null;
 }
 export interface ResponseError {
     error: ErrorType;
