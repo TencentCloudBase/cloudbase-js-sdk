@@ -16,7 +16,7 @@ import { runAllTestCases, runSelectedTestCase, printInfo } from "./util"
 
 import cloudbase from "../../packages/cloudbase"
 
-import { OAuth2Client, Auth } from '../../packages/oauth'
+// import { OAuth2Client, Auth } from '../../packages/oauth'
 // import cloudbase from '../../packages/cloudbase/app';
 // import '../../packages/cloudbase/auth';
 // import '../../packages/cloudbase/database';
@@ -106,28 +106,7 @@ async function init() {
 
 
   document.querySelector('#oauth2signin').onclick = async function dologin() {
-    // const config = {
-    //   apiOrigin: "https://xbase-4gh5dh6nf62145a9.ap-shanghai.tcb-api.tencentcloudapi.com",
-    //   clientId: "xbase-4gh5dh6nf62145a9",
-    // };
-
-    // const oAuth2Client = new OAuth2Client(config);
-
-    // const auth = new Auth({ credentialsClient: oAuth2Client, ...config });
-
-    // const loginState = await auth.hasLoginState()
-
-    // // 初始化tcb
-    // const app = cloudbase.init({
-    //   env: 'xbase-4gh5dh6nf62145a9',
-    //   region: 'ap-shanghai',
-    //   oauthClient: oAuth2Client
-    // })
-
-    // 设置oauthclient
-    // app.setOAuthClient(oAuth2Client)
-
-    // 初始化tcb v2
+    // 初始化tcb
     const app = cloudbase.init({
       env: 'xbase-4gh5dh6nf62145a9',
       region: 'ap-shanghai'
@@ -137,20 +116,19 @@ async function init() {
 
     const auth = app.auth()
 
-    // const loginState = await oauth.hasLoginState()
     const loginState = await auth.getLoginState()
-    // const loginState = auth.hasLoginState()
 
     console.log("loginState", loginState)
 
     if (!loginState) {
 
-      // const crd = await oauth.signInAnonymously()
-      // console.log('crd', crd)
+      // 走oauth登录
+      const crd = await oauth.signInAnonymously()
+      console.log('crd', crd)
 
-      // 冲突测试
-      const testAnony = await auth.anonymousAuthProvider().signIn();
-      console.log('testAnony', testAnony)
+      // 走auth登录
+      // const testAnony = await auth.anonymousAuthProvider().signIn();
+      // console.log('testAnony', testAnony)
 
       // 调用函数
       try {

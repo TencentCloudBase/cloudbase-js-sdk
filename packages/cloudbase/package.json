@@ -1,92 +1,93 @@
 {
-  "name": "@cloudbase/js-sdk",
-  "version": "1.8.3-alpha.0",
-  "description": "cloudbase javascript sdk",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "miniprogram": "miniprogram_dist",
-  "typings": "./index.d.ts",
-  "scripts": {
-    "lint": "eslint --fix \"./src/**/*.ts\" \"./database/**/*.ts\"",
-    "build": "rm -rf dist/ && gulp build",
-    "build:cdn": "gulp cdn",
-    "build:miniapp": "gulp miniapp",
-    "build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp e2e"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TencentCloudBase/cloudbase-js-sdk"
-  },
-  "keywords": [
-    "tcb",
-    "cloudbase",
-    "Cloudbase",
-    "serverless",
-    "Serverless",
-    "javascript",
-    "JavaScript"
-  ],
-  "files": [
-    "miniprogram_dist",
-    "**/dist/",
-    "/index.d.ts",
-    "**/package.json"
-  ],
-  "components": [
-    "app",
-    "auth",
-    "database",
-    "functions",
-    "storage"
-  ],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@cloudbase/analytics": "^1.2.3-alpha.0",
-    "@cloudbase/app": "^1.5.3-alpha.0",
-    "@cloudbase/auth": "^1.7.3-alpha.0",
-    "@cloudbase/database": "0.9.18-next",
-    "@cloudbase/functions": "^1.4.3-alpha.0",
-    "@cloudbase/realtime": "^1.2.3-alpha.0",
-    "@cloudbase/storage": "^1.4.3-alpha.0",
-    "@cloudbase/types": "^1.2.3-alpha.0",
-    "@cloudbase/utilities": "^1.4.3-alpha.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "@babel/preset-typescript": "^7.9.0",
-    "@typescript-eslint/eslint-plugin": "^3.8.0",
-    "@typescript-eslint/parser": "^3.8.0",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.1.0",
-    "eslint": "^7.6.0",
-    "eslint-config-alloy": "^3.7.4",
-    "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "json-loader": "^0.5.7",
-    "merge-stream": "^2.0.0",
-    "package-json-cleanup-loader": "^1.0.3",
-    "typescript": "^3.8.3",
-    "webpack": "4.41.3",
-    "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-stream": "^5.2.1",
-    "webpack-visualizer-plugin": "^0.1.11"
-  },
-  "browserslist": [
-    "last 2 version",
-    "> 1%",
-    "not dead",
-    "chrome 53"
-  ],
-  "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
+	"name": "@cloudbase/js-sdk",
+	"version": "1.8.3-alpha.0",
+	"description": "cloudbase javascript sdk",
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.js",
+	"miniprogram": "miniprogram_dist",
+	"typings": "./index.d.ts",
+	"scripts": {
+		"lint": "eslint --fix \"./src/**/*.ts\" \"./database/**/*.ts\"",
+		"build": "rm -rf dist/ && gulp build",
+		"build:cdn": "gulp cdn",
+		"build:miniapp": "gulp miniapp",
+		"build:e2e": "rm -rf dist/ && NODE_ENV=e2e gulp e2e"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TencentCloudBase/cloudbase-js-sdk"
+	},
+	"keywords": [
+		"tcb",
+		"cloudbase",
+		"Cloudbase",
+		"serverless",
+		"Serverless",
+		"javascript",
+		"JavaScript"
+	],
+	"files": [
+		"miniprogram_dist",
+		"**/dist/",
+		"/index.d.ts",
+		"**/package.json"
+	],
+	"components": [
+		"app",
+		"auth",
+		"database",
+		"functions",
+		"storage"
+	],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@cloudbase/analytics": "^1.2.3-alpha.0",
+		"@cloudbase/app": "^1.5.3-alpha.0",
+		"@cloudbase/auth": "^1.7.3-alpha.0",
+		"@cloudbase/database": "0.9.18-next",
+		"@cloudbase/functions": "^1.4.3-alpha.0",
+		"@cloudbase/realtime": "^1.2.3-alpha.0",
+		"@cloudbase/storage": "^1.4.3-alpha.0",
+		"@cloudbase/types": "^1.2.3-alpha.0",
+		"@cloudbase/utilities": "^1.4.3-alpha.0",
+		"@cloudbase/oauth": "^0.0.4-alpha.0"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.9.0",
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-transform-runtime": "^7.9.0",
+		"@babel/preset-env": "^7.9.5",
+		"@babel/preset-typescript": "^7.9.0",
+		"@typescript-eslint/eslint-plugin": "^3.8.0",
+		"@typescript-eslint/parser": "^3.8.0",
+		"awesome-typescript-loader": "^5.2.1",
+		"babel-loader": "^8.1.0",
+		"eslint": "^7.6.0",
+		"eslint-config-alloy": "^3.7.4",
+		"gulp": "^4.0.2",
+		"gulp-clean": "^0.4.0",
+		"gulp-rename": "^2.0.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"json-loader": "^0.5.7",
+		"merge-stream": "^2.0.0",
+		"package-json-cleanup-loader": "^1.0.3",
+		"typescript": "^3.8.3",
+		"webpack": "4.41.3",
+		"webpack-cli": "^3.3.11",
+		"webpack-node-externals": "^1.7.2",
+		"webpack-stream": "^5.2.1",
+		"webpack-visualizer-plugin": "^0.1.11"
+	},
+	"browserslist": [
+		"last 2 version",
+		"> 1%",
+		"not dead",
+		"chrome 53"
+	],
+	"gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }

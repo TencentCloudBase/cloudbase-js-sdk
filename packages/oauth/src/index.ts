@@ -149,3 +149,14 @@ try {
   // 此行为只在浏览器环境下有效
   cloudbase.registerComponent(component);
 } catch (e) { }
+
+/**
+ * @api 手动注册至cloudbase app
+ */
+export function registerOAuth(app: Pick<ICloudbase, 'registerComponent'>) {
+  try {
+    app.registerComponent(component);
+  } catch (e) {
+    console.warn(e);
+  }
+}

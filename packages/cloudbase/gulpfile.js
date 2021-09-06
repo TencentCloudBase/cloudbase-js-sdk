@@ -32,7 +32,7 @@ const tsconfigEsm = {
   module: 'es6'
 };
 
-const tscComponents = ['app', 'auth', 'functions', 'storage', 'database', 'realtime', 'analytics'];
+const tscComponents = ['app', 'auth', 'functions', 'storage', 'database', 'realtime', 'analytics', 'oauth'];
 
 tscComponents.forEach(name => {
   const componentsDir = path.resolve(__dirname, name);
@@ -121,7 +121,7 @@ const tscTask = gulp.series(...tscTaskList);
 const cdnTaskList = [];
 // 小程序 task 列表
 const miniappTaskList = [];
-const cdnComponents = ['auth', 'functions', 'storage', 'database', 'realtime', 'analytics'];
+const cdnComponents = ['auth', 'functions', 'storage', 'database', 'realtime', 'analytics', 'oauth'];
 
 cdnTaskList.push(function taskOfBuildFullJs() {
   return gulp

@@ -1,30 +1,35 @@
 {
-  "name": "@cloudbase/oauth",
-  "version": "0.0.4-alpha.0",
-  "description": "cloudbase javascript sdk auth componets",
-  "main": "./dist/index.js",
-  "module": "dist/esm/index.js",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "eslint": "eslint \"{src,__tests__}/**/*.ts\"",
-    "eslint:fix": "eslint --fix \"{src,__tests__}/**/*.ts\"",
-    "clean": "rimraf dist",
-    "compile": "tsc",
-    "build": "yarn clean && yarn compile"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "@typescript-eslint/parser": "^2.24.0",
-    "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
-    "typescript": "^3.8.3"
-  },
-  "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
+	"name": "@cloudbase/oauth",
+	"version": "0.0.4-alpha.0",
+	"description": "cloudbase javascript sdk auth componets",
+	"main": "./dist/index.js",
+	"module": "dist/esm/index.js",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"eslint": "eslint \"{src,__tests__}/**/*.ts\"",
+		"eslint:fix": "eslint --fix \"{src,__tests__}/**/*.ts\"",
+		"clean": "rimraf dist",
+		"compile": "tsc",
+		"build": "yarn clean && yarn compile"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^2.24.0",
+		"@typescript-eslint/parser": "^2.24.0",
+		"eslint": "^6.8.0",
+		"eslint-config-google": "^0.14.0",
+		"eslint-config-prettier": "^6.10.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"prettier": "^1.19.1",
+		"rimraf": "^3.0.0",
+		"typescript": "^3.8.3"
+	},
+	"dependencies": {
+		"@cloudbase/types": "^1.2.3-alpha.0",
+		"@cloudbase/app": "^1.5.3-alpha.0",
+		"@cloudbase/utilities": "^1.4.3-alpha.0"
+	},
+	"gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }
