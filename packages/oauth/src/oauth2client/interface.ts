@@ -1,4 +1,4 @@
-import {Credentials, AuthClientRequestOptions} from './models';
+import { Credentials, AuthClientRequestOptions } from './models';
 
 /**
  * the interface for the Oauth2Client
@@ -25,7 +25,7 @@ export abstract class AuthClient {
   abstract getAccessToken(): Promise<string>;
 }
 
-export type RequestFunction = <T>(url: string,options?: AuthClientRequestOptions) => Promise<T>;
+export type RequestFunction = <T>(url: string, options?: AuthClientRequestOptions) => Promise<T>;
 
 /** An interface of the Simple  Web Storage API  */
 export interface SimpleStorage {
@@ -41,4 +41,17 @@ export interface SimpleStorage {
    * storage[key] = value
    */
   setItem(key: string, value: string): Promise<void>;
+
+  /**
+   * value = storage[key]
+   */
+  getItemSync(key: string): string | null;
+  /**
+   * delete storage[key]
+   */
+  removeItemSync(key: string): void;
+  /**
+   * storage[key] = value
+   */
+  setItemSync(key: string, value: string): void;
 }

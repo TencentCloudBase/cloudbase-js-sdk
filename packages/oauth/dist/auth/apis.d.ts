@@ -2,12 +2,14 @@ import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo,
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client } from '../oauth2client/oauth2client';
 import { Credentials } from '../oauth2client/models';
+import { ICloudbase } from '@cloudbase/types';
 export interface AuthOptions {
     apiOrigin: string;
     clientId: string;
     credentialsClient?: OAuth2Client;
     request?: RequestFunction;
     storage?: SimpleStorage;
+    _fromApp?: ICloudbase;
 }
 export declare class Auth {
     private _config;
@@ -15,7 +17,7 @@ export declare class Auth {
     signIn(params: SignInRequest): Promise<Credentials>;
     signInAnonymously(): Promise<Credentials>;
     protected signUp(params: SignUpRequest): Promise<Credentials>;
-    signOut(): Promise<void>;
+    signOut(): Promise<any>;
     getVerification(params: GetVerificationRequest): Promise<GetVerificationResponse>;
     verify(params: VerifyRequest): Promise<VerifyResponse>;
     genProviderRedirectUri(params: GenProviderRedirectUriRequest): Promise<GenProviderRedirectUriResponse>;
@@ -26,6 +28,8 @@ export declare class Auth {
     getUserProfile(): Promise<UserProfile>;
     getUserInfo(): Promise<UserInfo>;
     hasLoginState(): Promise<boolean>;
+    hasLoginStateSync(): Credentials | null;
+    getLoginState(): Promise<Credentials | null>;
     transByProvider(params: TransByProviderRequest): Promise<Credentials>;
     grantToken(params: GrantTokenRequest): Promise<Credentials>;
     getProviders(): Promise<UserProfileProvider>;

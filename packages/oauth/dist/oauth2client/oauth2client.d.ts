@@ -14,6 +14,9 @@ declare class DefaultStorage implements SimpleStorage {
     getItem(key: string): Promise<string | null>;
     removeItem(key: string): Promise<void>;
     setItem(key: string, value: string): Promise<void>;
+    getItemSync(key: string): string | null;
+    removeItemSync(key: string): void;
+    setItemSync(key: string, value: string): void;
 }
 export declare const defaultStorage: DefaultStorage;
 interface LocalCredentialsOptions {
@@ -29,6 +32,7 @@ export declare class LocalCredentials {
     setCredentials(credentials?: Credentials): Promise<void>;
     getCredentials(): Promise<Credentials | null>;
     private _getStorageCredentials;
+    _getStorageCredentialsSync(): Credentials | null;
 }
 export declare class OAuth2Client implements AuthClient {
     private static _defaultRetry;
@@ -57,7 +61,9 @@ export declare class OAuth2Client implements AuthClient {
     private _refreshToken;
     private _anonymousSignIn;
     private _defaultRefreshTokenFunc;
-    private _getCredentials;
+    _getCredentials(): Promise<Credentials | null>;
+    getCredentialsSync(): Credentials | null;
+    getCredentialsAsync(): Promise<Credentials | null>;
     private _getDeviceId;
     private _unAuthenticatedError;
 }

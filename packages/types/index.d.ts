@@ -2,6 +2,7 @@ import { CloudbaseAdapter, SDKAdapterInterface } from '@cloudbase/adapter-interf
 import { ICloudbaseComponent, ICloudbaseHook } from "./component";
 import { ICloudbaseRequest } from "./request";
 import { ICloudbaseCache } from "./cache";
+import { ICloudbaseAuth } from './auth'
 
 export type Persistence = 'local' | 'session' | 'none';
 
@@ -23,6 +24,7 @@ export interface ICloudbaseConfig {
   oauthClient?: any
   appSign?: string;
   debug?: boolean;
+  _fromApp?: ICloudbase
 }
 // 可更新的配置字段
 export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence' | 'region' | 'debug'>;
@@ -39,6 +41,8 @@ export interface ICloudbase {
   request: ICloudbaseRequest;
   oauthClient: any;
   localCache: ICloudbaseCache;
+  authInstance?: ICloudbaseAuth;
+  oauthInstance?: any;
   init(config: ICloudbaseConfig): ICloudbase;
   updateConfig(config: ICloudbaseUpgradedConfig): void;
   registerExtension(ext: ICloudbaseExtension): void;

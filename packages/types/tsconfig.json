@@ -11,7 +11,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "helpers",
-    "rootDir": "src",
+    "rootDir": "./",
     "pretty": true,
     "noImplicitAny": false,
     "removeComments": true,
@@ -25,15 +25,19 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": ["node"],
-    "lib": ["es2015", "dom"]
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "es2015",
+      "dom"
+    ]
   },
   "include": [
-    "src/**/*.ts",
+    "*.ts",
     "package.json"
   ],
   "exclude": [
     "node_modules",
-    "helpers"
   ]
 }

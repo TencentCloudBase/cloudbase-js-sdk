@@ -65,7 +65,7 @@ declare class Auth {
     });
     get currentUser(): IUser;
     get loginType(): LOGINTYPE;
-    getCurrenUser(): Promise<IUser>;
+    getCurrenUser(): Promise<any>;
     getLoginType(): Promise<LOGINTYPE>;
     getAccessToken(): Promise<{
         accessToken: string;
@@ -89,14 +89,14 @@ declare class Auth {
     signInWithEmailAndPassword(email: string, password: string): Promise<ILoginState>;
     signUpWithEmailAndPassword(email: string, password: string): Promise<any>;
     sendPasswordResetEmail(email: string): Promise<any>;
-    signOut(): Promise<boolean>;
+    signOut(): Promise<any>;
     onLoginStateChanged(callback: Function): Promise<void>;
     onLoginStateExpired(callback: Function): void;
     onAccessTokenRefreshed(callback: Function): void;
     onAnonymousConverted(callback: Function): void;
     onLoginTypeChanged(callback: Function): void;
     hasLoginState(): ILoginState | null;
-    getLoginState(): Promise<LoginState>;
+    getLoginState(): Promise<any>;
     shouldRefreshAccessToken(hook: any): void;
     getUserInfo(): Promise<any>;
     getAuthHeader(): {

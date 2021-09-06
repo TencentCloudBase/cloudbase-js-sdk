@@ -1,6 +1,6 @@
 import { ICloudbaseConfig, KV, ICloudbase } from '.';
 
-export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig,'env'|'region'|'persistence'|'debug'>;
+export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig, 'env' | 'region' | 'persistence' | 'debug' | '_fromApp'>;
 
 export interface IAccessTokenInfo {
   accessToken: string;
@@ -12,7 +12,7 @@ export interface ICredential {
   accessTokenExpire?: string;
 }
 export interface IAuthProvider {
-  signInWithRedirect():any;
+  signInWithRedirect(): any;
 }
 export interface IUserInfo {
   uid?: string;
@@ -37,16 +37,16 @@ export interface IUserInfo {
   province?: string;
   city?: string;
 }
-export interface IUser extends IUserInfo{
+export interface IUser extends IUserInfo {
   checkLocalInfo(): void;
   checkLocalInfoAsync(): Promise<void>;
-  linkWithTicket(ticket:string): Promise<void>;
-  linkWithRedirect(provider:IAuthProvider):void;
+  linkWithTicket(ticket: string): Promise<void>;
+  linkWithRedirect(provider: IAuthProvider): void;
   getLinkedUidList(): Promise<{ hasPrimaryUid: boolean, users: IUserInfo[] }>;
-  setPrimaryUid(uid:string):Promise<void>;
-  unlink(loginType: 'CUSTOM'| 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION'):Promise<void>;
-  update(userinfo:IUserInfo):Promise<void>;
-  refresh():Promise<IUserInfo>;
+  setPrimaryUid(uid: string): Promise<void>;
+  unlink(loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION'): Promise<void>;
+  update(userinfo: IUserInfo): Promise<void>;
+  refresh(): Promise<IUserInfo>;
 }
 export interface ILoginState {
   credential: ICredential;
@@ -58,27 +58,27 @@ export interface ILoginState {
   loginType: string;
 }
 export interface ICloudbaseAuth {
-  config:ICloudbaseConfig;
-  loginType:string;
+  config: ICloudbaseConfig;
+  loginType: string;
   weixinAuthProvider: any;
   anonymousAuthProvider: any;
   customAuthProvider: any;
   getAccessToken(): IAccessTokenInfo;
-  getLoginState(): Promise<ILoginState|null>;
-  hasLoginState(): Promise<ILoginState|null>;
+  getLoginState(): Promise<ILoginState | null>;
+  hasLoginState(): Promise<ILoginState | null>;
   getUserInfo(): Promise<any>;
   getAuthHeader(): Promise<KV<string>>;
-  onLoginStateChanged(callback:Function):void;
-  onLoginStateExpired(callback: Function):void;
-  onAccessTokenRefreshed(callback: Function):void;
-  onAnonymousConverted(callback: Function):void;
-  onLoginTypeChanged(callback: Function):void;
-  shouldRefreshAccessToken(hook:Function):void;
+  onLoginStateChanged(callback: Function): void;
+  onLoginStateExpired(callback: Function): void;
+  onAccessTokenRefreshed(callback: Function): void;
+  onAnonymousConverted(callback: Function): void;
+  onLoginTypeChanged(callback: Function): void;
+  shouldRefreshAccessToken(hook: Function): void;
 }
 
-type IProvider = new(...args:any[]) => any;
+type IProvider = new (...args: any[]) => any;
 
 export interface ICloudbaseAuthModule {
-  registerAuth(app:ICloudbase):void,
-  registerProvider(name:string,provider:IProvider):void;
+  registerAuth(app: ICloudbase): void,
+  registerProvider(name: string, provider: IProvider): void;
 }

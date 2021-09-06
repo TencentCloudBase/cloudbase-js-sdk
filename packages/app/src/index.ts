@@ -11,6 +11,7 @@ import { initCache, getCacheByEnvId, getLocalCache } from './libs/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { initRequest, getRequestByEnvId } from './libs/request';
 import { getSdkName, setSdkVersion, setEndPoint, setRegionLevelEndpoint, setSdkName } from './constants/common';
+export { getBaseEndPoint } from './constants/common'
 const { useAdapters, useDefaultAdapter, RUNTIME } = adapters;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { printWarn } = utils;
@@ -33,6 +34,7 @@ const extensionMap: KV<ICloudbaseExtension> = {};
 
 class Cloudbase implements ICloudbase {
   public authInstance: ICloudbaseAuth;
+  public oauthInstance: any;
   public requestClient: any;
   public oauthClient: any
   private _config: ICloudbaseConfig;
@@ -40,6 +42,7 @@ class Cloudbase implements ICloudbase {
   constructor(config?: ICloudbaseConfig) {
     this._config = config ? config : this._config;
     this.authInstance = null;
+    this.oauthInstance = null
   }
 
   get config() {
@@ -122,12 +125,12 @@ class Cloudbase implements ICloudbase {
     // 初始化cache和request
     const { env, persistence, debug, timeout, appSecret, appSign, oauthClient } = this._config;
     initCache({ env, persistence, debug, platformInfo: this.platform });
-    initRequest({ env, region: config.region || '', timeout, appSecret, appSign, oauthClient });
 
     if (config.region) {
       setRegionLevelEndpoint(env, config.region || '')
     }
     const app = new Cloudbase(this._config);
+    initRequest({ env, region: config.region || '', timeout, appSecret, appSign, oauthClient, _fromApp: app });
     app.requestClient = this.requestClient;
     return app;
   }

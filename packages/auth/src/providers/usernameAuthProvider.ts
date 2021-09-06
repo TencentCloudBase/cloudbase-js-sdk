@@ -6,9 +6,10 @@ import { utils, constants, helpers } from '@cloudbase/utilities';
 
 const { printWarn } = utils;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
-const { catchErrorsDecorator } = helpers;
+const { catchErrorsDecorator, stopAuthLoginWithOAuth } = helpers;
 
 export class UsernameAuthProvider extends AuthProvider {
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '用户名密码登录失败',
     messages: [
@@ -29,11 +30,11 @@ export class UsernameAuthProvider extends AuthProvider {
     // 用户不设置密码
     if (typeof password !== 'string') {
       password = '';
-      printWarn(ERRORS.INVALID_PARAMS,'password is empty');
+      printWarn(ERRORS.INVALID_PARAMS, 'password is empty');
     }
 
     const { refreshTokenKey } = this._cache.keys;
-    const res = await this._request.send('auth.signIn',{
+    const res = await this._request.send('auth.signIn', {
       loginType: LOGINTYPE.USERNAME,
       username,
       password,

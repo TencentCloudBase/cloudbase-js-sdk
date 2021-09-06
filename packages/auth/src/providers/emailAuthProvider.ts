@@ -1,4 +1,4 @@
-import { constants,utils,helpers } from '@cloudbase/utilities';
+import { constants, utils, helpers } from '@cloudbase/utilities';
 import { ILoginState } from '@cloudbase/types/auth';
 import { AuthProvider } from './base';
 import { LOGINTYPE } from '../constants';
@@ -6,9 +6,11 @@ import { eventBus, EVENTS, LoginState } from '..';
 
 const { throwError, isString } = utils;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
-const { catchErrorsDecorator } = helpers;
+const { catchErrorsDecorator, stopAuthLoginWithOAuth } = helpers;
 
 export class EmailAuthProvider extends AuthProvider {
+
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '邮箱密码登录失败',
     messages: [
@@ -21,7 +23,7 @@ export class EmailAuthProvider extends AuthProvider {
   })
   public async signIn(email: string, password: string): Promise<ILoginState> {
     if (!isString(email)) {
-      throwError(ERRORS.INVALID_PARAMS,'email must be a string');
+      throwError(ERRORS.INVALID_PARAMS, 'email must be a string');
     }
     const { refreshTokenKey } = this._cache.keys;
     const res = await this._request.send('auth.signIn', {
@@ -52,16 +54,17 @@ export class EmailAuthProvider extends AuthProvider {
         request: this._request
       });
     } else if (res.code) {
-      throwError(ERRORS.OPERATION_FAIL,`Email login fail[${res.code}] ${res.message}`);
+      throwError(ERRORS.OPERATION_FAIL, `Email login fail[${res.code}] ${res.message}`);
     } else {
-      throwError(ERRORS.OPERATION_FAIL,`Email login fail`);
+      throwError(ERRORS.OPERATION_FAIL, `Email login fail`);
     }
   }
   /**
    * 注册
-   * @param email 
-   * @param password 
+   * @param email
+   * @param password
    */
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '邮箱注册失败',
     messages: [
@@ -72,7 +75,7 @@ export class EmailAuthProvider extends AuthProvider {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async signUp(email:string, password:string) {
+  public async signUp(email: string, password: string) {
     return this._request.send('auth.signUpWithEmailAndPassword', {
       email,
       password
@@ -80,7 +83,7 @@ export class EmailAuthProvider extends AuthProvider {
   }
   /**
    * 发起重置密码请求，发起后推送邮件到指定邮箱
-   * @param email 
+   * @param email
    */
   @catchErrorsDecorator({
     title: '重置密码失败',
@@ -93,15 +96,15 @@ export class EmailAuthProvider extends AuthProvider {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async resetPassword(email:string) {
+  public async resetPassword(email: string) {
     return this._request.send('auth.sendPasswordResetEmail', {
       email
     });
   }
   /**
    * 重置密码
-   * @param token 
-   * @param newPassword 
+   * @param token
+   * @param newPassword
    */
   @catchErrorsDecorator({
     title: '重置密码失败',
@@ -112,7 +115,7 @@ export class EmailAuthProvider extends AuthProvider {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async resetPasswordWithToken(token:string, newPassword:string) {
+  public async resetPasswordWithToken(token: string, newPassword: string) {
     return this._request.send('auth.resetPasswordWithToken', {
       token,
       newPassword
@@ -120,7 +123,7 @@ export class EmailAuthProvider extends AuthProvider {
   }
   /**
    * 激活邮箱
-   * @param token 
+   * @param token
    */
   @catchErrorsDecorator({
     title: '邮箱激活失败',

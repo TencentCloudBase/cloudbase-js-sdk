@@ -4,6 +4,7 @@ import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig, ICredential, IUser, IUserInfo, IAuthProvider, ILoginState } from '@cloudbase/types/auth';
 import { ICloudbaseComponent } from '@cloudbase/types/component';
+import { checkFromAuthV2 } from './common'
 
 import { LOGINTYPE, OAUTH2_LOGINTYPE_PREFIX } from './constants';
 
@@ -506,6 +507,7 @@ class Auth {
   private _emailAuthProvider: EmailAuthProvider;
   private _usernameAuthProvider: UsernameAuthProvider;
   private _phoneAuthProvider: PhoneAuthProvider;
+  // private _fromApp: ICloudbase
 
   private _oAuth2AuthProvider: OAuth2AuthProvider;
 
@@ -514,6 +516,7 @@ class Auth {
     this._cache = config.cache;
     this._request = config.request;
     this._runtime = config.runtime || RUNTIME.WEB
+    // this._fromApp = config._fromApp
 
     eventBus.on(EVENTS.LOGIN_TYPE_CHANGED, this._onLoginTypeChanged.bind(this));
   }
@@ -556,6 +559,13 @@ class Auth {
     ]
   })
   public async getCurrenUser() {
+    const { _fromApp } = this._config
+    const authObj = await checkFromAuthV2(_fromApp)
+    const { authType, instance } = authObj
+    if (authType === 'oauth') {
+      return await instance.getUserInfo()
+    }
+
     const loginState = await this.getLoginState();
     if (loginState) {
       await loginState.user.checkLocalInfoAsync();
@@ -592,7 +602,8 @@ class Auth {
       this._anonymousAuthProvider = new AnonymousAuthProvider({
         ...this._config,
         cache: this._cache,
-        request: this._request
+        request: this._request,
+        // _fromApp: this._fromApp
       });
     }
     return this._anonymousAuthProvider;
@@ -647,7 +658,7 @@ class Auth {
    *   scope: 'openid+email+profile',
    *   redirectUri: 'https://'
    * }
-   * @param {Object}  options 
+   * @param {Object}  options
    * @param {string}  options.providerId            - 供应商Id，如 WeChat、Google、Github 等
    * @param {string}  options.clientId              - 客户端Id，平台提供的客户端标识Id
    * @param {string}  [options.responseType=token]  - 响应类型：token、code
@@ -655,7 +666,7 @@ class Auth {
    * @param {string}  options.redirectUri           - 授权成功回调地址
    * @param {boolean} options.syncProfile           - 是否同步用户 Profile 信息
    * @param {boolean} options.forceDisableSignUp    - 是否强制关闭用户注册
-   * @returns 
+   * @returns
    */
   public oAuth2AuthProvider(options: IOAuth2AuthProviderOptions = {}): OAuth2AuthProvider {
     if (!this._oAuth2AuthProvider) {
@@ -746,6 +757,14 @@ class Auth {
     ]
   })
   public async signOut() {
+    // 兼容 oauth
+    const { _fromApp } = this._config
+    const authObj = await checkFromAuthV2(_fromApp)
+    const { authType, instance } = authObj
+    if (authType === 'oauth') {
+      return await instance.signOut()
+    }
+
     const loginType = await this.getLoginType()
     // if (loginType === LOGINTYPE.ANONYMOUS) {
     //   throw new Error(JSON.stringify({
@@ -840,6 +859,14 @@ class Auth {
    * 获取本地登录态-同步
    */
   public hasLoginState(): ILoginState | null {
+    // 兼容oauth 逻辑，判断当前登录体系 auth or oauth
+    const { _fromApp } = this._config
+    const oauthInstance = _fromApp.oauthInstance
+    const oauthLoginState = oauthInstance?.hasLoginStateSync()
+    if (oauthLoginState) {
+      return oauthLoginState
+    }
+
     if (this._cache.mode === 'async') {
       // async storage的平台调用此API提示
       printWarn(ERRORS.INVALID_OPERATION, 'current platform\'s storage is asynchronous, please use getLoginState insteed');
@@ -873,6 +900,21 @@ class Auth {
     ]
   })
   public async getLoginState() {
+    // 检查当前登录体系 auth or oauth
+    // const { _fromApp } = this._config
+    // const authObj = await checkFromAuthV1OrV2(_fromApp)
+    // const { authType, instance } = authObj
+    // if (authType === 'oauth') {
+    //   return await instance.getLoginState()
+    // }
+    const { _fromApp } = this._config
+    const oauthInstance = _fromApp.oauthInstance || (_fromApp as any).oauth()
+    const oauthLoginState = oauthInstance && await oauthInstance.getLoginState()
+    if (oauthLoginState) {
+      return oauthLoginState
+    }
+
+    // auth 体系走默认逻辑
     const { refreshTokenKey } = this._cache.keys;
     const refreshToken = await this._cache.getStoreAsync(refreshTokenKey);
     if (refreshToken) {
@@ -1052,7 +1094,8 @@ const component: ICloudbaseComponent = {
       debug,
       cache: this.cache,
       request: this.request,
-      runtime: runtime
+      runtime: runtime,
+      _fromApp: this
     });
     return this.authInstance;
   }

@@ -9,6 +9,7 @@ export declare function getEndPoint(): {
     BASE_URL: string;
     PROTOCOL: string;
 };
+export declare function getBaseEndPoint(): string;
 export declare enum LOGINTYPE {
     NULL = "NULL",
     ANONYMOUS = "ANONYMOUS",

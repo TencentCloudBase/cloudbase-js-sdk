@@ -3,6 +3,7 @@ import {
   LOGINTYPE,
   getSdkVersion,
   getEndPoint,
+  getBaseEndPoint,
   OAUTH2_LOGINTYPE_PREFIX
 } from '../constants/common';
 import {
@@ -13,7 +14,7 @@ import {
   IRequestConfig
 } from '@cloudbase/adapter-interface';
 import { utils, jwt, adapters, constants } from '@cloudbase/utilities';
-import { KV } from '@cloudbase/types';
+import { KV, ICloudbase } from '@cloudbase/types';
 import { IGetAccessTokenResult, ICloudbaseRequestConfig, IAppendedRequestInfo, IRequestBeforeHook } from '@cloudbase/types/request';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { cloudbase } from '..';
@@ -110,12 +111,16 @@ export class CloudbaseRequest implements ICloudbaseRequest {
   private _cache: ICloudbaseCache;
   // 持久化本地存储
   private _localCache: ICloudbaseCache;
+  private _fromApp: ICloudbase
   /**
    * 初始化
    * @param config
    */
   constructor(config: ICloudbaseRequestConfig & { throw?: boolean }) {
+    const { _fromApp } = config;
+
     this.config = config;
+    this._fromApp = _fromApp
     // eslint-disable-next-line
     this._reqClass = new Platform.adapter.reqClass(<IRequestConfig>{
       timeout: this.config.timeout,
@@ -164,11 +169,9 @@ export class CloudbaseRequest implements ICloudbaseRequest {
 
     init.headers = Object.assign({}, init.headers, headers)
 
-    const { PROTOCOL, BASE_URL } = getEndPoint()
-    const webEndpoint = `${PROTOCOL}${BASE_URL}`
     const url = urlOrPath.startsWith('http')
       ? urlOrPath
-      : `${new URL(webEndpoint).origin}${urlOrPath}`
+      : `${getBaseEndPoint()}${urlOrPath}`
     return await fetch(url, init)
   }
 
@@ -233,12 +236,22 @@ export class CloudbaseRequest implements ICloudbaseRequest {
   public async getOauthAccessToken(): Promise<IGetAccessTokenResult> {
     const { oauthClient } = this.config
     if (oauthClient) {
-      const validAccessToken = await oauthClient.getAccessToken()
-      const credentials = await oauthClient._getCredentials()
-      return {
-        accessToken: validAccessToken,
-        accessTokenExpire: new Date(credentials.expires_at).getTime()
-      }
+      // const validAccessToken = await oauthClient.getAccessToken()
+      // const credentials = await oauthClient._getCredentials()
+      // return {
+      //   accessToken: validAccessToken,
+      //   accessTokenExpire: new Date(credentials.expires_at).getTime()
+      // }
+      return this.getOauthAccessTokenV2(oauthClient)
+    }
+  }
+
+  public async getOauthAccessTokenV2(oauthClient: any): Promise<IGetAccessTokenResult> {
+    const validAccessToken = await oauthClient.getAccessToken()
+    const credentials = await oauthClient._getCredentials()
+    return {
+      accessToken: validAccessToken,
+      accessTokenExpire: new Date(credentials.expires_at).getTime()
     }
   }
 
@@ -316,6 +329,15 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     // 若识别到注册了 Oauth 模块，则使用oauth getAccessToken
     if (oauthClient) {
       tmpObj.access_token = (await this.getOauthAccessToken()).accessToken
+    } else {
+      // 识别当前登录态 是否为 oauth
+      const loginFlag = await this.checkFromAuthV2()
+      // console.log('loginFlag', loginFlag)
+      if (loginFlag === 'oauth') {
+        const app = this.config._fromApp
+        const oauthClient = app.oauthInstance.oauth2client
+        tmpObj.access_token = (await this.getOauthAccessTokenV2(oauthClient)).accessToken
+      }
     }
 
     if (ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1) {
@@ -605,6 +627,21 @@ export class CloudbaseRequest implements ICloudbaseRequest {
     else {
       return deviceId
     }
+  }
+
+  private async checkFromAuthV2() {
+    // const authInstance = this._fromApp.authInstance
+    const oauthInstance = this._fromApp.oauthInstance || (this._fromApp as any).oauth()
+    // const authLogin = authInstance && await authInstance.getLoginState()
+    // console.log('authLogin', authLogin)
+    // if (authLogin) {
+    //   return 'auth'
+    // }
+    const oauthLogin = oauthInstance && await oauthInstance.hasLoginState()
+    if (oauthLogin) {
+      return 'oauth'
+    }
+    return ''
   }
 }
 

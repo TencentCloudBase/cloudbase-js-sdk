@@ -19,6 +19,7 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     private _throwWhenRequestFail;
     private _cache;
     private _localCache;
+    private _fromApp;
     constructor(config: ICloudbaseRequestConfig & {
         throw?: boolean;
     });
@@ -29,6 +30,7 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     refreshAccessToken(): Promise<IGetAccessTokenResult>;
     refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult>;
     getOauthAccessToken(): Promise<IGetAccessTokenResult>;
+    getOauthAccessTokenV2(oauthClient: any): Promise<IGetAccessTokenResult>;
     getAccessToken(): Promise<IGetAccessTokenResult>;
     request(action: string, params: KV<any>, options?: KV<any>): Promise<ResponseObject>;
     send(action: string, data?: KV<any>): Promise<any>;
@@ -37,6 +39,7 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     private _refreshAccessTokenFromOauthServer;
     private _setRefreshToken;
     private getDeviceId;
+    private checkFromAuthV2;
 }
 export declare function initRequest(config: ICloudbaseRequestConfig): void;
 export declare function getRequestByEnvId(env: string): CloudbaseRequest;

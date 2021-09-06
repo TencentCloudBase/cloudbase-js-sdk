@@ -9,7 +9,7 @@ export interface IGetAccessTokenResult {
   accessTokenExpire: number;
 }
 
-export type ICloudbaseRequestConfig = Pick<ICloudbaseConfig, 'env' | 'region' | 'timeout' | 'appSecret' | 'appSign' | 'oauthClient'>;
+export type ICloudbaseRequestConfig = Pick<ICloudbaseConfig, 'env' | 'region' | 'timeout' | 'appSecret' | 'appSign' | 'oauthClient' | '_fromApp'>;
 
 export interface IAppendedRequestInfo {
   data: KV<any>;

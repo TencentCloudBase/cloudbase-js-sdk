@@ -9,10 +9,10 @@ import { EVENTS, eventBus, LoginState } from '..';
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { throwError, isString } = utils;
 const { addEventListener } = events;
-const { catchErrorsDecorator } = helpers;
+const { catchErrorsDecorator, stopAuthLoginWithOAuth } = helpers;
 
 export class AnonymousAuthProvider extends AuthProvider {
-  constructor(config:ICloudbaseAuthConfig&{cache:ICloudbaseCache,request:ICloudbaseRequest}){
+  constructor(config: ICloudbaseAuthConfig & { cache: ICloudbaseCache, request: ICloudbaseRequest }) {
     super(config);
 
     this._onConverted = this._onConverted.bind(this);
@@ -20,6 +20,7 @@ export class AnonymousAuthProvider extends AuthProvider {
     addEventListener(EVENTS.ANONYMOUS_CONVERTED, this._onConverted);
   }
 
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '匿名登录失败',
     messages: [
@@ -29,7 +30,7 @@ export class AnonymousAuthProvider extends AuthProvider {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async signIn():Promise<ILoginState> {
+  public async signIn(): Promise<ILoginState> {
     // 匿名登录前迁移cache到localstorage
     await this._cache.updatePersistenceAsync('local');
     const { anonymousUuidKey, refreshTokenKey } = this._cache.keys;
@@ -66,17 +67,17 @@ export class AnonymousAuthProvider extends AuthProvider {
     } else {
       throw new Error(JSON.stringify({
         code: ERRORS.OPERATION_FAIL,
-        msg: JSON.stringify(res)||'anonymous signIn failed'
+        msg: JSON.stringify(res) || 'anonymous signIn failed'
       }));
     }
   }
   /**
    * 匿名转正
-   * @param ticket 
+   * @param ticket
    */
-  public async linkAndRetrieveDataWithTicket(ticket: string):Promise<ILoginState> {
-    if(!isString(ticket)){
-      throwError(ERRORS.INVALID_PARAMS,'ticket must be a string');
+  public async linkAndRetrieveDataWithTicket(ticket: string): Promise<ILoginState> {
+    if (!isString(ticket)) {
+      throwError(ERRORS.INVALID_PARAMS, 'ticket must be a string');
     }
     const { anonymousUuidKey, refreshTokenKey } = this._cache.keys;
     const anonymous_uuid = await this._cache.getStoreAsync(anonymousUuidKey);
@@ -99,10 +100,10 @@ export class AnonymousAuthProvider extends AuthProvider {
         request: this._request
       });
       await loginState.checkLocalStateAsync();
-      
+
       return loginState;
     } else {
-      throwError(ERRORS.OPERATION_FAIL,JSON.stringify(res)||'linkAndRetrieveDataWithTicket failed');
+      throwError(ERRORS.OPERATION_FAIL, JSON.stringify(res) || 'linkAndRetrieveDataWithTicket failed');
     }
   }
   private async _setAnonymousUUID(id: string) {

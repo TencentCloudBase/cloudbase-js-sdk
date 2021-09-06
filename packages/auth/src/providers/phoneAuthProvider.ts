@@ -6,7 +6,7 @@ import { eventBus, EVENTS, LoginState } from '..';
 
 const { throwError, isString, transformPhone } = utils;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
-const { catchErrorsDecorator } = helpers;
+const { catchErrorsDecorator, stopAuthLoginWithOAuth } = helpers;
 
 export const SIGN_METHOD = {
   SIGNIN: 'SIGNIN',
@@ -15,6 +15,7 @@ export const SIGN_METHOD = {
 }
 
 export class PhoneAuthProvider extends AuthProvider {
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '手机号登录失败',
     messages: [
@@ -86,6 +87,7 @@ export class PhoneAuthProvider extends AuthProvider {
    * @param phoneCode
    * @param password
    */
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '手机短信注册失败',
     messages: [

@@ -7,10 +7,11 @@ import { eventBus, EVENTS, LoginState } from '..';
 
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { isString } = utils;
-const { catchErrorsDecorator } = helpers;
+const { catchErrorsDecorator, stopAuthLoginWithOAuth } = helpers;
 
 export class CustomAuthProvider extends AuthProvider {
 
+  @stopAuthLoginWithOAuth()
   @catchErrorsDecorator({
     title: '自定义登录失败',
     messages: [
@@ -46,17 +47,17 @@ export class CustomAuthProvider extends AuthProvider {
       });
 
       eventBus.fire(EVENTS.LOGIN_STATE_CHANGED);
-      
+
       // set user info
       await this.refreshUserInfo();
-      
+
       const loginState = new LoginState({
         envId: this._config.env,
         cache: this._cache,
         request: this._request
       });
       await loginState.checkLocalStateAsync();
-      
+
       return loginState;
     } else {
       throw new Error(JSON.stringify({

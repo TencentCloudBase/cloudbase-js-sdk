@@ -1,4 +1,4 @@
-import { ICloudbaseConfig } from '@cloudbase/types';
+import { ICloudbaseConfig, ICloudbase } from '@cloudbase/types';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig } from '@cloudbase/types/auth';
@@ -7,6 +7,7 @@ export declare abstract class AuthProvider {
     protected readonly _config: ICloudbaseConfig;
     protected readonly _cache: ICloudbaseCache;
     protected readonly _request: ICloudbaseRequest;
+    protected readonly _fromApp: ICloudbase;
     constructor(config: ICloudbaseAuthConfig & {
         cache: ICloudbaseCache;
         request: ICloudbaseRequest;

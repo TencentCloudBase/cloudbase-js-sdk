@@ -9,4 +9,7 @@ export interface SimpleStorage {
     getItem(key: string): Promise<string | null>;
     removeItem(key: string): Promise<void>;
     setItem(key: string, value: string): Promise<void>;
+    getItemSync(key: string): string | null;
+    removeItemSync(key: string): void;
+    setItemSync(key: string, value: string): void;
 }

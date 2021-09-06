@@ -16,7 +16,7 @@ import { runAllTestCases, runSelectedTestCase, printInfo } from "./util"
 
 import cloudbase from "../../packages/cloudbase"
 
-import {OAuth2Client, Auth} from '../../packages/oauth'
+import { OAuth2Client, Auth } from '../../packages/oauth'
 // import cloudbase from '../../packages/cloudbase/app';
 // import '../../packages/cloudbase/auth';
 // import '../../packages/cloudbase/database';
@@ -106,50 +106,74 @@ async function init() {
 
 
   document.querySelector('#oauth2signin').onclick = async function dologin() {
-    const config = {
-      apiOrigin: "https://xbase-4gh5dh6nf62145a9.ap-shanghai.tcb-api.tencentcloudapi.com",
-      clientId: "xbase-4gh5dh6nf62145a9",
-    };
+    // const config = {
+    //   apiOrigin: "https://xbase-4gh5dh6nf62145a9.ap-shanghai.tcb-api.tencentcloudapi.com",
+    //   clientId: "xbase-4gh5dh6nf62145a9",
+    // };
 
-    const oAuth2Client = new OAuth2Client(config);
+    // const oAuth2Client = new OAuth2Client(config);
 
-    const auth = new Auth({credentialsClient: oAuth2Client, ...config});
+    // const auth = new Auth({ credentialsClient: oAuth2Client, ...config });
 
-    const loginState = await auth.hasLoginState()
+    // const loginState = await auth.hasLoginState()
 
-    // 初始化tcb
-    const app = cloudbase.init({
-      env: 'xbase-4gh5dh6nf62145a9',
-      region: 'ap-shanghai',
-      oauthClient: oAuth2Client
-    })
+    // // 初始化tcb
+    // const app = cloudbase.init({
+    //   env: 'xbase-4gh5dh6nf62145a9',
+    //   region: 'ap-shanghai',
+    //   oauthClient: oAuth2Client
+    // })
 
     // 设置oauthclient
     // app.setOAuthClient(oAuth2Client)
 
-    console.log("test", loginState)
+    // 初始化tcb v2
+    const app = cloudbase.init({
+      env: 'xbase-4gh5dh6nf62145a9',
+      region: 'ap-shanghai'
+    })
+
+    const oauth = app.oauth()
+
+    const auth = app.auth()
+
+    // const loginState = await oauth.hasLoginState()
+    const loginState = await auth.getLoginState()
+    // const loginState = auth.hasLoginState()
+
+    console.log("loginState", loginState)
 
     if (!loginState) {
-        const crd = await  auth.signInAnonymously()
-        console.log(crd)
 
-        // 调用函数
-        try{
+      // const crd = await oauth.signInAnonymously()
+      // console.log('crd', crd)
 
-          const callRes = await app.callFunction({
-            name: 'test',
-            data: {}
-          })
-          console.log('callRes', callRes)
-        }catch(e) {
-          console.log('e', e)
-        }
+      // 冲突测试
+      const testAnony = await auth.anonymousAuthProvider().signIn();
+      console.log('testAnony', testAnony)
+
+      // 调用函数
+      try {
+
+        const callRes = await app.callFunction({
+          name: 'test',
+          data: {}
+        })
+        console.log('callRes', callRes)
+      } catch (e) {
+        console.log('e', e)
+      }
+    } else {
+      // getCurrenUser
+      const currenUser = await auth.getCurrenUser()
+      console.log('currenUser', currenUser)
+
+      // SignOut
+      setTimeout(async () => {
+        console.log('登出')
+        await auth.signOut()
+      }, 3000)
     }
-
-    setTimeout(async ()=> {
-      console.log('登出')
-      await auth.signOut()
-    }, 3000)
   }
 }
 
