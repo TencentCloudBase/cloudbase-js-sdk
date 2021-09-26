@@ -1,0 +1,33 @@
+{
+  "name": "device",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env NODE_ENV=production webpack",
+    "start": "cross-env NODE_ENV=development webpack-dev-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/qs": "^6.9.1",
+    "@xbasesdk/xbase": "file://Users/nx/Documents/go/xbase/src/gitlab.xunlei.cn/xbase/sdk/xbasesdk/dist",
+    "cross-env": "^7.0.2",
+    "firebase": "^9.0.2",
+    "qs": "^6.9.3",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^4.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "ts-loader": "^6.1.0",
+    "typescript": "^3.8.3",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.0"
+  }
+}

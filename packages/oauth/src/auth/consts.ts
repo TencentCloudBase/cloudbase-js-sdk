@@ -28,3 +28,25 @@ export enum VerificationUsages {
   EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE',
   PHONE_NUMBER_CHANGE = 'PHONE_NUMBER_CHANGE',
 }
+
+export enum ErrorType {
+  INVALID_ARGUMENT = 'invalid_argument',
+  DEADLINE_EXCEEDED = 'deadline_exceeded',
+  NOT_FOUND = 'not_found',
+  ALREADY_EXISTS = 'already_exists',
+  PERMISSION_DENIED = 'permission_denied',
+  ABORTED = 'aborted',
+  OUT_OF_RANGE = 'out_of_range',
+  UNIMPLEMENTED = 'unimplemented',
+  INTERNAL = 'internal',
+  UNAVAILABLE = 'unavailable',
+  DATA_LOSS = 'data_loss',
+  // CommonError
+  CAPTCHA_REQUIRED = 'captcha_required',
+  CAPTCHA_INVALID = 'captcha_invalid',
+  INVALID_PASSWORD = 'invalid_password',
+  PASSWORD_NOT_SET = 'password_not_set',
+  INVALID_STATUS = 'invalid_status',
+  USER_PENDING = 'user_pending',
+  USER_BLOCKED = 'user_blocked',
+}
