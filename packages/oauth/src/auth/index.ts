@@ -1,6 +1,7 @@
 'use strict';
 
 import {ApiUrls} from './consts';
+
 export {ErrorType} from './consts';
 import {
     GetVerificationRequest,
@@ -25,8 +26,8 @@ import {
     CheckPasswordrRequest,
     BindPhoneRequest,
     SetPasswordRequest,
-    ChangeBindedProviderRequest,
-    ChangeBindedProviderResponse,
+    ChangeBoundProviderRequest,
+    ChangeBoundProviderResponse,
     QueryUserProfileReq, UpdatePasswordRequest, SudoRequest, SudoResponse,
 } from './models';
 
@@ -56,12 +57,15 @@ export function getAuth(app: App, initOptions?: any): Auth {
     });
 }
 
+export type GetCustomSignTicketFn = () => Promise<string>;
+
 /**
  * Auth
  */
 export class Auth {
     public readonly request: appRequestFn;
     public readonly credentialsClient: AuthClient
+    private _getCustomSignTicketFn?: GetCustomSignTicketFn;
 
     /**
      * constructor
@@ -454,14 +458,14 @@ export class Auth {
     }
 
     /**
-     * change binded provider.
+     * change Bound provider.
      * @param {GetVerificationRequest} params A GetVerificationRequest Object.
      * @return {Promise<GetVerificationResponse>} A Promise<GetVerificationResponse> object.
      */
-    public async changeBindedProvider(
-        params: ChangeBindedProviderRequest,
-    ): Promise<ChangeBindedProviderResponse> {
-        return this.request<ChangeBindedProviderResponse>(
+    public async changeBoundProvider(
+        params: ChangeBoundProviderRequest,
+    ): Promise<ChangeBoundProviderResponse> {
+        return this.request<ChangeBoundProviderResponse>(
             `${ApiUrls.PROVIDER_LIST}/${params.provider_id}/trans`,
             {
                 method: 'POST',
@@ -484,6 +488,26 @@ export class Auth {
             body: params,
             withCredentials: true,
         });
+    }
+
+    /**
+     * setCustomSignFunc set the get ticket function
+     * @param getTickFn
+     */
+    public setCustomSignFunc(getTickFn: GetCustomSignTicketFn) {
+        this._getCustomSignTicketFn = getTickFn
+    }
+
+    /**
+     * SignInWithCustomTicket custom signIn
+     * @constructor
+     */
+    public async SignInWithCustomTicket(): Promise<Credentials> {
+        const customTicket = await this._getCustomSignTicketFn()
+        return this.signInWithProvider({
+            provider_id: 'custom',
+            provider_token: customTicket
+        })
     }
 
     /**

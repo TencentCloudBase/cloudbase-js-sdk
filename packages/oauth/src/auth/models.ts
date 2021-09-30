@@ -184,7 +184,8 @@ export interface SignInRequest {
 }
 
 export interface SignInWithProviderRequest {
-  provider_token: string;
+    provider_token: string;
+    provider_id?: string;
 }
 
 export interface SignUpRequest {
@@ -357,11 +358,15 @@ export interface SudoResponse {
 }
 
 
-export interface ChangeBindedProviderRequest {
-  trans_token: string;
-  provider_id: string;
+export interface ChangeBoundProviderRequest {
+    trans_token: string;
+    provider_id: string;
+}
+
+export interface ChangeBoundProviderResponse {
+    client_id: string;
 }
 
 export interface QueryUserProfileReq {
-  appended_params: string;
+    appended_params: string;
 }
