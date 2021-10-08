@@ -40,6 +40,18 @@ const data = await client.oAuth2Client.request<ExampleData>(
 	{ withCredentials: true }
 )
 console.log(data.result)
+
+
+
+import {initializeApp} from '@clodbasesdk/oauth/app';
+import {getAuth} from '@clodbasesdk/oauth/auth';
+export const config = {
+    env: 'env-4gh5dh6nf62145a9'
+};
+const app = initializeApp(config)
+const auth = getAuth(app)
+// 调用API
+const loginState = await auth.hasLoginState()
 ```
 
 ### 账号登录
