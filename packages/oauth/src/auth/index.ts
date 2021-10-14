@@ -31,7 +31,7 @@ import {
     QueryUserProfileReq, UpdatePasswordRequest, SudoRequest, SudoResponse,
 } from './models';
 
-import {getOAuthClient, Credentials, AuthClient, ErrorType as oauthErrorType} from "../oauthclient";
+import {getOAuthClient, Credentials, AuthClient, ResponseError, ErrorType as oauthErrorType} from "../oauthclient";
 import {getCaptcha, Captcha} from '../captcha';
 import {App, RequestFn as appRequestFn} from "../app";
 import {_getComponent} from "../app/internal";
@@ -308,7 +308,7 @@ export class Auth {
             await this.credentialsClient.getAccessToken()
             return true
         } catch (err) {
-            if (err.error === oauthErrorType.UNAUTHENTICATED) {
+            if ((err as ResponseError).error === oauthErrorType.UNAUTHENTICATED) {
                 return false
             }
             return Promise.reject(err)
@@ -426,7 +426,7 @@ export class Auth {
 
     /**
      * sudo
-     * @param {SetPasswordrRequest} params
+     * @param {sudo} params
      * @return {Promise<any>}
      */
     public async sudo(params: SudoRequest): Promise<SudoResponse> {

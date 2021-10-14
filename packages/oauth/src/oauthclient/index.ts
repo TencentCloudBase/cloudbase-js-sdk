@@ -1,7 +1,7 @@
 import {App} from "../app";
 import {_getComponent} from "../app/internal";
 import {OAuth2Client} from "./oauthclient";
-import {Credentials as credentials} from './models';
+import {Credentials as credentials, ResponseError as responseError} from './models';
 import {AuthClient as authClient, RequestFn as requestFn} from "./interface";
 export {ErrorType} from './consts';
 
@@ -30,3 +30,4 @@ export function getOAuthClient(app: App, opts?: InitOptions): authClient {
 export type Credentials = credentials
 export type AuthClient = authClient
 export type RequestFn = requestFn
+export type ResponseError = responseError
