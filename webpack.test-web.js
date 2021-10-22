@@ -1,6 +1,6 @@
-const webpack = require("webpack")
+const webpack = require("webpack");
 
-const modName = "cloudbase"
+const modName = "cloudbase";
 
 module.exports = {
   entry: [
@@ -52,4 +52,4 @@ module.exports = {
     ]
   },
   plugins: [new webpack.HotModuleReplacementPlugin()]
-}
+};
