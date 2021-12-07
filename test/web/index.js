@@ -2,12 +2,7 @@ import axios from "axios"
 import { env, appid, authUsername, authPassword } from "../../test.config.js"
 import {
   registerAuthCases,
-  signInWeixin,
-  signInCustom,
   signInAnonymous,
-  signInWithUsername,
-  signInByPhone,
-  signWithOAuth2
 } from "./cases/auth"
 import { registerFunctionCases } from "./cases/function"
 import { registerStorageCases } from "./cases/storage"
@@ -37,20 +32,19 @@ cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
 async function init() {
   printInfo("web test starting init")
   // 初始化
-  app = cloudbase.init({
-    env,
-    region: 'ap-shanghai'
-    // timeout: 150000
-  })
+  if (!app) {
+    app = cloudbase.init({
+      env: 'xbase-4gh5dh6nf62145a9',
+      region: 'ap-shanghai'
+    })
+  }
 
-  auth = app.auth({
-    persistence: "local"
-  })
+  auth = app.auth()
 
   registerFunctionCases(app)
   registerStorageCases(app)
   registerDatabaseCases(app)
-  // registerAnalytics(app);
+
 
   initTestCasesIndex()
 
@@ -63,7 +57,7 @@ async function init() {
   //   }
   // })
 
-  await auth.getCurrenUser()
+  await auth.getCurrentUser()
   if (auth.currentUser) {
     document.querySelector('#userInfoName').textContent = auth.currentUser.uid
   }
@@ -78,9 +72,9 @@ async function init() {
       // await signInWeixin(auth, appid);
 
       // 匿名登录
-      // await signInAnonymous(auth)
+      await signInAnonymous(auth)
 
-      await signWithOAuth2(auth)
+      // await signWithOAuth2(auth)
 
 
       console.log('login end...')
@@ -103,7 +97,16 @@ async function init() {
     }
   }
 
+  document.querySelector('#signup').onclick = async function dosignup() {
+    // 获取name
+    const name = document.querySelector('#name').value;
+    // 获取验证码
+    const code = document.querySelector('#code').value;
+    // 获取密码
+    const password = document.querySelector('#password').value;
 
+    await auth.sign
+  }
 
   document.querySelector('#oauth2signin').onclick = async function dologin() {
     // 初始化tcb
@@ -112,7 +115,7 @@ async function init() {
       region: 'ap-shanghai'
     })
 
-    const oauth = app.oauth()
+    // const oauth = app.oauth()
 
     const auth = app.auth()
 
@@ -123,12 +126,8 @@ async function init() {
     if (!loginState) {
 
       // 走oauth登录
-      const crd = await oauth.signInAnonymously()
+      const crd = await auth.signInAnonymously()
       console.log('crd', crd)
-
-      // 走auth登录
-      // const testAnony = await auth.anonymousAuthProvider().signIn();
-      // console.log('testAnony', testAnony)
 
       // 调用函数
       try {
@@ -143,7 +142,7 @@ async function init() {
       }
     } else {
       // getCurrenUser
-      const currenUser = await auth.getCurrenUser()
+      const currenUser = await auth.getCurrentUser()
       console.log('currenUser', currenUser)
 
       // SignOut

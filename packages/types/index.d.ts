@@ -6,9 +6,9 @@ import { ICloudbaseAuth } from './auth'
 
 export type Persistence = 'local' | 'session' | 'none';
 
-export type KV<T> = {
+export interface KV<T> {
   [key: string]: T;
-};
+}
 
 export interface ICloudbaseAppSecret {
   appAccessKeyId: string;
@@ -24,14 +24,15 @@ export interface ICloudbaseConfig {
   oauthClient?: any
   appSign?: string;
   debug?: boolean;
-  _fromApp?: ICloudbase
+  _fromApp?: ICloudbase;
+  oauthInstance?: any;
 }
 // 可更新的配置字段
 export type ICloudbaseUpgradedConfig = Pick<ICloudbaseConfig, 'persistence' | 'region' | 'debug'>;
 
 export interface ICloudbaseExtension {
   name: string;
-  invoke(opts: any, app: ICloudbase): Promise<any>;
+  invoke: (opts: any, app: ICloudbase) => Promise<any>;
 }
 
 export interface ICloudbase {
@@ -43,15 +44,15 @@ export interface ICloudbase {
   localCache: ICloudbaseCache;
   authInstance?: ICloudbaseAuth;
   oauthInstance?: any;
-  init(config: ICloudbaseConfig): ICloudbase;
-  updateConfig(config: ICloudbaseUpgradedConfig): void;
-  registerExtension(ext: ICloudbaseExtension): void;
-  invokeExtension(name: string, opts: any): Promise<any>;
-  useAdapters(adapters: CloudbaseAdapter | CloudbaseAdapter[]): void;
-  registerComponent(component: ICloudbaseComponent): void;
-  registerHook(hook: ICloudbaseHook): void;
-  registerVersion(version: string): void;
-  fire?(...args: any[]): void;
+  init: (config: ICloudbaseConfig) => ICloudbase;
+  updateConfig: (config: ICloudbaseUpgradedConfig) => void;
+  registerExtension: (ext: ICloudbaseExtension) => void;
+  invokeExtension: (name: string, opts: any) => Promise<any>;
+  useAdapters: (adapters: CloudbaseAdapter | CloudbaseAdapter[]) => void;
+  registerComponent: (component: ICloudbaseComponent) => void;
+  registerHook: (hook: ICloudbaseHook) => void;
+  registerVersion: (version: string) => void;
+  fire?: (...args: any[]) => void;
 }
 
 export interface ICloudbasePlatformInfo {

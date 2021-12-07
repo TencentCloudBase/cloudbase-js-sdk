@@ -26,10 +26,5 @@
 		"rimraf": "^3.0.0",
 		"typescript": "^3.8.3"
 	},
-	"dependencies": {
-		"@cloudbase/app": "^1.5.3-alpha.0",
-		"@cloudbase/types": "^1.2.3-alpha.0",
-		"@cloudbase/utilities": "^1.4.3-alpha.0"
-	},
 	"gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }

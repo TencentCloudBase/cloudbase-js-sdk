@@ -8,20 +8,15 @@ declare const cloudbase: ICloudbase;
 const COMPONENT_NAME = 'database';
 
 function database(dbConfig?: object) {
-  // if (!this.authInstance) {
-  //   console.warn(`[${getSdkName()}][${ERRORS.INVALID_OPERATION}] not login `);
-  //   return;
-  // }
+  const { adapter, runtime } = this.platform;
 
-  const { adapter,runtime } = this.platform;
-  
   Db.reqClass = this.request.constructor;
   // 未登录情况下传入空函数
   Db.getAccessToken = this.authInstance ? this.authInstance.getAccessToken.bind(this.authInstance) : () => {
     return '';
   };
   Db.runtime = runtime;
-  if(this.wsClientClass){
+  if (this.wsClientClass) {
     Db.wsClass = adapter.wsClass;
     Db.wsClientClass = this.wsClientClass;
   }
@@ -33,20 +28,20 @@ function database(dbConfig?: object) {
   return new Db({ ...this.config, ...dbConfig });
 }
 
-const component:ICloudbaseComponent = {
+const component: ICloudbaseComponent = {
   name: COMPONENT_NAME,
   entity: {
     database
   }
 }
-try{
+try {
   cloudbase.registerComponent(component);
-}catch(e){}
+} catch (e) { }
 
-export function registerDatabase(app:ICloudbase | typeof cloudbaseNS){
-  try{
+export function registerDatabase(app: ICloudbase | typeof cloudbaseNS) {
+  try {
     app.registerComponent(component);
-  }catch(e){
+  } catch (e) {
     console.warn(e);
   }
 }

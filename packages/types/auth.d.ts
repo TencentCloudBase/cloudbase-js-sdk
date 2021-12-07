@@ -1,18 +1,18 @@
 import { ICloudbaseConfig, KV, ICloudbase } from '.';
 
-export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig, 'env' | 'region' | 'persistence' | 'debug' | '_fromApp'>;
+export type ICloudbaseAuthConfig = Pick<ICloudbaseConfig, 'env' | 'region' | 'persistence' | 'debug' | '_fromApp' | 'oauthInstance'>;
 
 export interface IAccessTokenInfo {
   accessToken: string;
   env: string;
 }
 export interface ICredential {
-  refreshToken: string;
+  // refreshToken: string;
   accessToken?: string;
   accessTokenExpire?: string;
 }
 export interface IAuthProvider {
-  signInWithRedirect(): any;
+  signInWithRedirect: () => any;
 }
 export interface IUserInfo {
   uid?: string;
@@ -23,10 +23,12 @@ export interface IUserInfo {
   unionId?: string;
   qqMiniOpenId?: string;
   customUserId?: string;
-  nickName?: string;
+  // nickName?: string;
+  name?: string;
   gender?: string;
   avatarUrl?: string;
   email?: string;
+  username?: string;
   hasPassword?: boolean;
   location?: {
     country?: string;
@@ -38,24 +40,24 @@ export interface IUserInfo {
   city?: string;
 }
 export interface IUser extends IUserInfo {
-  checkLocalInfo(): void;
-  checkLocalInfoAsync(): Promise<void>;
-  linkWithTicket(ticket: string): Promise<void>;
-  linkWithRedirect(provider: IAuthProvider): void;
-  getLinkedUidList(): Promise<{ hasPrimaryUid: boolean, users: IUserInfo[] }>;
-  setPrimaryUid(uid: string): Promise<void>;
-  unlink(loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION'): Promise<void>;
-  update(userinfo: IUserInfo): Promise<void>;
-  refresh(): Promise<IUserInfo>;
+  checkLocalInfo: () => void;
+  checkLocalInfoAsync: () => Promise<void>;
+  linkWithTicket?: (ticket: string) => Promise<void>;
+  linkWithRedirect?: (provider: IAuthProvider) => void;
+  getLinkedUidList?: () => Promise<{ hasPrimaryUid: boolean, users: IUserInfo[] }>;
+  setPrimaryUid?: (uid: string) => Promise<void>;
+  unlink?: (loginType: 'CUSTOM' | 'WECHAT-OPEN' | 'WECHAT-PUBLIC' | 'WECHAT-UNION') => Promise<void>;
+  update: (userinfo: IUserInfo) => Promise<void>;
+  refresh: () => Promise<IUserInfo>;
 }
 export interface ILoginState {
-  credential: ICredential;
+  // credential: ICredential;
   user: IUser;
-  isAnonymousAuth: boolean;
-  isCustomAuth: boolean;
-  isWeixinAuth: boolean;
-  isUsernameAuth: boolean;
-  loginType: string;
+  // isAnonymousAuth: boolean;
+  // isCustomAuth: boolean;
+  // isWeixinAuth: boolean;
+  // isUsernameAuth: boolean;
+  // loginType: string;
 }
 export interface ICloudbaseAuth {
   config: ICloudbaseConfig;
@@ -63,22 +65,22 @@ export interface ICloudbaseAuth {
   weixinAuthProvider: any;
   anonymousAuthProvider: any;
   customAuthProvider: any;
-  getAccessToken(): IAccessTokenInfo;
-  getLoginState(): Promise<ILoginState | null>;
-  hasLoginState(): Promise<ILoginState | null>;
-  getUserInfo(): Promise<any>;
-  getAuthHeader(): Promise<KV<string>>;
-  onLoginStateChanged(callback: Function): void;
-  onLoginStateExpired(callback: Function): void;
-  onAccessTokenRefreshed(callback: Function): void;
-  onAnonymousConverted(callback: Function): void;
-  onLoginTypeChanged(callback: Function): void;
-  shouldRefreshAccessToken(hook: Function): void;
+  getAccessToken: () => IAccessTokenInfo;
+  getLoginState: () => Promise<ILoginState | null>;
+  hasLoginState: () => Promise<ILoginState | null>;
+  getUserInfo: () => Promise<any>;
+  getAuthHeader: () => Promise<KV<string>>;
+  onLoginStateChanged: (callback: Function) => void;
+  onLoginStateExpired: (callback: Function) => void;
+  onAccessTokenRefreshed: (callback: Function) => void;
+  onAnonymousConverted: (callback: Function) => void;
+  onLoginTypeChanged: (callback: Function) => void;
+  shouldRefreshAccessToken: (hook: Function) => void;
 }
 
 type IProvider = new (...args: any[]) => any;
 
 export interface ICloudbaseAuthModule {
-  registerAuth(app: ICloudbase): void,
-  registerProvider(name: string, provider: IProvider): void;
+  registerAuth: (app: ICloudbase) => void,
+  registerProvider: (name: string, provider: IProvider) => void;
 }

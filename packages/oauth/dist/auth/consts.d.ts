@@ -17,7 +17,8 @@ export declare enum ApiUrls {
     PROVIDER_LIST = "/auth/v1/user/provider",
     PROVIDER_UNBIND_URL = "/auth/v1/user/provider",
     CHECK_PWD_URL = "/auth/v1/user/sudo",
-    BIND_PHONE_URL = "/auth/v1/user/contact",
+    SUDO_URL = "/auth/v1/user/sudo",
+    BIND_CONTACT_URL = "/auth/v1/user/contact",
     AUTH_SET_PASSWORD = "/auth/v1/user/password"
 }
 export declare enum VerificationUsages {
@@ -26,4 +27,24 @@ export declare enum VerificationUsages {
     PASSWORD_RESET = "PASSWORD_RESET",
     EMAIL_ADDRESS_CHANGE = "EMAIL_ADDRESS_CHANGE",
     PHONE_NUMBER_CHANGE = "PHONE_NUMBER_CHANGE"
+}
+export declare enum ErrorType {
+    INVALID_ARGUMENT = "invalid_argument",
+    DEADLINE_EXCEEDED = "deadline_exceeded",
+    NOT_FOUND = "not_found",
+    ALREADY_EXISTS = "already_exists",
+    PERMISSION_DENIED = "permission_denied",
+    ABORTED = "aborted",
+    OUT_OF_RANGE = "out_of_range",
+    UNIMPLEMENTED = "unimplemented",
+    INTERNAL = "internal",
+    UNAVAILABLE = "unavailable",
+    DATA_LOSS = "data_loss",
+    CAPTCHA_REQUIRED = "captcha_required",
+    CAPTCHA_INVALID = "captcha_invalid",
+    INVALID_PASSWORD = "invalid_password",
+    PASSWORD_NOT_SET = "password_not_set",
+    INVALID_STATUS = "invalid_status",
+    USER_PENDING = "user_pending",
+    USER_BLOCKED = "user_blocked"
 }

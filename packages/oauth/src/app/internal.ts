@@ -1,4 +1,4 @@
-import {App, AppImpl} from "./index";
+import { App, AppImpl } from "./index";
 
 /**
  *
@@ -11,16 +11,16 @@ import {App, AppImpl} from "./index";
  * @internal
  */
 export function _getComponent<T>(
-    app: App,
-    name: string,
-    creator: () => T
+  app: App,
+  name: string,
+  creator: () => T
 ): T {
-    const container = (app as AppImpl).container
-    let component = container.get(name)
-    if (component) {
-        return component as T
-    }
-    component = creator()
-    container.set(name, component)
-    return component
+  const container = (app as AppImpl).container
+  let component = container.get(name)
+  if (component) {
+    return component as T
+  }
+  component = creator()
+  container.set(name, component)
+  return component
 }

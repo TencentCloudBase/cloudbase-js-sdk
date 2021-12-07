@@ -17,12 +17,12 @@ export interface IAppendedRequestInfo {
 }
 export type IRequestBeforeHook = (...args: any[]) => IAppendedRequestInfo;
 export interface ICloudbaseRequest {
-  fetch: (urlOrPath: string, init?: RequestInit) => Promise<Response>;
+  // fetch: (urlOrPath: string, init?: RequestInit) => Promise<Response>;
   post: (options: IRequestOptions) => Promise<ResponseObject>;
   upload: (options: IUploadRequestOptions) => Promise<ResponseObject>;
   download: (options: IRequestOptions) => Promise<ResponseObject>;
-  refreshAccessToken: () => Promise<IGetAccessTokenResult>;
-  getAccessToken: () => Promise<IGetAccessTokenResult>;
+  // refreshAccessToken: () => Promise<IGetAccessTokenResult>;
+  // getAccessToken: () => Promise<IGetAccessTokenResult>;
   request: (action: string, params: KV<any>, options?: KV<any>) => Promise<ResponseObject>;
   send: (action: string, data: KV<any>) => Promise<any>;
 }

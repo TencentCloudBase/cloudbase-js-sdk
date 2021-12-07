@@ -2,6 +2,8 @@ interface BaseRequest {
   client_id?: string;
 }
 
+export type GetCustomSignTicketFn = () => Promise<string>;
+
 export interface SignInRequest extends BaseRequest {
   username?: string;
   password?: string;
@@ -124,6 +126,10 @@ export interface UserProfile {
   created_from?: string;
   sub?: string
   uid?: string
+  nickName?: string // TODO:
+  province?: string // TODO:
+  country?: string // TODO:
+  city?: string // TODO:
 }
 
 export type UserInfo = UserProfile;
@@ -331,6 +337,12 @@ export interface BindPhoneRequest {
   verification_token: string;
 }
 
+export interface BindEmailRequest {
+  email: string;
+  sudo_token: string;
+  verification_token: string;
+}
+
 export interface SetPasswordRequest {
   new_password: string;
   sudo_token: string;
@@ -369,4 +381,36 @@ export interface ChangeBoundProviderResponse {
 
 export interface QueryUserProfileReq {
   appended_params: string;
+}
+
+export interface QueryUserProfileObjReq {
+  username?: string
+  id?: string[]
+  email?: string
+  phone_number?: string
+}
+
+export interface QueryUserProfileResponse {
+  total: string;
+  data: UserProfile[]
+}
+
+export interface ResetPasswordRequest extends BaseRequest {
+  email: string
+  phone_number: string
+  new_password: string
+  verification_token: string
+}
+
+export interface DeviceAuthorizeRequest extends BaseRequest {
+  scope: string
+}
+
+export interface DeviceAuthorizeResponse {
+  device_code: string
+  user_code: string
+  expires_in: number
+  interval: number
+  verification_url: string
+  verification_uri_complete: string
 }

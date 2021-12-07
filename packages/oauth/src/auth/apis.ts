@@ -24,16 +24,24 @@ import {
   UnbindProviderRequest,
   CheckPasswordrRequest,
   BindPhoneRequest,
+  BindEmailRequest,
   SetPasswordRequest,
   ChangeBindedProviderRequest,
   ChangeBindedProviderResponse,
   QueryUserProfileReq,
+  UpdatePasswordRequest,
+  SudoResponse,
+  SudoRequest,
+  GetCustomSignTicketFn,
+  QueryUserProfileResponse,
+  ResetPasswordRequest,
+  DeviceAuthorizeRequest,
+  DeviceAuthorizeResponse
 } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client, defaultStorage } from '../oauth2client/oauth2client';
 import { Credentials } from '../oauth2client/models';
 import { Captcha } from '../captcha/captcha';
-import { ICloudbase } from '@cloudbase/types';
 
 
 export interface AuthOptions {
@@ -42,7 +50,6 @@ export interface AuthOptions {
   credentialsClient?: OAuth2Client;
   request?: RequestFunction;
   storage?: SimpleStorage;
-  _fromApp?: ICloudbase // 所属cloudbase app对象
 }
 
 /**
@@ -50,6 +57,8 @@ export interface AuthOptions {
  */
 export class Auth {
   private _config: AuthOptions;
+  private _getCustomSignTicketFn?: GetCustomSignTicketFn;
+
 
   /**
    * constructor
@@ -125,7 +134,7 @@ export class Auth {
    * @param {SignUpRequest} params A SignUpRequest Object.
    * @return {Promise<Credentials>} A Promise<Credentials> object.
    */
-  protected async signUp(params: SignUpRequest): Promise<Credentials> {
+  public async signUp(params: SignUpRequest): Promise<Credentials> {
     params.client_id = this._config.clientId;
     const data: Credentials = await this._config.request<Credentials>(
       ApiUrls.AUTH_SIGN_UP_URL,
@@ -415,7 +424,20 @@ export class Auth {
    * @return {Promise<any>}
    */
   public async bindPhone(params: BindPhoneRequest): Promise<void> {
-    return this._config.request<any>(`${ApiUrls.BIND_PHONE_URL}`, {
+    return this._config.request<any>(`${ApiUrls.BIND_CONTACT_URL}`, {
+      method: 'PATCH',
+      withCredentials: true,
+      body: params,
+    });
+  }
+
+  /**
+   * check Password.
+   * @param {CheckPasswordrRequest} params
+   * @return {Promise<any>}
+   */
+  public async bindEmail(params: BindEmailRequest): Promise<void> {
+    return this._config.request<any>(`${ApiUrls.BIND_CONTACT_URL}`, {
       method: 'PATCH',
       withCredentials: true,
       body: params,
@@ -430,6 +452,33 @@ export class Auth {
   public async setPassword(params: SetPasswordRequest): Promise<void> {
     return this._config.request<any>(`${ApiUrls.AUTH_SET_PASSWORD}`, {
       method: 'PATCH',
+      withCredentials: true,
+      body: params,
+    });
+  }
+
+  /**
+ * updatePasswordByOld 使用旧密码修改密码，如果已经绑定手机号，请先：sudo，再修改密码
+ * @param {SetPasswordrRequest} params
+ * @return {Promise<any>}
+ */
+  public async updatePasswordByOld(params: UpdatePasswordRequest): Promise<void> {
+    const sudoToken = await this.sudo({ password: params.old_password })
+    return this.setPassword({
+      sudo_token: sudoToken.sudo_token,
+      new_password: params.new_password,
+    })
+  }
+
+
+  /**
+   * sudo
+   * @param {sudo} params
+   * @return {Promise<any>}
+   */
+  public async sudo(params: SudoRequest): Promise<SudoResponse> {
+    return this._config.request<SudoResponse>(`${ApiUrls.SUDO_URL}`, {
+      method: 'POST',
       withCredentials: true,
       body: params,
     });
@@ -497,11 +546,61 @@ export class Auth {
    */
   public async queryUserProfile(
     appended_params: QueryUserProfileReq,
-  ): Promise<UserProfile> {
+  ): Promise<QueryUserProfileResponse> {
     const url = `${ApiUrls.USER_QUERY_URL}${appended_params}`;
-    return this._config.request<UserProfile>(url, {
+    return this._config.request<QueryUserProfileResponse>(url, {
       method: 'GET',
       withCredentials: true,
     });
+  }
+
+  /**
+   * setCustomSignFunc set the get ticket function
+   * @param getTickFn
+   */
+  public setCustomSignFunc(getTickFn: GetCustomSignTicketFn) {
+    this._getCustomSignTicketFn = getTickFn
+  }
+
+  /**
+   * SignInWithCustomTicket custom signIn
+   * @constructor
+   */
+  public async signInWithCustomTicket(): Promise<Credentials> {
+    const customTicket = await this._getCustomSignTicketFn()
+    return this.signInWithProvider({
+      provider_id: 'custom',
+      provider_token: customTicket
+    })
+  }
+
+  /**
+   * Reset password
+   * @param {ResetPasswordRequest} params
+   * @returns {Promise<void>}
+   * @memberof Auth
+   */
+  public async resetPassword(params: ResetPasswordRequest): Promise<void> {
+    params.client_id = this._config.clientId;
+    return this._config.request(ApiUrls.AUTH_SET_PASSWORD, {
+      method: 'POST',
+      body: params,
+      withCredentials: true
+    })
+  }
+
+  /**
+   * device authorization
+   * @param {DeviceAuthorizeRequest} params
+   * @returns {Promise<DeviceAuthorizeResponse>}
+   * @memberof Auth
+   */
+  public async deviceAuthorize(params: DeviceAuthorizeRequest): Promise<DeviceAuthorizeResponse> {
+    params.client_id = this._config.clientId;
+    return this._config.request(ApiUrls.AUTH_GET_DEVICE_CODE, {
+      method: 'POST',
+      body: params,
+      withCredentials: true
+    })
   }
 }

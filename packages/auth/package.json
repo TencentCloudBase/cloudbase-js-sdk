@@ -1,56 +1,54 @@
 {
-  "name": "@cloudbase/auth",
-  "version": "1.7.3-alpha.0",
-  "description": "cloudbase javascript sdk auth componets",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "scripts": {
-    "tsc": "rm -rf dist/ && tsc -p tsconfig.esm.json && tsc -p tsconfig.json",
-    "lint": "eslint --fix \"./src/**/*.ts\"",
-    "build": "npm run lint && npm run tsc"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TencentCloudBase/cloudbase-js-sdk"
-  },
-  "keywords": [
-    "cloudbase",
-    "tcb",
-    "javascript",
-    "web",
-    "sdk",
-    "serverless"
-  ],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@cloudbase/adapter-interface": "^0.4.0",
-    "@cloudbase/app": "^1.5.3-alpha.0",
-    "@cloudbase/types": "^1.2.3-alpha.0",
-    "@cloudbase/utilities": "^1.4.3-alpha.0",
-    "sourcemapped-stacktrace": "^1.1.11"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
-    "eslint": "^6.8.0",
-    "eslint-config-alloy": "^3.7.1",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.0",
-    "typescript": "^3.8.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "**/*.ts": [
-      "eslint --fix"
-    ]
-  },
-  "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
+	"name": "@cloudbase/auth",
+	"version": "1.7.3-alpha.0",
+	"description": "cloudbase javascript sdk auth componets",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.js",
+	"scripts": {
+		"tsc": "rm -rf dist/ && tsc -p tsconfig.esm.json && tsc -p tsconfig.json",
+		"lint": "eslint --fix \"./src/**/*.ts\"",
+		"build": "npm run lint && npm run tsc"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TencentCloudBase/cloudbase-js-sdk"
+	},
+	"keywords": [
+		"cloudbase",
+		"tcb",
+		"javascript",
+		"web",
+		"sdk",
+		"serverless"
+	],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@cloudbase/oauth": "^0.0.5-alpha.0",
+		"@cloudbase/types": "^1.2.3-alpha.0",
+		"@cloudbase/utilities": "^1.4.3-alpha.0"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"eslint": "^6.8.0",
+		"eslint-config-alloy": "^3.7.1",
+		"husky": "^4.2.5",
+		"lint-staged": "^10.2.0",
+		"typescript": "^3.8.3"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"**/*.ts": [
+			"eslint --fix"
+		]
+	},
+	"gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
 }

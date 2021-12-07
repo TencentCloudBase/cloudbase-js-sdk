@@ -144,48 +144,6 @@ export function catchErrorsDecorator(options: ICatchErrorsDecoratorOptions) {
   };
 }
 
-export function stopOAuthLoginWithAuth() {
-  return function (
-    _target: any,
-    _methodName: string,
-    descriptor: TypedPropertyDescriptor<Function>
-  ) {
-    const fn = descriptor.value;
-    descriptor.value = async function (...args: any[]) {
-      const { _fromApp } = this
-      const authInstance = _fromApp.authInstance
-      // const oauthInstance = _fromApp.oauthInstance
-      const authLogin = authInstance && await authInstance.getLoginState()
-      if (authLogin) {
-        throw Error('当前已使用 auth 登录，请手动退出 auth 登录后再进行 oauth 登录')
-      }
-
-      return fn.apply(this, args);
-    }
-  }
-}
-
-export function stopAuthLoginWithOAuth() {
-  return function (
-    _target: any,
-    _methodName: string,
-    descriptor: TypedPropertyDescriptor<Function>
-  ) {
-    const fn = descriptor.value;
-    descriptor.value = async function (...args: any[]) {
-      const { _fromApp } = this
-      // const authInstance = _fromApp.authInstance
-      const oauthInstance = _fromApp.oauthInstance || (_fromApp as any).oauth()
-      const oauthLogin = oauthInstance && await oauthInstance.hasLoginState()
-      if (oauthLogin) {
-        throw Error('当前已使用 oauth 登录，请手动退出 oauth 登录后再进行 auth 登录')
-      }
-
-      return fn.apply(this, args);
-    }
-  }
-}
-
 /**
  * 在原始堆栈中查找装饰器条目并返回源码链接link
  * @param err

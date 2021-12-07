@@ -2,12 +2,9 @@ import { IRequestOptions, SDKRequestInterface, ResponseObject, IUploadRequestOpt
 import { KV } from '@cloudbase/types';
 import { IGetAccessTokenResult, ICloudbaseRequestConfig } from '@cloudbase/types/request';
 export interface ICloudbaseRequest {
-    fetch: (urlOrPath: string, init?: RequestInit) => Promise<Response>;
     post: (options: IRequestOptions) => Promise<ResponseObject>;
     upload: (options: IUploadRequestOptions) => Promise<ResponseObject>;
     download: (options: IRequestOptions) => Promise<ResponseObject>;
-    refreshAccessToken: () => Promise<IGetAccessTokenResult>;
-    getAccessToken: () => Promise<IGetAccessTokenResult>;
     request: (action: string, params: KV<any>, options?: KV<any>) => Promise<ResponseObject>;
     send: (action: string, data: KV<any>) => Promise<any>;
 }
@@ -17,29 +14,17 @@ export declare class CloudbaseRequest implements ICloudbaseRequest {
     _refreshAccessTokenPromise: Promise<IGetAccessTokenResult> | null;
     _reqClass: SDKRequestInterface;
     private _throwWhenRequestFail;
-    private _cache;
     private _localCache;
-    private _fromApp;
     constructor(config: ICloudbaseRequestConfig & {
         throw?: boolean;
     });
-    fetch(urlOrPath: string, init?: RequestInit): Promise<Response>;
     post(options: IRequestOptions): Promise<ResponseObject>;
     upload(options: IUploadRequestOptions): Promise<ResponseObject>;
     download(options: IRequestOptions): Promise<ResponseObject>;
-    refreshAccessToken(): Promise<IGetAccessTokenResult>;
-    refreshAccessTokenFromOauthServer(clientId: string): Promise<IGetAccessTokenResult>;
-    getOauthAccessToken(): Promise<IGetAccessTokenResult>;
+    getBaseEndPoint(): string;
     getOauthAccessTokenV2(oauthClient: any): Promise<IGetAccessTokenResult>;
-    getAccessToken(): Promise<IGetAccessTokenResult>;
     request(action: string, params: KV<any>, options?: KV<any>): Promise<ResponseObject>;
     send(action: string, data?: KV<any>): Promise<any>;
-    private _refreshAccessToken;
-    private _fetchAccessTokenFromOauthServer;
-    private _refreshAccessTokenFromOauthServer;
-    private _setRefreshToken;
-    private getDeviceId;
-    private checkFromAuthV2;
 }
 export declare function initRequest(config: ICloudbaseRequestConfig): void;
 export declare function getRequestByEnvId(env: string): CloudbaseRequest;
