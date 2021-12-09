@@ -379,20 +379,16 @@ export interface ChangeBoundProviderResponse {
   client_id: string;
 }
 
-export interface QueryUserProfileReq {
-  appended_params: string;
-}
-
-export interface QueryUserProfileObjReq {
-  username?: string
-  id?: string[]
-  email?: string
-  phone_number?: string
+export interface QueryUserProfileRequest {
+  id?: [string];
+  username?: string;
+  email?: string;
+  phone_number?: string;
 }
 
 export interface QueryUserProfileResponse {
   total: string;
-  data: UserProfile[]
+  data: SimpleUserProfile[]
 }
 
 export interface ResetPasswordRequest extends BaseRequest {
@@ -413,4 +409,15 @@ export interface DeviceAuthorizeResponse {
   interval: number
   verification_url: string
   verification_uri_complete: string
+}
+
+// 简化版用户信息
+export interface SimpleUserProfile {
+  sub: string;
+  name: string;
+  picture?: string;
+  gender?: string;
+  locale?: string;
+  email?: string;
+  phone_number?: string;
 }

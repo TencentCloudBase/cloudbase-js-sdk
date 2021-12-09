@@ -1,7 +1,3 @@
-import { ICloudbase } from '@cloudbase/types';
-import { ICloudbaseCache } from '@cloudbase/types/cache';
-import { ICloudbaseRequest } from '@cloudbase/types/request';
-import { ICloudbaseAuthConfig, IUser, IUserInfo, ILoginState } from '@cloudbase/types/auth';
 import { authModels, CloudbaseOAuth } from '@cloudbase/oauth';
 interface UserInfo {
     uid?: string;
@@ -20,14 +16,14 @@ interface UserInfo {
     created_from?: string;
 }
 interface IUserOptions {
-    cache: ICloudbaseCache;
+    cache: any;
     oauthInstance: CloudbaseOAuth;
 }
 interface ILoginStateOptions extends IUserOptions {
     envId: string;
 }
-export declare class LoginState implements ILoginState {
-    user: IUser;
+export declare class LoginState {
+    user: any;
     oauthLoginState: any;
     private _oauthInstance;
     private _cache;
@@ -39,9 +35,9 @@ declare class Auth {
     private readonly _config;
     private readonly _cache;
     private _oauthInstance;
-    constructor(config: ICloudbaseAuthConfig & {
-        cache: ICloudbaseCache;
-        request?: ICloudbaseRequest;
+    constructor(config: any & {
+        cache: any;
+        request?: any;
         runtime?: string;
     });
     bindPhoneNumber(params: authModels.BindPhoneRequest): Promise<void>;
@@ -49,25 +45,31 @@ declare class Auth {
     bindEmail(params: authModels.BindEmailRequest): Promise<void>;
     verify(params: authModels.VerifyRequest): Promise<authModels.VerifyResponse>;
     getVerification(params: authModels.GetVerificationRequest): Promise<authModels.GetVerificationResponse>;
-    get currentUser(): IUser;
-    getCurrentUser(): Promise<IUser>;
-    signInAnonymously(): Promise<ILoginState>;
+    get currentUser(): any;
+    getCurrentUser(): Promise<any>;
+    signInAnonymously(): Promise<any>;
     setCustomSignFunc(getTickFn: authModels.GetCustomSignTicketFn): void;
-    signInWithCustomTicket(): Promise<ILoginState>;
-    signIn(params: authModels.SignInRequest): Promise<ILoginState>;
-    signUp(params: authModels.SignUpRequest): Promise<ILoginState>;
+    signInWithCustomTicket(): Promise<any>;
+    signIn(params: authModels.SignInRequest): Promise<any>;
+    signUp(params: authModels.SignUpRequest): Promise<any>;
     setPassword(params: authModels.SetPasswordRequest): Promise<void>;
     isUsernameRegistered(username: string): Promise<boolean>;
     signOut(): Promise<void>;
-    hasLoginState(): ILoginState | null;
+    hasLoginState(): any | null;
     getLoginState(): Promise<LoginState>;
-    getUserInfo(): Promise<IUserInfo>;
+    getUserInfo(): Promise<any>;
     bindWithProvider(params: authModels.BindWithProviderRequest): Promise<void>;
-    queryUser(queryObj: authModels.QueryUserProfileObjReq): Promise<authModels.QueryUserProfileResponse>;
+    queryUser(queryObj: authModels.QueryUserProfileRequest): Promise<authModels.QueryUserProfileResponse>;
     getAccessToken(): Promise<{
         accessToken: string;
-        env: string;
+        env: any;
     }>;
+    grantProviderToken(params: authModels.GrantProviderTokenRequest): Promise<authModels.GrantProviderTokenResponse>;
+    signInWithProvider(params: authModels.SignInWithProviderRequest): Promise<any>;
+    grantToken(params: authModels.GrantTokenRequest): Promise<any>;
+    genProviderRedirectUri(params: authModels.GenProviderRedirectUriRequest): Promise<authModels.GenProviderRedirectUriResponse>;
+    resetPassword(params: authModels.ResetPasswordRequest): Promise<void>;
+    deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse>;
 }
 export { UserInfo, Auth, };
-export declare function registerAuth(app: Pick<ICloudbase, 'registerComponent'>): void;
+export declare function registerAuth(app: Pick<any, 'registerComponent'>): void;

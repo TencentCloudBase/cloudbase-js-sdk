@@ -659,24 +659,14 @@ class Auth {
 
   /**
    * 查询用户
-   * @param {authModels.QueryUserProfileReq} appended_params
+   * @param {authModels.QueryUserProfileRequest} appended_params
    * @returns {Promise<authModels.UserProfile>}
    * @memberof Auth
    */
   public async queryUser(
-    queryObj: authModels.QueryUserProfileObjReq,
+    queryObj: authModels.QueryUserProfileRequest,
   ): Promise<authModels.QueryUserProfileResponse> {
-    let queryStr = ''
-    for (let index in queryObj) {
-      if (index === 'id') {
-        queryStr += queryObj[index].map(item => `id=${item}`).join('&')
-      } else {
-        queryStr += `&${index}=${queryObj[index]}`
-      }
-    }
-    return this._oauthInstance.authApi.queryUserProfile({
-      appended_params: queryStr
-    })
+    return this._oauthInstance.authApi.queryUserProfile(queryObj)
   }
 
   public async getAccessToken() {
@@ -727,6 +717,13 @@ class Auth {
     return this._oauthInstance.authApi.genProviderRedirectUri(params)
   }
 
+  public async resetPassword(params: authModels.ResetPasswordRequest): Promise<void> {
+    return this._oauthInstance.authApi.resetPassword(params)
+  }
+
+  public async deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse> {
+    return this._oauthInstance.authApi.deviceAuthorize(params)
+  }
 }
 
 const component: ICloudbaseComponent = {

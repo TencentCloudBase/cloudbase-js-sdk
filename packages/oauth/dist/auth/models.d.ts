@@ -310,17 +310,40 @@ export interface ChangeBoundProviderRequest {
 export interface ChangeBoundProviderResponse {
     client_id: string;
 }
-export interface QueryUserProfileReq {
-    appended_params: string;
-}
-export interface QueryUserProfileObjReq {
+export interface QueryUserProfileRequest {
+    id?: [string];
     username?: string;
-    id?: string[];
     email?: string;
     phone_number?: string;
 }
 export interface QueryUserProfileResponse {
     total: string;
-    data: UserProfile[];
+    data: SimpleUserProfile[];
+}
+export interface ResetPasswordRequest extends BaseRequest {
+    email: string;
+    phone_number: string;
+    new_password: string;
+    verification_token: string;
+}
+export interface DeviceAuthorizeRequest extends BaseRequest {
+    scope: string;
+}
+export interface DeviceAuthorizeResponse {
+    device_code: string;
+    user_code: string;
+    expires_in: number;
+    interval: number;
+    verification_url: string;
+    verification_uri_complete: string;
+}
+export interface SimpleUserProfile {
+    sub: string;
+    name: string;
+    picture?: string;
+    gender?: string;
+    locale?: string;
+    email?: string;
+    phone_number?: string;
 }
 export {};

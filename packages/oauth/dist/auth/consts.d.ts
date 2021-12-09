@@ -19,7 +19,9 @@ export declare enum ApiUrls {
     CHECK_PWD_URL = "/auth/v1/user/sudo",
     SUDO_URL = "/auth/v1/user/sudo",
     BIND_CONTACT_URL = "/auth/v1/user/contact",
-    AUTH_SET_PASSWORD = "/auth/v1/user/password"
+    AUTH_SET_PASSWORD = "/auth/v1/user/password",
+    AUTH_RESET_PASSWORD = "/auth/v1/reset",
+    AUTH_GET_DEVICE_CODE = "/auth/v1/device/code"
 }
 export declare enum VerificationUsages {
     REGISTER = "REGISTER",

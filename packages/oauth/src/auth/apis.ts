@@ -28,11 +28,11 @@ import {
   SetPasswordRequest,
   ChangeBindedProviderRequest,
   ChangeBindedProviderResponse,
-  QueryUserProfileReq,
   UpdatePasswordRequest,
   SudoResponse,
   SudoRequest,
   GetCustomSignTicketFn,
+  QueryUserProfileRequest,
   QueryUserProfileResponse,
   ResetPasswordRequest,
   DeviceAuthorizeRequest,
@@ -545,10 +545,12 @@ export class Auth {
    * @return {Promise<UserProfile>} A Promise<UserProfile> object.
    */
   public async queryUserProfile(
-    appended_params: QueryUserProfileReq,
+    params: QueryUserProfileRequest,
   ): Promise<QueryUserProfileResponse> {
-    const url = `${ApiUrls.USER_QUERY_URL}${appended_params}`;
-    return this._config.request<QueryUserProfileResponse>(url, {
+    let url = new URL(ApiUrls.USER_QUERY_URL);
+    const searchParams = new URLSearchParams(params as any);
+    url.search = searchParams.toString();
+    return this._config.request<QueryUserProfileResponse>(url.toString(), {
       method: 'GET',
       withCredentials: true,
     });
