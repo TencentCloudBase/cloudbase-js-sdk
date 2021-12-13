@@ -7,7 +7,6 @@ export type GetCustomSignTicketFn = () => Promise<string>;
 export interface SignInRequest extends BaseRequest {
   username?: string;
   password?: string;
-  verification_code?: string;
   verification_token?: string;
 }
 
@@ -181,12 +180,6 @@ export type ChangeBindedProviderResponse = BaseRequest
 
 export interface QueryUserProfileReq extends BaseRequest {
   appended_params: string;
-}
-export interface SignInRequest {
-  username?: string;
-  password?: string;
-  verification_code?: string;
-  verification_token?: string;
 }
 
 export interface SignInWithProviderRequest {

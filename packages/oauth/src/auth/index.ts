@@ -135,7 +135,7 @@ export class Auth {
    */
   public async signOut(): Promise<void> {
     const accessToken: string = await this.credentialsClient.getAccessToken();
-    const data = await this.request<void>(ApiUrls.AUTH_REVOKE_URL, {
+    const data: any = await this.request(ApiUrls.AUTH_REVOKE_URL, {
       method: 'POST',
       withBasicAuth: true,
       body: {

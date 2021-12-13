@@ -434,15 +434,7 @@ class Auth {
   })
   public async signInAnonymously(): Promise<ILoginState> {
     await this._oauthInstance.authApi.signInAnonymously()
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   /**
@@ -472,15 +464,7 @@ class Auth {
   })
   public async signInWithCustomTicket(): Promise<ILoginState> {
     await this._oauthInstance.authApi.signInWithCustomTicket()
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   /**
@@ -491,15 +475,7 @@ class Auth {
    */
   public async signIn(params: authModels.SignInRequest): Promise<ILoginState> {
     await this._oauthInstance.authApi.signIn(params)
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   /**
@@ -687,28 +663,12 @@ class Auth {
     params: authModels.SignInWithProviderRequest,
   ): Promise<ILoginState> {
     await this._oauthInstance.authApi.signInWithProvider(params)
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   public async grantToken(params: authModels.GrantTokenRequest): Promise<ILoginState> {
     await this._oauthInstance.authApi.grantToken(params)
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   public async genProviderRedirectUri(
@@ -723,6 +683,18 @@ class Auth {
 
   public async deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse> {
     return this._oauthInstance.authApi.deviceAuthorize(params)
+  }
+
+  private async createLoginState(): Promise<ILoginState> {
+    const loginState = new LoginState({
+      envId: this._config.env,
+      cache: this._cache,
+      oauthInstance: this._oauthInstance,
+    })
+
+    await loginState.checkLocalStateAsync();
+    await loginState.user.refresh();
+    return loginState
   }
 }
 
@@ -741,9 +713,9 @@ const component: ICloudbaseComponent = {
       this.updateConfig({ persistence: newPersistence })
     }
 
-    const { env, persistence, debug } = this.config;
+    const { env, persistence, debug, clientId } = this.config;
     const oauthInstance = new CloudbaseOAuth({
-      clientId: env,
+      clientId: clientId,
       apiOrigin: this.request.getBaseEndPoint(),
     })
 

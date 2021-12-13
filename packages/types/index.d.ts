@@ -25,6 +25,7 @@ export interface ICloudbaseConfig {
   appSign?: string;
   debug?: boolean;
   _fromApp?: ICloudbase;
+  clientId?: string
   oauthInstance?: any;
 }
 // 可更新的配置字段
