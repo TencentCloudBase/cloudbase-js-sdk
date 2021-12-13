@@ -309,7 +309,7 @@ class Auth {
     title: '解除三方绑定失败',
     messages: [
       '请确认以下各项：',
-      '  1 - 调用 auth().unlink() 的语法或参数是否正确',
+      '  1 - 调用 auth().unbindProvider() 的语法或参数是否正确',
       '  2 - 当前账户是否已经与此登录方式解绑',
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
@@ -484,17 +484,19 @@ class Auth {
    * @returns {Promise<ILoginState>}
    * @memberof Auth
    */
+  @catchErrorsDecorator({
+    title: '注册失败',
+    messages: [
+      '请确认以下各项：',
+      '  1 - 当前环境是否开启了指定登录方式',
+      '  2 - 调用 auth().signUp() 的语法或参数是否正确',
+      `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
+    ]
+  })
   public async signUp(params: authModels.SignUpRequest): Promise<ILoginState> {
+    console.log('ggg')
     await this._oauthInstance.authApi.signUp(params)
-    const loginState = new LoginState({
-      envId: this._config.env,
-      cache: this._cache,
-      oauthInstance: this._oauthInstance,
-    })
-
-    await loginState.checkLocalStateAsync();
-    await loginState.user.refresh();
-    return loginState
+    return this.createLoginState()
   }
 
   /**

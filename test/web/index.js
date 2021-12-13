@@ -57,9 +57,11 @@ async function init() {
   //   }
   // })
 
+  let verification_id
+
   await auth.getCurrentUser()
   if (auth.currentUser) {
-    document.querySelector('#userInfoName').textContent = auth.currentUser.uid
+    document.querySelector('#userInfoName').textContent = auth.currentUser.username
   }
   document.querySelector('#signout').onclick = async function dologin() {
     // auth.signOut()
@@ -67,30 +69,17 @@ async function init() {
   document.querySelector('#signin').onclick = async function dologin() {
     console.log('dologin ...', auth.currentUser)
     if (!auth.hasLoginState()) {
-      console.log('login start ...')
-      // 公众号微信登录
-      // await signInWeixin(auth, appid);
+      const name = document.querySelector('#name').value;
+      // 获取密码
+      const password = document.querySelector('#password').value;
 
-      // 匿名登录
-      await signInAnonymous(auth)
+      await auth.signIn({
+        username: `+86 ${name}`,
+        password
+      })
 
-      // await signWithOAuth2(auth)
-
-
-      console.log('login end...')
-
-      // 自定义登录
-      // await signInCustom(auth);
-
-      // 用户名登录
-      // await signInWithUsername(auth,{
-      //   username: authUsername,
-      //   password: authPassword
-      // });
-
-      // 短信验证码登录
-      // await signInByPhone(auth, '13024748409')
-      // await signInByPhone(auth, "18202741638")
+      const user = await auth.getCurrentUser()
+      console.log('user', user)
     }
     else {
       console.log('already login ...')
@@ -98,14 +87,43 @@ async function init() {
   }
 
   document.querySelector('#signup').onclick = async function dosignup() {
-    // 获取name
+    // 获取手机号，邮箱
     const name = document.querySelector('#name').value;
+    // 获取用户名
+    const username = document.querySelector('#username').value;
     // 获取验证码
     const code = document.querySelector('#code').value;
     // 获取密码
     const password = document.querySelector('#password').value;
 
-    await auth.sign
+    // 获取 verification_token
+    const verificationToken = await auth.verify({
+      verification_id: verification_id,
+      verification_code: code
+    })
+
+    await auth.signUp({
+      phone_number: `+86 ${name}`,
+      // verification_code: verificationCode,
+      verification_token: verificationToken.verification_token,
+      // 可选，设置昵称
+      name: "nicknick",
+      // 可选，设置密码
+      password: password,
+      // 可选，设置登录用户名
+      username: username
+    })
+
+    const user = await auth.getCurrentUser()
+    console.log('user', user)
+  }
+
+  document.querySelector('#getCode').onclick = async function dogetCode() {
+    const verificationRes = await auth.getVerification({
+      phone_number: `+86 ${document.querySelector('#name').value}`
+    })
+    console.log('verification_id', verificationRes)
+    verification_id = verificationRes.verification_id
   }
 
   document.querySelector('#oauth2signin').onclick = async function dologin() {

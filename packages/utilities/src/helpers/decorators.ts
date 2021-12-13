@@ -61,7 +61,7 @@ export function catchErrorsDecorator(options: ICatchErrorsDecoratorOptions) {
           return fn.apply(this, args);
         } catch (err) {
           let failErr = err;
-          const { message: errMsg } = err;
+          const { message: errMsg, error, error_description } = err;
           const logs: any = {
             title: title || `${className}.${fnName} failed`,
             content: [{
@@ -90,6 +90,25 @@ export function catchErrorsDecorator(options: ICatchErrorsDecoratorOptions) {
               });
             }
           }
+
+          // oauth 错误特殊处理
+          if (error && error_description) {
+            logs.subtitle = error_description;
+            if (innerErr) {
+              innerErr.code = error;
+              innerErr.msg = error_description;
+            } else {
+              err.code = error
+              err.message = error_description
+            }
+            failErr = innerErr || err;
+            logs.content = messages.map(msg => {
+              return {
+                type: 'info',
+                body: msg
+              }
+            });
+          }
           printGroupLog(logs);
           throw failErr;
         }
@@ -102,11 +121,12 @@ export function catchErrorsDecorator(options: ICatchErrorsDecoratorOptions) {
           methodName: fnName,
           sourceLink
         })
+
         try {
           return await fn.apply(this, args);
         } catch (err) {
           let failErr = err;
-          const { message: errMsg } = err;
+          const { message: errMsg, error, error_description } = err;
           const logs: any = {
             title: title || `${className}.${fnName} failed`,
             content: [{
@@ -135,6 +155,25 @@ export function catchErrorsDecorator(options: ICatchErrorsDecoratorOptions) {
               });
             }
           }
+
+          // oauth 错误特殊处理
+          if (error && error_description) {
+            logs.subtitle = error_description;
+            if (innerErr) {
+              innerErr.code = error;
+              innerErr.msg = error_description;
+            } else {
+              err.code = error
+              err.message = error_description
+            }
+            failErr = innerErr || err;
+            logs.content = messages.map(msg => {
+              return {
+                type: 'info',
+                body: msg
+              }
+            });
+          }
           printGroupLog(logs);
           throw failErr;
         }
@@ -152,8 +191,10 @@ function getSourceLink(err: Error) {
   let sourceLink = '';
   const outterErrStacks = err.stack.split('\n');
   const indexOfDecorator = outterErrStacks.findIndex(str => REG_STACK_DECORATE.test(str));
+
   if (indexOfDecorator !== -1) {
     const match = REG_STACK_LINK.exec(outterErrStacks[indexOfDecorator + 1] || '');
+
     sourceLink = match ? match[0] : '';
   }
   return sourceLink;
