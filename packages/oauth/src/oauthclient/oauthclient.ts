@@ -73,7 +73,7 @@ interface LocalCredentialsOptions {
  */
 function isCredentialsExpired(credentials: Credentials): boolean {
   let isExpired = true;
-  if (credentials && credentials.expires_at && credentials.access_token) {
+  if (credentials?.expires_at && credentials.access_token) {
     isExpired = credentials.expires_at < new Date();
   }
   return isExpired;
@@ -107,7 +107,7 @@ export class LocalCredentials {
    * @param {Credentials} credentials
    */
   public async setCredentials(credentials?: Credentials): Promise<void> {
-    if (credentials && credentials.expires_in) {
+    if (credentials?.expires_in) {
       credentials.expires_at = new Date(
         Date.now() + (credentials.expires_in - 30) * 1000,
       );
@@ -149,7 +149,7 @@ export class LocalCredentials {
       if (tokenStr !== undefined && tokenStr !== null) {
         try {
           credentials = JSON.parse(tokenStr);
-          if (credentials && credentials.expires_at) {
+          if (credentials?.expires_at) {
             credentials.expires_at = new Date(credentials.expires_at);
           }
         } catch (error) {
@@ -253,10 +253,10 @@ export class OAuth2Client implements AuthClient {
       const deviceId = await this._getDeviceId();
       options.headers[DeviceIdHeaderName] = deviceId;
     }
-    if (options && options.withBasicAuth && this._basicAuth) {
+    if (options?.withBasicAuth && this._basicAuth) {
       options.headers['Authorization'] = this._basicAuth
     }
-    if (options && options.withCredentials) {
+    if (options?.withCredentials) {
       const credentials = await this._getCredentials();
       if (credentials) {
         if (this._tokenInURL) {
