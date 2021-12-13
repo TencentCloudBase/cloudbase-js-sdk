@@ -99,7 +99,6 @@ export class Auth {
    * @return {Promise<Credentials>} A Promise<Credentials> object.
    */
   public async signIn(params: SignInRequest): Promise<Credentials> {
-    params.client_id = this._config.clientId;
     const credentials: Credentials = await this._config.request<Credentials>(
       ApiUrls.AUTH_SIGN_IN_URL,
       {
@@ -120,9 +119,7 @@ export class Auth {
       ApiUrls.AUTH_SIGN_IN_ANONYMOUSLY_URL,
       {
         method: 'POST',
-        body: {
-          client_id: this._config.clientId
-        }
+        body: {}
       },
     );
     await this._config.credentialsClient.setCredentials(credentials);
@@ -135,7 +132,6 @@ export class Auth {
    * @return {Promise<Credentials>} A Promise<Credentials> object.
    */
   public async signUp(params: SignUpRequest): Promise<Credentials> {
-    params.client_id = this._config.clientId;
     const data: Credentials = await this._config.request<Credentials>(
       ApiUrls.AUTH_SIGN_UP_URL,
       {
@@ -156,7 +152,6 @@ export class Auth {
     const data = await this._config.request(ApiUrls.AUTH_REVOKE_URL, {
       method: 'POST',
       body: {
-        client_id: this._config.clientId,
         token: accessToken,
       },
     });
@@ -172,7 +167,6 @@ export class Auth {
   public async getVerification(
     params: GetVerificationRequest,
   ): Promise<GetVerificationResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request<GetVerificationResponse>(
       ApiUrls.VERIFICATION_URL,
       {
@@ -319,9 +313,6 @@ export class Auth {
       userInfo.uid = userInfo.sub
     }
 
-    if (userInfo.name) {
-      userInfo.username = userInfo.name
-    }
     return userInfo;
   }
 

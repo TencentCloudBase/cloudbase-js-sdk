@@ -32,26 +32,26 @@ export interface SimpleStorage {
   /**
    * value = storage[key]
    */
-  getItem(key: string): Promise<string | null>;
+  getItem: (key: string) => Promise<string | null>;
   /**
    * delete storage[key]
    */
-  removeItem(key: string): Promise<void>;
+  removeItem: (key: string) => Promise<void>;
   /**
    * storage[key] = value
    */
-  setItem(key: string, value: string): Promise<void>;
+  setItem: (key: string, value: string) => Promise<void>;
 
   /**
    * value = storage[key]
    */
-  getItemSync(key: string): string | null;
+  getItemSync: (key: string) => string | null;
   /**
    * delete storage[key]
    */
-  removeItemSync(key: string): void;
+  removeItemSync: (key: string) => void;
   /**
    * storage[key] = value
    */
-  setItemSync(key: string, value: string): void;
+  setItemSync: (key: string, value: string) => void;
 }
