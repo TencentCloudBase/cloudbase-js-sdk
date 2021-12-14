@@ -74,6 +74,7 @@ declare class Auth {
     genProviderRedirectUri(params: authModels.GenProviderRedirectUriRequest): Promise<authModels.GenProviderRedirectUriResponse>;
     resetPassword(params: authModels.ResetPasswordRequest): Promise<void>;
     deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse>;
+    sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse>;
     private createLoginState;
 }
 export { UserInfo, Auth, };

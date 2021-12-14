@@ -420,7 +420,7 @@ class Auth {
 
   /**
    * 匿名登录
-   * @returns {Promise<ILoginState>}
+   * @returns {Promise<LoginState>}
    * @memberof Auth
    */
   @catchErrorsDecorator({
@@ -432,7 +432,7 @@ class Auth {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async signInAnonymously(): Promise<ILoginState> {
+  public async signInAnonymously(): Promise<LoginState> {
     await this._oauthInstance.authApi.signInAnonymously()
     return this.createLoginState()
   }
@@ -448,7 +448,7 @@ class Auth {
 
   /**
    *
-   * @returns {Promise<ILoginState>}
+   * @returns {Promise<LoginState>}
    * @memberof Auth
    */
   @catchErrorsDecorator({
@@ -462,7 +462,7 @@ class Auth {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async signInWithCustomTicket(): Promise<ILoginState> {
+  public async signInWithCustomTicket(): Promise<LoginState> {
     await this._oauthInstance.authApi.signInWithCustomTicket()
     return this.createLoginState()
   }
@@ -470,10 +470,10 @@ class Auth {
   /**
    *
    * @param {authModels.SignInRequest} params
-   * @returns {Promise<ILoginState>}
+   * @returns {Promise<LoginState>}
    * @memberof Auth
    */
-  public async signIn(params: authModels.SignInRequest): Promise<ILoginState> {
+  public async signIn(params: authModels.SignInRequest): Promise<LoginState> {
     await this._oauthInstance.authApi.signIn(params)
     return this.createLoginState()
   }
@@ -481,7 +481,7 @@ class Auth {
   /**
    *
    * @param {authModels.SignUpRequest} params
-   * @returns {Promise<ILoginState>}
+   * @returns {Promise<LoginState>}
    * @memberof Auth
    */
   @catchErrorsDecorator({
@@ -493,7 +493,7 @@ class Auth {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async signUp(params: authModels.SignUpRequest): Promise<ILoginState> {
+  public async signUp(params: authModels.SignUpRequest): Promise<LoginState> {
     console.log('ggg')
     await this._oauthInstance.authApi.signUp(params)
     return this.createLoginState()
@@ -554,7 +554,7 @@ class Auth {
   /**
    * 获取本地登录态-同步
    */
-  public hasLoginState(): ILoginState | null {
+  public hasLoginState(): LoginState | null {
     if (this._cache.mode === 'async') {
       // async storage的平台调用此API提示
       printWarn(ERRORS.INVALID_OPERATION, 'current platform\'s storage is asynchronous, please use getLoginState insteed');
@@ -663,12 +663,12 @@ class Auth {
 
   public async signInWithProvider(
     params: authModels.SignInWithProviderRequest,
-  ): Promise<ILoginState> {
+  ): Promise<LoginState> {
     await this._oauthInstance.authApi.signInWithProvider(params)
     return this.createLoginState()
   }
 
-  public async grantToken(params: authModels.GrantTokenRequest): Promise<ILoginState> {
+  public async grantToken(params: authModels.GrantTokenRequest): Promise<LoginState> {
     await this._oauthInstance.authApi.grantToken(params)
     return this.createLoginState()
   }
@@ -687,7 +687,11 @@ class Auth {
     return this._oauthInstance.authApi.deviceAuthorize(params)
   }
 
-  private async createLoginState(): Promise<ILoginState> {
+  public async sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse> {
+    return this._oauthInstance.authApi.sudo(params)
+  }
+
+  private async createLoginState(): Promise<LoginState> {
     const loginState = new LoginState({
       envId: this._config.env,
       cache: this._cache,
