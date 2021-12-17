@@ -125,6 +125,14 @@ export interface UserProfile {
   created_from?: string;
   sub?: string
   uid?: string
+  address?: {
+    formatted?: string,
+    street_address?: string,
+    locality?: string,
+    region?: string,
+    postal_code?: string,
+    country?: string
+  }
   nickName?: string // TODO:
   province?: string // TODO:
   country?: string // TODO:
@@ -328,6 +336,10 @@ export interface BindPhoneRequest {
   phone_number: string;
   sudo_token: string;
   verification_token: string;
+  conflict_resolution: string
+  // 1. DEFAULT 0, 默认提示用户手机号已被绑定
+  // 2. DELETE_ACCOUNT_TRANSFER 1, 标记原账号已被注销，并将手机换绑给自己
+  // 3. TRANSFER 2, 仅换绑手机号，不注销原有账号（换绑后原账号无法登录时，则自动注销原账号）
 }
 
 export interface BindEmailRequest {
@@ -392,7 +404,7 @@ export interface ResetPasswordRequest extends BaseRequest {
 }
 
 export interface DeviceAuthorizeRequest extends BaseRequest {
-  scope: string
+  scope?: string
 }
 
 export interface DeviceAuthorizeResponse {
@@ -413,4 +425,8 @@ export interface SimpleUserProfile {
   locale?: string;
   email?: string;
   phone_number?: string;
+}
+
+export interface CheckUsernameRequest {
+  username: string
 }

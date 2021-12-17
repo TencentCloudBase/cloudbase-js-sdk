@@ -80,6 +80,13 @@ async function init() {
 
       const user = await auth.getCurrentUser()
       console.log('user', user)
+
+      // call Functiion
+      const callRes = await app.callFunction({
+        name: 'test',
+        data: {}
+      })
+      console.log('callRes', callRes)
     }
     else {
       console.log('already login ...')

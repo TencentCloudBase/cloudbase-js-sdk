@@ -51,15 +51,15 @@ declare class Auth {
     getVerification(params: authModels.GetVerificationRequest): Promise<authModels.GetVerificationResponse>;
     get currentUser(): IUser;
     getCurrentUser(): Promise<IUser>;
-    signInAnonymously(): Promise<ILoginState>;
+    signInAnonymously(): Promise<LoginState>;
     setCustomSignFunc(getTickFn: authModels.GetCustomSignTicketFn): void;
-    signInWithCustomTicket(): Promise<ILoginState>;
-    signIn(params: authModels.SignInRequest): Promise<ILoginState>;
-    signUp(params: authModels.SignUpRequest): Promise<ILoginState>;
+    signInWithCustomTicket(): Promise<LoginState>;
+    signIn(params: authModels.SignInRequest): Promise<LoginState>;
+    signUp(params: authModels.SignUpRequest): Promise<LoginState>;
     setPassword(params: authModels.SetPasswordRequest): Promise<void>;
     isUsernameRegistered(username: string): Promise<boolean>;
     signOut(): Promise<void>;
-    hasLoginState(): ILoginState | null;
+    hasLoginState(): LoginState | null;
     getLoginState(): Promise<LoginState>;
     getUserInfo(): Promise<IUserInfo>;
     bindWithProvider(params: authModels.BindWithProviderRequest): Promise<void>;
@@ -69,12 +69,13 @@ declare class Auth {
         env: string;
     }>;
     grantProviderToken(params: authModels.GrantProviderTokenRequest): Promise<authModels.GrantProviderTokenResponse>;
-    signInWithProvider(params: authModels.SignInWithProviderRequest): Promise<ILoginState>;
-    grantToken(params: authModels.GrantTokenRequest): Promise<ILoginState>;
+    signInWithProvider(params: authModels.SignInWithProviderRequest): Promise<LoginState>;
+    grantToken(params: authModels.GrantTokenRequest): Promise<LoginState>;
     genProviderRedirectUri(params: authModels.GenProviderRedirectUriRequest): Promise<authModels.GenProviderRedirectUriResponse>;
     resetPassword(params: authModels.ResetPasswordRequest): Promise<void>;
     deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse>;
     sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse>;
+    onLoginStateChanged(callback: Function): Promise<void>;
     private createLoginState;
 }
 export { UserInfo, Auth, };

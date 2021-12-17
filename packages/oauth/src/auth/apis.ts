@@ -36,7 +36,8 @@ import {
   QueryUserProfileResponse,
   ResetPasswordRequest,
   DeviceAuthorizeRequest,
-  DeviceAuthorizeResponse
+  DeviceAuthorizeResponse,
+  CheckUsernameRequest
 } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client, defaultStorage } from '../oauth2client/oauth2client';
@@ -183,7 +184,6 @@ export class Auth {
    * @return {Promise<VerifyResponse>} A Promise<VerifyResponse> object.
    */
   public async verify(params: VerifyRequest): Promise<VerifyResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request<VerifyResponse>(ApiUrls.VERIFY_URL, {
       method: 'POST',
       body: params,
@@ -224,7 +224,6 @@ export class Auth {
   public async grantProviderToken(
     params: GrantProviderTokenRequest,
   ): Promise<GrantProviderTokenResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request<GrantProviderTokenResponse>(
       ApiUrls.PROVIDER_TOKEN_URL,
       {
@@ -242,7 +241,6 @@ export class Auth {
   public async patchProviderToken(
     params: PatchProviderTokenRequest,
   ): Promise<PatchProviderTokenResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request<PatchProviderTokenResponse>(
       ApiUrls.PROVIDER_TOKEN_URL,
       {
@@ -260,7 +258,6 @@ export class Auth {
   public async signInWithProvider(
     params: SignInWithProviderRequest,
   ): Promise<Credentials> {
-    params.client_id = this._config.clientId;
     const credentials: Credentials = await this._config.request<Credentials>(
       ApiUrls.AUTH_SIGN_IN_WITH_PROVIDER_URL,
       {
@@ -280,7 +277,6 @@ export class Auth {
   public async bindWithProvider(
     params: BindWithProviderRequest,
   ): Promise<void> {
-    params.client_id = this._config.clientId;
     return this._config.request<any>(ApiUrls.PROVIDER_BIND_URL, {
       method: 'POST',
       body: params,
@@ -362,7 +358,6 @@ export class Auth {
    * @return {Promise<Credentials>} A Promise<Credentials> object.
    */
   public async grantToken(params: GrantTokenRequest): Promise<Credentials> {
-    params.client_id = this._config.clientId;
     return this._config.request<Credentials>(ApiUrls.AUTH_TOKEN_URL, {
       method: 'POST',
       body: params,
@@ -386,7 +381,6 @@ export class Auth {
    * @return {Promise<any>}
    */
   public async unbindProvider(params: UnbindProviderRequest): Promise<void> {
-    params.client_id = this._config.clientId;
     return this._config.request<any>(
       `${ApiUrls.PROVIDER_UNBIND_URL}/${params.provider_id}`,
       {
@@ -483,7 +477,6 @@ export class Auth {
   public async getCurUserVerification(
     params: GetVerificationRequest,
   ): Promise<GetVerificationResponse> {
-    params.client_id = this._config.clientId;
     params.target = 'CUR_USER';
     return this._config.request<GetVerificationResponse>(
       ApiUrls.VERIFICATION_URL,
@@ -504,7 +497,6 @@ export class Auth {
   public async changeBindedProvider(
     params: ChangeBindedProviderRequest,
   ): Promise<ChangeBindedProviderResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request<ChangeBindedProviderResponse>(
       `${ApiUrls.PROVIDER_LIST}/${params.provider_id}/trans`,
       {
@@ -574,7 +566,6 @@ export class Auth {
    * @memberof Auth
    */
   public async resetPassword(params: ResetPasswordRequest): Promise<void> {
-    params.client_id = this._config.clientId;
     return this._config.request(ApiUrls.AUTH_SET_PASSWORD, {
       method: 'POST',
       body: params,
@@ -589,9 +580,16 @@ export class Auth {
    * @memberof Auth
    */
   public async deviceAuthorize(params: DeviceAuthorizeRequest): Promise<DeviceAuthorizeResponse> {
-    params.client_id = this._config.clientId;
     return this._config.request(ApiUrls.AUTH_GET_DEVICE_CODE, {
       method: 'POST',
+      body: params,
+      withCredentials: true
+    })
+  }
+
+  public async checkUsername(params: CheckUsernameRequest): Promise<void> {
+    return this._config.request(ApiUrls.AUTH_GET_DEVICE_CODE, {
+      method: 'GET',
       body: params,
       withCredentials: true
     })

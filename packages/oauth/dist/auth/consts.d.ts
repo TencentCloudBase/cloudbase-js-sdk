@@ -21,7 +21,8 @@ export declare enum ApiUrls {
     BIND_CONTACT_URL = "/auth/v1/user/contact",
     AUTH_SET_PASSWORD = "/auth/v1/user/password",
     AUTH_RESET_PASSWORD = "/auth/v1/reset",
-    AUTH_GET_DEVICE_CODE = "/auth/v1/device/code"
+    AUTH_GET_DEVICE_CODE = "/auth/v1/device/code",
+    CHECK_USERNAME = "/auth/v1/checkUsername"
 }
 export declare enum VerificationUsages {
     REGISTER = "REGISTER",

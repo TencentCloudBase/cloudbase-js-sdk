@@ -1,5 +1,5 @@
 import { ICloudbase } from '@cloudbase/types';
-import { utils, constants, helpers } from '@cloudbase/utilities';
+import { utils, constants, helpers, events } from '@cloudbase/utilities';
 import { ICloudbaseCache } from '@cloudbase/types/cache';
 import { ICloudbaseRequest } from '@cloudbase/types/request';
 import { ICloudbaseAuthConfig, IUser, IUserInfo, ILoginState } from '@cloudbase/types/auth';
@@ -12,8 +12,14 @@ declare const cloudbase: ICloudbase;
 const { printWarn, throwError } = utils;
 const { ERRORS, COMMUNITY_SITE_URL } = constants;
 const { catchErrorsDecorator } = helpers;
+const { CloudbaseEventEmitter } = events;
 
 const COMPONENT_NAME = 'auth';
+
+const EVENTS = {
+  // 登录态改变后触发
+  LOGIN_STATE_CHANGED: 'loginStateChanged',
+};
 
 interface UserInfo {
   uid?: string;
@@ -31,6 +37,8 @@ interface UserInfo {
   sub?: string;
   created_from?: string;
 }
+
+const eventBus = new CloudbaseEventEmitter();
 
 interface IUserOptions {
   cache: ICloudbaseCache;
@@ -526,11 +534,12 @@ class Auth {
       throwError(ERRORS.INVALID_PARAMS, 'username must be a string');
     }
 
-    const queryRes = await this.queryUser({
-      username
-    })
-
-    return parseInt(queryRes.total) ? true : false
+    try {
+      await this._oauthInstance.authApi.checkUsername({ username })
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
   /**
@@ -549,6 +558,7 @@ class Auth {
     const { userInfoKey } = this._cache.keys;
     await this._oauthInstance.authApi.signOut()
     await this._cache.removeStoreAsync(userInfoKey)
+    eventBus.fire(EVENTS.LOGIN_STATE_CHANGED)
   }
 
   /**
@@ -691,6 +701,16 @@ class Auth {
     return this._oauthInstance.authApi.sudo(params)
   }
 
+  public async onLoginStateChanged(callback: Function) {
+    eventBus.on(EVENTS.LOGIN_STATE_CHANGED, async () => {
+      const loginState = await this.getLoginState();
+      callback.call(this, loginState);
+    });
+    // 立刻执行一次回调
+    const loginState = await this.getLoginState();
+    callback.call(this, loginState);
+  }
+
   private async createLoginState(): Promise<LoginState> {
     const loginState = new LoginState({
       envId: this._config.env,
@@ -700,6 +720,7 @@ class Auth {
 
     await loginState.checkLocalStateAsync();
     await loginState.user.refresh();
+    eventBus.fire(EVENTS.LOGIN_STATE_CHANGED);
     return loginState
   }
 }

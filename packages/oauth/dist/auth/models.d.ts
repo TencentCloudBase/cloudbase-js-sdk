@@ -104,6 +104,14 @@ export interface UserProfile {
     created_from?: string;
     sub?: string;
     uid?: string;
+    address?: {
+        formatted?: string;
+        street_address?: string;
+        locality?: string;
+        region?: string;
+        postal_code?: string;
+        country?: string;
+    };
     nickName?: string;
     province?: string;
     country?: string;
@@ -271,6 +279,7 @@ export interface BindPhoneRequest {
     phone_number: string;
     sudo_token: string;
     verification_token: string;
+    conflict_resolution: string;
 }
 export interface BindEmailRequest {
     email: string;
@@ -320,7 +329,7 @@ export interface ResetPasswordRequest extends BaseRequest {
     verification_token: string;
 }
 export interface DeviceAuthorizeRequest extends BaseRequest {
-    scope: string;
+    scope?: string;
 }
 export interface DeviceAuthorizeResponse {
     device_code: string;
@@ -338,5 +347,8 @@ export interface SimpleUserProfile {
     locale?: string;
     email?: string;
     phone_number?: string;
+}
+export interface CheckUsernameRequest {
+    username: string;
 }
 export {};
