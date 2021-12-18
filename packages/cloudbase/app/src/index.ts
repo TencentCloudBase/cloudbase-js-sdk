@@ -1,9 +1,8 @@
 import cloudbase from '@cloudbase/app';
-import * as pkg from '../../package.json';
+import pkg from '../../package.json';
 import { ICloudbase } from '@cloudbase/types';
 
-const { version } = pkg;
-cloudbase.registerVersion(version);
+cloudbase.registerVersion(pkg.version);
 
 declare global {
   interface Window {
