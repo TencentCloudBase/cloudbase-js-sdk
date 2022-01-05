@@ -1,6 +1,6 @@
 {
 	"name": "@cloudbase/js-sdk",
-	"version": "2.0.0-alpha.0",
+	"version": "2.0.0-alpha.1",
 	"description": "cloudbase javascript sdk",
 	"main": "dist/index.cjs.js",
 	"module": "dist/index.esm.js",
@@ -46,7 +46,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@cloudbase/analytics": "^2.0.0-alpha.0",
-		"@cloudbase/app": "^2.0.0-alpha.0",
+		"@cloudbase/app": "^2.0.0-alpha.1",
 		"@cloudbase/auth": "^2.0.0-alpha.0",
 		"@cloudbase/database": "0.9.18-next",
 		"@cloudbase/functions": "^2.0.0-alpha.0",
