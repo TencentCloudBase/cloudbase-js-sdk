@@ -163,7 +163,13 @@ export class CloudbaseRequest implements ICloudbaseRequest {
 
     if (ACTIONS_WITHOUT_ACCESSTOKEN.indexOf(action) === -1) {
       const app = this.config._fromApp
-      const oauthClient = app.oauthInstance.oauth2client
+
+      if (!app.oauthInstance) {
+        throw new Error(`you can't request without auth`)
+      }
+
+      const oauthInstance = app.oauthInstance
+      const oauthClient = oauthInstance.oauth2client
       tmpObj.access_token = (await this.getOauthAccessTokenV2(oauthClient)).accessToken
     }
 

@@ -25,7 +25,7 @@ function database(dbConfig?: object) {
     Db.ws = null;
   }
 
-  return new Db({ ...this.config, ...dbConfig });
+  return new Db({ ...this.config, _fromApp: this, ...dbConfig });
 }
 
 const component: ICloudbaseComponent = {

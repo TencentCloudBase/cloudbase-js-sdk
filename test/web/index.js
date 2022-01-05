@@ -162,6 +162,12 @@ async function init() {
           data: {}
         })
         console.log('callRes', callRes)
+
+        const db = app.database()
+        const addRes = await db.collection('test').add({
+          a: 1
+        })
+        console.log('addRes', addRes)
       } catch (e) {
         console.log('e', e)
       }
