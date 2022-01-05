@@ -35,7 +35,7 @@ async function init() {
   if (!app) {
     app = cloudbase.init({
       env: 'xbase-4gh5dh6nf62145a9',
-      region: 'ap-shanghai'
+      // region: 'ap-shanghai'
     })
   }
 
@@ -137,7 +137,7 @@ async function init() {
     // 初始化tcb
     const app = cloudbase.init({
       env: 'xbase-4gh5dh6nf62145a9',
-      region: 'ap-shanghai'
+      // region: 'ap-shanghai'
     })
 
     // const oauth = app.oauth()

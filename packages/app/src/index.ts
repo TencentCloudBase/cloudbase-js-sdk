@@ -126,9 +126,9 @@ class Cloudbase implements ICloudbase {
     const { env, persistence, debug, timeout, appSecret, appSign, oauthClient } = this._config;
     initCache({ env, persistence, debug, platformInfo: this.platform });
 
-    if (config.region) {
-      setRegionLevelEndpoint(env, config.region || '')
-    }
+
+    setRegionLevelEndpoint(env, config.region || '')
+
     const app = new Cloudbase(this._config);
     initRequest({ env, region: config.region || '', timeout, appSecret, appSign, oauthClient, _fromApp: app });
     app.requestClient = this.requestClient;

@@ -17,7 +17,7 @@ const cacheMap: KV<ICloudbaseCache> = {};
 const localCacheMap: KV<ICloudbaseCache> = {};
 
 export function initCache(config: ICacheConfig & { env: string }) {
-  const { env, persistence, platformInfo } = config;
+  const { env, platformInfo } = config;
 
   // const accessTokenKey = `${KEY_ACCESS_TOKEN}_${env}`;
   // const accessTokenExpireKey = `${KEY_ACCESS_TOKEN_EXPIRE}_${env}`;
@@ -37,7 +37,7 @@ export function initCache(config: ICacheConfig & { env: string }) {
     // deviceIdKey
   };
   // 若指定env已存在cache则尝试更新persistence
-  cacheMap[env] ? cacheMap[env].updatePersistence(persistence) : (cacheMap[env] = new CloudbaseCache({
+  cacheMap[env] = cacheMap[env] || (new CloudbaseCache({
     ...config,
     keys,
     platformInfo,
