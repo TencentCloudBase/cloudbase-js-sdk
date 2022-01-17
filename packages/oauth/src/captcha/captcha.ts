@@ -69,8 +69,10 @@ export class Captcha {
     if (options.withCaptcha) {
       reqURL = await this._appendCaptchaTokenToURL(url, state, false);
     }
+
+    let resp: T;
     try {
-      return this._config.request<T>(reqURL, options)
+      resp = await this._config.request<T>(reqURL, options)
     } catch (err) {
       if (err.error === 'captcha_required' || err.error === 'captcha_invalid') {
         url = await this._appendCaptchaTokenToURL(url, state, err.error === 'captcha_invalid')
@@ -79,6 +81,7 @@ export class Captcha {
         return Promise.reject(err)
       }
     }
+    return resp
   }
 
   private _getDefaultOpenURIWithCallback(): OpenURIWithCallbackFuction {
@@ -90,7 +93,9 @@ export class Captcha {
       elementDiv.style.cssText =
         'background-color: rgba(0, 0, 0, 0.7);position: fixed;left: 0px;right: 0px;top: 0px;bottom: 0px;padding: 9vw 0 0 0;display: none;z-index:100;';
       elementDiv.setAttribute('id', 'captcha_panel_wrap');
-      document.body.appendChild(elementDiv);
+      setTimeout(() => {
+        document.body.appendChild(elementDiv);
+      }, 0)
     }
     return this._defaultOpenURIWithCallback
   }

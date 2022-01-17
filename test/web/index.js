@@ -24,7 +24,7 @@ let app
 let auth
 let loginState
 
-cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
+// cloudbase.registerEndPoint("//tcb-pre.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//exp.ap-guangzhou.tcb-api.tencentcloudapi.com/web")
 // cloudbase.registerEndPoint("//127.0.0.1:8002/web")
 // cloudbase.registerEndPoint("https://production-fv979.ap-shanghai.tcb-api.tencentcloudapi.com")
@@ -34,12 +34,15 @@ async function init() {
   // 初始化
   if (!app) {
     app = cloudbase.init({
-      env: 'xbase-4gh5dh6nf62145a9',
+      env: 'luke-postpay-env-8ajra',
       // region: 'ap-shanghai'
     })
   }
 
   auth = app.auth()
+
+  const db = app.database()
+  const collection = db.collection('test')
 
   registerFunctionCases(app)
   registerStorageCases(app)
@@ -133,16 +136,23 @@ async function init() {
     verification_id = verificationRes.verification_id
   }
 
+  document.querySelector('#mockAddDoc11').onclick = async function () {
+    const addRes = await collection.add({
+      a: 1
+    })
+    console.log('addRes', addRes)
+  }
+
   document.querySelector('#oauth2signin').onclick = async function dologin() {
     // 初始化tcb
-    const app = cloudbase.init({
-      env: 'xbase-4gh5dh6nf62145a9',
-      // region: 'ap-shanghai'
-    })
+    // const app = cloudbase.init({
+    //   env: 'xbase-4gh5dh6nf62145a9',
+    //   // region: 'ap-shanghai'
+    // })
 
     // const oauth = app.oauth()
 
-    const auth = app.auth()
+    // const auth = app.auth()
 
     const loginState = await auth.getLoginState()
 
@@ -151,23 +161,31 @@ async function init() {
     if (!loginState) {
 
       // 走oauth登录
-      const crd = await auth.signInAnonymously()
+      const crd = await auth.setCustomSignFunc(() => { return '8ccc482a-4d14-4093-9229-0466a056180a/@@/eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJSUzI1NiIsImVudiI6Imx1a2UtcG9zdHBheS1lbnYtOGFqcmEiLCJpYXQiOjE2NDE0NzAzMTMwMzYsImV4cCI6MTY0MTQ3MDkxMzAzNiwidWlkIjoibHVrZWp5aHVhbmciLCJyZWZyZXNoIjozNjAwMDAwLCJleHBpcmUiOjE2NDIwNzUxMTMwMzZ9.W51pRsCCT0KqsuRfZ3l8t9jnD6JwvJ4IV3CP0cWow9yN3b3Nf8OXxqL_xW4xW8oKE3Xa9eTQUu9oy89h0H-URW1sQ2wm0ldYDSon2Xbm8jBZ_SejJtzlbIc9jbbRDadWfGxAaM4h8K0jitZT05ku2PeQHV-oTJwWSC8GnA7lq4c' })
       console.log('crd', crd)
+
+      let res = await auth.signInWithCustomTicket();
+      console.log('custom sign in res:', res)
 
       // 调用函数
       try {
-
         const callRes = await app.callFunction({
-          name: 'test',
+          name: 'getTicket',
           data: {}
         })
         console.log('callRes', callRes)
 
-        const db = app.database()
-        const addRes = await db.collection('test').add({
-          a: 1
-        })
-        console.log('addRes', addRes)
+        // const db = app.database()
+        // 开启watch
+        // const ref = collection.where({}).watch({
+        //   onChange: (snapshot) => {
+        //     console.log("收到snapshot**********", snapshot);
+        //   },
+        //   onError: (error) => {
+        //     console.log("收到error**********", error);
+        //   }
+        // })
+
       } catch (e) {
         console.log('e', e)
       }

@@ -48,4 +48,5 @@ export declare class Auth {
     resetPassword(params: ResetPasswordRequest): Promise<void>;
     deviceAuthorize(params: DeviceAuthorizeRequest): Promise<DeviceAuthorizeResponse>;
     checkUsername(params: CheckUsernameRequest): Promise<void>;
+    loginScope(): Promise<string>;
 }

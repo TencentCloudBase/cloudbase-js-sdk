@@ -132,9 +132,9 @@ class User implements IUser {
       `如果问题依然存在，建议到官方问答社区提问或寻找帮助：${COMMUNITY_SITE_URL}`
     ]
   })
-  public async update(userInfo: IUserInfo): Promise<void> {
-    const { name, gender, avatarUrl, province, country, city } = userInfo;
-    const newUserInfo = await this._oauthInstance.authApi.setUserProfile({ name, gender, avatarUrl, province, country, city })
+  public async update(userInfo: authModels.UserProfile): Promise<void> {
+    // const { name, gender, avatarUrl, province, country, city } = userInfo;
+    const newUserInfo = await this._oauthInstance.authApi.setUserProfile({ ...userInfo })
 
     this._setLocalUserInfo(newUserInfo);
   }
@@ -699,6 +699,10 @@ class Auth {
 
   public async sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse> {
     return this._oauthInstance.authApi.sudo(params)
+  }
+
+  public async loginScope(): Promise<string> {
+    return this._oauthInstance.authApi.loginScope()
   }
 
   public async onLoginStateChanged(callback: Function) {

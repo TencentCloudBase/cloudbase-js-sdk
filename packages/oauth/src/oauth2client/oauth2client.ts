@@ -572,6 +572,15 @@ export class OAuth2Client implements AuthClient {
     return this._localCredentials.getCredentials()
   }
 
+  public async getScope(): Promise<string> {
+    let credentials: Credentials = await this._localCredentials.getCredentials();
+    if (credentials == null) {
+      return this._unAuthenticatedError("credentials not found")
+    }
+    return credentials.scope;
+  }
+
+
 
   /**
    * Get deviceId

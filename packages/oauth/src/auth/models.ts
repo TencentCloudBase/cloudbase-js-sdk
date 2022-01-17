@@ -213,6 +213,7 @@ export interface SignUpRequest {
 export interface GetVerificationRequest {
   phone_number?: string;
   email?: string;
+  // 可选 ANY，USER，NOT_USER, CUR_USER;
   target?: string | 'ANY';
   usage?: string;
 }

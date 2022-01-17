@@ -64,6 +64,7 @@ export declare class OAuth2Client implements AuthClient {
     _getCredentials(): Promise<Credentials | null>;
     getCredentialsSync(): Credentials | null;
     getCredentialsAsync(): Promise<Credentials | null>;
+    getScope(): Promise<string>;
     private _getDeviceId;
     private _unAuthenticatedError;
 }

@@ -168,12 +168,23 @@ export class Auth {
   public async getVerification(
     params: GetVerificationRequest,
   ): Promise<GetVerificationResponse> {
+    let withCredentials = false;
+    // 发送短信时，如果时给当前用户发，则需要带上鉴权信息
+    if (params.target == 'CUR_USER') {
+      withCredentials = true
+    } else {
+      const hasLogin = await this.hasLoginState()
+      if (hasLogin) {
+        withCredentials = true
+      }
+    }
     return this._config.request<GetVerificationResponse>(
       ApiUrls.VERIFICATION_URL,
       {
         method: 'POST',
         body: params,
-        withCaptcha: true
+        withCaptcha: true,
+        withCredentials: withCredentials,
       },
     );
   }
@@ -530,10 +541,10 @@ export class Auth {
   public async queryUserProfile(
     params: QueryUserProfileRequest,
   ): Promise<QueryUserProfileResponse> {
-    let url = new URL(ApiUrls.USER_QUERY_URL);
+    // let url = new URL(ApiUrls.USER_QUERY_URL);
     const searchParams = new URLSearchParams(params as any);
-    url.search = searchParams.toString();
-    return this._config.request<QueryUserProfileResponse>(url.toString(), {
+    // url.search = searchParams.toString();
+    return this._config.request<QueryUserProfileResponse>(`${ApiUrls.USER_QUERY_URL}?${searchParams.toString()}`, {
       method: 'GET',
       withCredentials: true,
     });
@@ -569,7 +580,7 @@ export class Auth {
     return this._config.request(ApiUrls.AUTH_SET_PASSWORD, {
       method: 'POST',
       body: params,
-      withCredentials: true
+      // withCredentials: true
     })
   }
 
@@ -593,5 +604,9 @@ export class Auth {
       body: params,
       withCredentials: true
     })
+  }
+
+  public async loginScope(): Promise<string> {
+    return this._config.credentialsClient.getScope()
   }
 }
