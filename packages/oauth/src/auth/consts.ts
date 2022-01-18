@@ -22,7 +22,8 @@ export enum ApiUrls {
   AUTH_SET_PASSWORD = '/auth/v1/user/password',
   AUTH_RESET_PASSWORD = '/auth/v1/reset',
   AUTH_GET_DEVICE_CODE = '/auth/v1/device/code',
-  CHECK_USERNAME = '/auth/v1/checkUsername'
+  CHECK_USERNAME = '/auth/v1/checkUsername',
+  CHECK_IF_USER_EXIST = '/auth/v1/checkIfUserExist'
 }
 
 export enum VerificationUsages {

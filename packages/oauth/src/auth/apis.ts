@@ -37,7 +37,9 @@ import {
   ResetPasswordRequest,
   DeviceAuthorizeRequest,
   DeviceAuthorizeResponse,
-  CheckUsernameRequest
+  CheckUsernameRequest,
+  CheckIfUserExistRequest,
+  CheckIfUserExistResponse
 } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client, defaultStorage } from '../oauth2client/oauth2client';
@@ -599,11 +601,18 @@ export class Auth {
   }
 
   public async checkUsername(params: CheckUsernameRequest): Promise<void> {
-    return this._config.request(ApiUrls.AUTH_GET_DEVICE_CODE, {
+    return this._config.request(ApiUrls.CHECK_USERNAME, {
       method: 'GET',
       body: params,
       withCredentials: true
     })
+  }
+
+  public async checkIfUserExist(params: CheckIfUserExistRequest): Promise<CheckIfUserExistResponse> {
+    return this._config.request<CheckIfUserExistResponse>(ApiUrls.CHECK_IF_USER_EXIST, {
+      method: 'POST',
+      body: params,
+    });
   }
 
   public async loginScope(): Promise<string> {

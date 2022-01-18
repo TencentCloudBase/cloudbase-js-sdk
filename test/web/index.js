@@ -161,11 +161,12 @@ async function init() {
     if (!loginState) {
 
       // 走oauth登录
-      const crd = await auth.setCustomSignFunc(() => { return '8ccc482a-4d14-4093-9229-0466a056180a/@@/eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJSUzI1NiIsImVudiI6Imx1a2UtcG9zdHBheS1lbnYtOGFqcmEiLCJpYXQiOjE2NDE0NzAzMTMwMzYsImV4cCI6MTY0MTQ3MDkxMzAzNiwidWlkIjoibHVrZWp5aHVhbmciLCJyZWZyZXNoIjozNjAwMDAwLCJleHBpcmUiOjE2NDIwNzUxMTMwMzZ9.W51pRsCCT0KqsuRfZ3l8t9jnD6JwvJ4IV3CP0cWow9yN3b3Nf8OXxqL_xW4xW8oKE3Xa9eTQUu9oy89h0H-URW1sQ2wm0ldYDSon2Xbm8jBZ_SejJtzlbIc9jbbRDadWfGxAaM4h8K0jitZT05ku2PeQHV-oTJwWSC8GnA7lq4c' })
-      console.log('crd', crd)
+      // const crd = await auth.setCustomSignFunc(() => { return '8ccc482a-4d14-4093-9229-0466a056180a/@@/eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJSUzI1NiIsImVudiI6Imx1a2UtcG9zdHBheS1lbnYtOGFqcmEiLCJpYXQiOjE2NDE0NzAzMTMwMzYsImV4cCI6MTY0MTQ3MDkxMzAzNiwidWlkIjoibHVrZWp5aHVhbmciLCJyZWZyZXNoIjozNjAwMDAwLCJleHBpcmUiOjE2NDIwNzUxMTMwMzZ9.W51pRsCCT0KqsuRfZ3l8t9jnD6JwvJ4IV3CP0cWow9yN3b3Nf8OXxqL_xW4xW8oKE3Xa9eTQUu9oy89h0H-URW1sQ2wm0ldYDSon2Xbm8jBZ_SejJtzlbIc9jbbRDadWfGxAaM4h8K0jitZT05ku2PeQHV-oTJwWSC8GnA7lq4c' })
+      // console.log('crd', crd)
 
-      let res = await auth.signInWithCustomTicket();
-      console.log('custom sign in res:', res)
+      // let res = await auth.signInWithCustomTicket();
+      // console.log('custom sign in res:', res)
+      await auth.signInAnonymously()
 
       // 调用函数
       try {

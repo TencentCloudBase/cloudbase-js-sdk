@@ -534,12 +534,8 @@ class Auth {
       throwError(ERRORS.INVALID_PARAMS, 'username must be a string');
     }
 
-    try {
-      await this._oauthInstance.authApi.checkUsername({ username })
-      return true
-    } catch (e) {
-      return false
-    }
+    const { exist } = await this._oauthInstance.authApi.checkIfUserExist({ username })
+    return exist
   }
 
   /**

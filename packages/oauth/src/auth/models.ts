@@ -431,3 +431,11 @@ export interface SimpleUserProfile {
 export interface CheckUsernameRequest {
   username: string
 }
+
+export interface CheckIfUserExistRequest {
+  username: string;
+}
+
+export interface CheckIfUserExistResponse {
+  exist: boolean;
+}

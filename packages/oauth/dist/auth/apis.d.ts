@@ -1,4 +1,4 @@
-import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo, SignInRequest, SignUpRequest, VerifyRequest, VerifyResponse, GenProviderRedirectUriRequest, GenProviderRedirectUriResponse, GrantProviderTokenRequest, GrantProviderTokenResponse, PatchProviderTokenRequest, PatchProviderTokenResponse, SignInWithProviderRequest, BindWithProviderRequest, TransByProviderRequest, GrantTokenRequest, UserProfileProvider, UnbindProviderRequest, CheckPasswordrRequest, BindPhoneRequest, BindEmailRequest, SetPasswordRequest, ChangeBindedProviderRequest, ChangeBindedProviderResponse, UpdatePasswordRequest, SudoResponse, SudoRequest, GetCustomSignTicketFn, QueryUserProfileRequest, QueryUserProfileResponse, ResetPasswordRequest, DeviceAuthorizeRequest, DeviceAuthorizeResponse, CheckUsernameRequest } from './models';
+import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo, SignInRequest, SignUpRequest, VerifyRequest, VerifyResponse, GenProviderRedirectUriRequest, GenProviderRedirectUriResponse, GrantProviderTokenRequest, GrantProviderTokenResponse, PatchProviderTokenRequest, PatchProviderTokenResponse, SignInWithProviderRequest, BindWithProviderRequest, TransByProviderRequest, GrantTokenRequest, UserProfileProvider, UnbindProviderRequest, CheckPasswordrRequest, BindPhoneRequest, BindEmailRequest, SetPasswordRequest, ChangeBindedProviderRequest, ChangeBindedProviderResponse, UpdatePasswordRequest, SudoResponse, SudoRequest, GetCustomSignTicketFn, QueryUserProfileRequest, QueryUserProfileResponse, ResetPasswordRequest, DeviceAuthorizeRequest, DeviceAuthorizeResponse, CheckUsernameRequest, CheckIfUserExistRequest, CheckIfUserExistResponse } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client } from '../oauth2client/oauth2client';
 import { Credentials } from '../oauth2client/models';
@@ -48,5 +48,6 @@ export declare class Auth {
     resetPassword(params: ResetPasswordRequest): Promise<void>;
     deviceAuthorize(params: DeviceAuthorizeRequest): Promise<DeviceAuthorizeResponse>;
     checkUsername(params: CheckUsernameRequest): Promise<void>;
+    checkIfUserExist(params: CheckIfUserExistRequest): Promise<CheckIfUserExistResponse>;
     loginScope(): Promise<string>;
 }
