@@ -1,6 +1,6 @@
 {
   "name": "@cloudbase/analytics",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "cloudbase javascript sdk functions componets",
   "author": "",
   "homepage": "",
@@ -20,7 +20,7 @@
     "build": "npm run lint && npm run tsc"
   },
   "dependencies": {
-    "@cloudbase/functions": "^2.0.0-alpha.1",
+    "@cloudbase/functions": "^2.0.0-alpha.2",
     "@cloudbase/types": "^2.0.0-alpha.0"
   },
   "gitHead": "c462902b6702463670d27acb88ebccf93dbd51cd"
