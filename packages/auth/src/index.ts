@@ -502,7 +502,6 @@ class Auth {
     ]
   })
   public async signUp(params: authModels.SignUpRequest): Promise<LoginState> {
-    console.log('ggg')
     await this._oauthInstance.authApi.signUp(params)
     return this.createLoginState()
   }
@@ -695,6 +694,14 @@ class Auth {
 
   public async sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse> {
     return this._oauthInstance.authApi.sudo(params)
+  }
+
+  public async deleteMe(params: authModels.WithSudoRequest): Promise<authModels.UserProfile> {
+    return this._oauthInstance.authApi.deleteMe(params)
+  }
+
+  public async getProviders(): Promise<authModels.UserProfileProvider> {
+    return this._oauthInstance.authApi.getProviders()
   }
 
   public async loginScope(): Promise<string> {

@@ -65,14 +65,6 @@ export interface PatchProviderTokenResponse {
     expires_in: number;
     provider_profile: ProviderProfile;
 }
-export interface GenProviderRedirectUriRequest {
-    provider_id: string;
-    provider_redirect_uri: string;
-    state: string;
-    other_params?: {
-        sign_out_uri?: string;
-    };
-}
 export interface GenProviderRedirectUriResponse {
     uri: string;
     signout_uri?: string;
@@ -221,7 +213,7 @@ export interface GenProviderRedirectUriRequest {
     provider_redirect_uri: string;
     state: string;
     other_params?: {
-        sign_out_uri?: string;
+        [key: string]: string;
     };
 }
 export interface GenProviderRedirectUriResponse {
@@ -304,6 +296,9 @@ export interface SudoRequest {
 }
 export interface SudoResponse {
     sudo_token?: string;
+}
+export interface WithSudoRequest {
+    sudo_token: string;
 }
 export interface ChangeBoundProviderRequest {
     trans_token: string;

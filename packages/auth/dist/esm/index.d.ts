@@ -75,6 +75,8 @@ declare class Auth {
     resetPassword(params: authModels.ResetPasswordRequest): Promise<void>;
     deviceAuthorize(params: authModels.DeviceAuthorizeRequest): Promise<authModels.DeviceAuthorizeResponse>;
     sudo(params: authModels.SudoRequest): Promise<authModels.SudoResponse>;
+    deleteMe(params: authModels.WithSudoRequest): Promise<authModels.UserProfile>;
+    getProviders(): Promise<authModels.UserProfileProvider>;
     loginScope(): Promise<string>;
     onLoginStateChanged(callback: Function): Promise<void>;
     private createLoginState;

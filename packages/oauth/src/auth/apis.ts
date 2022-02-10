@@ -39,7 +39,8 @@ import {
   DeviceAuthorizeResponse,
   CheckUsernameRequest,
   CheckIfUserExistRequest,
-  CheckIfUserExistResponse
+  CheckIfUserExistResponse,
+  WithSudoRequest
 } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client, defaultStorage } from '../oauth2client/oauth2client';
@@ -326,6 +327,18 @@ export class Auth {
   }
 
   /**
+     * Delete me
+     * @param params
+     */
+  public async deleteMe(params: WithSudoRequest): Promise<UserProfile> {
+    const url = `${ApiUrls.USER_ME_URL}?${Auth.parseParamsToSearch(params)}`;
+    return this._config.request<UserProfile>(url, {
+      method: 'DELETE',
+      withCredentials: true,
+    });
+  }
+
+  /**
    * hasLoginState check if has login state
    * @return {Promise<boolean>} A Promise<boolean> object.
    */
@@ -579,8 +592,8 @@ export class Auth {
    * @memberof Auth
    */
   public async resetPassword(params: ResetPasswordRequest): Promise<void> {
-    return this._config.request(ApiUrls.AUTH_SET_PASSWORD, {
-      method: 'POST',
+    return this._config.request(ApiUrls.AUTH_RESET_PASSWORD, {
+      method: 'PATCH',
       body: params,
       // withCredentials: true
     })
@@ -610,12 +623,22 @@ export class Auth {
 
   public async checkIfUserExist(params: CheckIfUserExistRequest): Promise<CheckIfUserExistResponse> {
     return this._config.request<CheckIfUserExistResponse>(ApiUrls.CHECK_IF_USER_EXIST, {
-      method: 'POST',
+      method: 'GET',
       body: params,
     });
   }
 
   public async loginScope(): Promise<string> {
     return this._config.credentialsClient.getScope()
+  }
+
+  private static parseParamsToSearch(params: any): string {
+    for (let key in params) {
+      if (!params[key]) {
+        delete params[key]
+      }
+    }
+    const searchParams = new URLSearchParams(params as any);
+    return searchParams.toString();
   }
 }

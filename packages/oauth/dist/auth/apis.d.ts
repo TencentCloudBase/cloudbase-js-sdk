@@ -1,4 +1,4 @@
-import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo, SignInRequest, SignUpRequest, VerifyRequest, VerifyResponse, GenProviderRedirectUriRequest, GenProviderRedirectUriResponse, GrantProviderTokenRequest, GrantProviderTokenResponse, PatchProviderTokenRequest, PatchProviderTokenResponse, SignInWithProviderRequest, BindWithProviderRequest, TransByProviderRequest, GrantTokenRequest, UserProfileProvider, UnbindProviderRequest, CheckPasswordrRequest, BindPhoneRequest, BindEmailRequest, SetPasswordRequest, ChangeBindedProviderRequest, ChangeBindedProviderResponse, UpdatePasswordRequest, SudoResponse, SudoRequest, GetCustomSignTicketFn, QueryUserProfileRequest, QueryUserProfileResponse, ResetPasswordRequest, DeviceAuthorizeRequest, DeviceAuthorizeResponse, CheckUsernameRequest, CheckIfUserExistRequest, CheckIfUserExistResponse } from './models';
+import { GetVerificationRequest, GetVerificationResponse, UserProfile, UserInfo, SignInRequest, SignUpRequest, VerifyRequest, VerifyResponse, GenProviderRedirectUriRequest, GenProviderRedirectUriResponse, GrantProviderTokenRequest, GrantProviderTokenResponse, PatchProviderTokenRequest, PatchProviderTokenResponse, SignInWithProviderRequest, BindWithProviderRequest, TransByProviderRequest, GrantTokenRequest, UserProfileProvider, UnbindProviderRequest, CheckPasswordrRequest, BindPhoneRequest, BindEmailRequest, SetPasswordRequest, ChangeBindedProviderRequest, ChangeBindedProviderResponse, UpdatePasswordRequest, SudoResponse, SudoRequest, GetCustomSignTicketFn, QueryUserProfileRequest, QueryUserProfileResponse, ResetPasswordRequest, DeviceAuthorizeRequest, DeviceAuthorizeResponse, CheckUsernameRequest, CheckIfUserExistRequest, CheckIfUserExistResponse, WithSudoRequest } from './models';
 import { SimpleStorage, RequestFunction } from '../oauth2client/interface';
 import { OAuth2Client } from '../oauth2client/oauth2client';
 import { Credentials } from '../oauth2client/models';
@@ -26,6 +26,7 @@ export declare class Auth {
     bindWithProvider(params: BindWithProviderRequest): Promise<void>;
     getUserProfile(): Promise<UserProfile>;
     getUserInfo(): Promise<UserInfo>;
+    deleteMe(params: WithSudoRequest): Promise<UserProfile>;
     hasLoginState(): Promise<boolean>;
     hasLoginStateSync(): Credentials | null;
     getLoginState(): Promise<Credentials | null>;
@@ -50,4 +51,5 @@ export declare class Auth {
     checkUsername(params: CheckUsernameRequest): Promise<void>;
     checkIfUserExist(params: CheckIfUserExistRequest): Promise<CheckIfUserExistResponse>;
     loginScope(): Promise<string>;
+    private static parseParamsToSearch;
 }
