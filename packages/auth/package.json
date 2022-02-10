@@ -1,6 +1,6 @@
 {
 	"name": "@cloudbase/auth",
-	"version": "2.0.0-alpha.2",
+	"version": "2.0.0-alpha.3",
 	"description": "cloudbase javascript sdk auth componets",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
@@ -27,7 +27,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@cloudbase/oauth": "^1.0.0-alpha.2",
+		"@cloudbase/oauth": "^1.0.0-alpha.3",
 		"@cloudbase/types": "^2.0.0-alpha.0",
 		"@cloudbase/utilities": "^2.0.0-alpha.2"
 	},
