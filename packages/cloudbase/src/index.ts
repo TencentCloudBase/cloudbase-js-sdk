@@ -6,7 +6,7 @@ import { registerRealtime } from '@cloudbase/realtime';
 import { registerAnalytics } from '@cloudbase/analytics'
 // @ts-ignore
 import { registerDatabase } from './../database';
-import * as pkg from '../package.json';
+import pkg from '../package.json';
 import { ICloudbase } from '@cloudbase/types';
 
 

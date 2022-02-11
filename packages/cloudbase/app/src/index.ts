@@ -1,5 +1,5 @@
 import cloudbase from '@cloudbase/app';
-import * as pkg from '../../package.json';
+import pkg from '../../package.json';
 import { ICloudbase } from '@cloudbase/types';
 
 const { version } = pkg;
@@ -10,9 +10,9 @@ declare global {
     cloudbase: ICloudbase;
   }
 }
-try{
+try {
   (window as Window).cloudbase = cloudbase;
-}catch(e){}
+} catch (e) { }
 // @ts-ignore
 export = cloudbase;
 export default cloudbase;
