@@ -24,7 +24,6 @@ const EVENTS = {
 interface UserInfo {
   uid?: string;
   gender?: string;
-  avatarUrl?: string;
   picture?: string;
   email?: string;
   email_verified?: boolean;
@@ -49,7 +48,6 @@ interface IUserOptions {
 class User implements IUser {
   public uid?: string;
   public gender?: string;
-  public avatarUrl?: string;
   public picture?: string;
   public email?: string;
   public email_verified?: boolean;
@@ -84,7 +82,6 @@ class User implements IUser {
     this.uid = this._getLocalUserInfo('uid') as string;
     this.gender = this._getLocalUserInfo('gender') as string;
     this.picture = this._getLocalUserInfo('picture') as string;
-    this.avatarUrl = this._getLocalUserInfo('avatarUrl') as string;
     this.email = this._getLocalUserInfo('email') as string;
     this.email_verified = this._getLocalUserInfo('email_verified') as boolean;
     this.phone_number = this._getLocalUserInfo('phone_number') as string
@@ -104,7 +101,6 @@ class User implements IUser {
     this.uid = await this._getLocalUserInfoAsync('uid');
     this.gender = await this._getLocalUserInfoAsync('gender');
     this.picture = this._getLocalUserInfo('picture') as string;
-    this.avatarUrl = await this._getLocalUserInfoAsync('avatarUrl');
     this.email = await this._getLocalUserInfoAsync('email');
     this.email_verified = this._getLocalUserInfo('email_verified') as boolean;
     this.phone_number = this._getLocalUserInfo('phone_number') as string
@@ -220,8 +216,6 @@ class User implements IUser {
       'name',
       'gender',
       'picture',
-      'avatarUrl',
-      'phone',
       'email_verified',
       'phone_number',
       'birthdate',

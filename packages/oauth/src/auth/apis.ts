@@ -315,9 +315,6 @@ export class Auth {
       method: 'GET',
       withCredentials: true,
     });
-    if (userInfo.picture) {
-      userInfo.avatarUrl = userInfo.picture;
-    }
 
     if (userInfo.sub) {
       userInfo.uid = userInfo.sub
@@ -625,8 +622,7 @@ export class Auth {
     const searchParams = new URLSearchParams(params as any);
 
     return this._config.request<CheckIfUserExistResponse>(`${ApiUrls.CHECK_IF_USER_EXIST}?${searchParams.toString()}`, {
-      method: 'GET',
-      body: params,
+      method: 'GET'
     });
   }
 

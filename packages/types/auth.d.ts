@@ -26,7 +26,6 @@ export interface IUserInfo {
   // nickName?: string;
   name?: string;
   gender?: string;
-  avatarUrl?: string;
   email?: string;
   username?: string;
   hasPassword?: boolean;

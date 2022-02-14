@@ -6,7 +6,6 @@ import { authModels, CloudbaseOAuth } from '@cloudbase/oauth';
 interface UserInfo {
     uid?: string;
     gender?: string;
-    avatarUrl?: string;
     picture?: string;
     email?: string;
     email_verified?: boolean;

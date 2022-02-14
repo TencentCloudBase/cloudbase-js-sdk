@@ -112,7 +112,6 @@ export interface UserProfileProvider {
 export interface UserProfile {
   name?: string;
   picture?: string;
-  avatarUrl?: string;
   username?: string;
   email?: string;
   email_verified?: boolean;
