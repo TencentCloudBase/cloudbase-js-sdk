@@ -1,6 +1,6 @@
 {
 	"name": "@cloudbase/oauth",
-	"version": "1.0.0-alpha.3",
+	"version": "1.0.0-alpha.4",
 	"description": "cloudbase javascript sdk auth componets",
 	"main": "./dist/index.js",
 	"module": "dist/esm/index.js",
