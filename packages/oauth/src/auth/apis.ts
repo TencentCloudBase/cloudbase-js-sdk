@@ -593,7 +593,7 @@ export class Auth {
    */
   public async resetPassword(params: ResetPasswordRequest): Promise<void> {
     return this._config.request(ApiUrls.AUTH_RESET_PASSWORD, {
-      method: 'PATCH',
+      method: 'POST',
       body: params,
       // withCredentials: true
     })
@@ -622,7 +622,9 @@ export class Auth {
   }
 
   public async checkIfUserExist(params: CheckIfUserExistRequest): Promise<CheckIfUserExistResponse> {
-    return this._config.request<CheckIfUserExistResponse>(ApiUrls.CHECK_IF_USER_EXIST, {
+    const searchParams = new URLSearchParams(params as any);
+
+    return this._config.request<CheckIfUserExistResponse>(`${ApiUrls.CHECK_IF_USER_EXIST}?${searchParams.toString()}`, {
       method: 'GET',
       body: params,
     });
