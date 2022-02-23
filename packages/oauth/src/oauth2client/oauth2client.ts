@@ -407,6 +407,11 @@ export class OAuth2Client implements AuthClient {
         response = await this._baseRequest<T>(url, options);
         break;
       } catch (responseError) {
+        if (options.withCredentials && responseError && responseError.error === ErrorType.UNAUTHENTICATED) {
+          await this.setCredentials(null);
+          return Promise.reject(responseError);
+        }
+        
         if (
           requestTime === retry ||
           !responseError ||
